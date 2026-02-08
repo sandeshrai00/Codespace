@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AdminNav from '@/components/AdminNav'
 import ImageUpload from '@/components/ImageUpload'
@@ -10,6 +10,11 @@ export default function NewTourPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
   
   const [formData, setFormData] = useState({
     title: '',
@@ -86,6 +91,10 @@ export default function NewTourPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (!mounted) {
+    return null
   }
 
   return (

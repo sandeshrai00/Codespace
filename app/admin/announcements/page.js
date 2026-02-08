@@ -1,17 +1,13 @@
 import { redirect } from 'next/navigation'
 import { isAuthenticated } from '@/lib/auth'
 import AdminNav from '@/components/AdminNav'
-import { createClient } from '@libsql/client'
+import { getTurso } from '@/lib/turso'
 import AnnouncementForm from './AnnouncementForm'
 import AnnouncementList from './AnnouncementList'
 
-const turso = createClient({
-  url: process.env.TURSO_DATABASE_URL,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
-
 async function getAllAnnouncements() {
   try {
+    const turso = getTurso();
     const result = await turso.execute({
       sql: 'SELECT * FROM announcements ORDER BY created_at DESC',
       args: []

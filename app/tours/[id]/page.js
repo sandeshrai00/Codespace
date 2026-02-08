@@ -1,16 +1,12 @@
 import Header from '@/components/Header'
 import Image from 'next/image'
 import Link from 'next/link'
-import { createClient } from '@libsql/client'
+import { getTurso } from '@/lib/turso'
 import { notFound } from 'next/navigation'
-
-const turso = createClient({
-  url: process.env.TURSO_DATABASE_URL,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
 
 async function getTour(id) {
   try {
+    const turso = getTurso();
     const result = await turso.execute({
       sql: 'SELECT * FROM tours WHERE id = ?',
       args: [id]

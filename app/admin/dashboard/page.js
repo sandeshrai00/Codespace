@@ -3,16 +3,12 @@ import { isAuthenticated } from '@/lib/auth'
 import AdminNav from '@/components/AdminNav'
 import Image from 'next/image'
 import Link from 'next/link'
-import { createClient } from '@libsql/client'
+import { getTurso } from '@/lib/turso'
 import DeleteTourButton from './DeleteTourButton'
-
-const turso = createClient({
-  url: process.env.TURSO_DATABASE_URL,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
 
 async function getStats() {
   try {
+    const turso = getTurso();
     const toursResult = await turso.execute('SELECT COUNT(*) as count FROM tours');
     const announcementsResult = await turso.execute('SELECT COUNT(*) as count FROM announcements WHERE is_active = 1');
     
@@ -28,6 +24,7 @@ async function getStats() {
 
 async function getAllTours() {
   try {
+    const turso = getTurso();
     const result = await turso.execute('SELECT * FROM tours ORDER BY created_at DESC');
     return result.rows;
   } catch (error) {

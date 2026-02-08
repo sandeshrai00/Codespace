@@ -1,14 +1,10 @@
 import Header from '@/components/Header'
 import TourCard from '@/components/TourCard'
-import { createClient } from '@libsql/client'
-
-const turso = createClient({
-  url: process.env.TURSO_DATABASE_URL,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
+import { getTurso } from '@/lib/turso'
 
 async function getAllTours() {
   try {
+    const turso = getTurso();
     const result = await turso.execute({
       sql: 'SELECT * FROM tours ORDER BY created_at DESC',
       args: []

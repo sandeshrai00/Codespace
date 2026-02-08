@@ -1,15 +1,11 @@
 import Header from '@/components/Header'
 import TourCard from '@/components/TourCard'
 import Link from 'next/link'
-import { createClient } from '@libsql/client'
-
-const turso = createClient({
-  url: process.env.TURSO_DATABASE_URL,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
+import { getTurso } from '@/lib/turso'
 
 async function getActiveAnnouncement() {
   try {
+    const turso = getTurso();
     const result = await turso.execute({
       sql: 'SELECT * FROM announcements WHERE is_active = 1 LIMIT 1',
       args: []
@@ -23,6 +19,7 @@ async function getActiveAnnouncement() {
 
 async function getFeaturedTours() {
   try {
+    const turso = getTurso();
     const result = await turso.execute({
       sql: 'SELECT * FROM tours ORDER BY created_at DESC LIMIT 3',
       args: []

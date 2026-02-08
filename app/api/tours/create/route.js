@@ -1,12 +1,7 @@
 import { NextResponse } from 'next/server'
 import { isAuthenticated } from '@/lib/auth'
-import { createClient } from '@libsql/client'
+import { getTurso } from '@/lib/turso'
 import { revalidatePath } from 'next/cache'
-
-const turso = createClient({
-  url: process.env.TURSO_DATABASE_URL,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
 
 export async function POST(request) {
   try {
@@ -30,6 +25,7 @@ export async function POST(request) {
       )
     }
 
+    const turso = getTurso();
     await turso.execute({
       sql: `INSERT INTO tours (title, description, price, duration, dates, location, banner_image, image_urls) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
