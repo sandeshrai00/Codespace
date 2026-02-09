@@ -19,7 +19,8 @@ async function getTour(id) {
 }
 
 export default async function TourDetailPage({ params }) {
-  const tour = await getTour(params.id);
+  const { id } = await params;
+  const tour = await getTour(id);
 
   if (!tour) {
     notFound();
