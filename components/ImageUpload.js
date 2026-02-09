@@ -1,63 +1,49 @@
 'use client'
 
-import { CldUploadWidget } from 'next-cloudinary'
+import { useState } from 'react'
 import Image from 'next/image'
 
 export default function ImageUpload({ images = [], onUpload, onRemove, isBanner = false }) {
-  // Check if Cloudinary is configured
-  const isCloudinaryConfigured = !!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const [inputValue, setInputValue] = useState('')
+
+  const handleAdd = () => {
+    const url = inputValue.trim()
+    if (url) {
+      onUpload(url)
+      setInputValue('')
+    }
+  }
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleAdd()
+    }
+  }
   
   return (
     <div className="space-y-4">
-      {/* Upload Button */}
-      {isCloudinaryConfigured ? (
-        <CldUploadWidget
-          uploadPreset="ml_default"
-          onSuccess={(result) => {
-            if (result.event === 'success' && result.info?.secure_url) {
-              onUpload(result.info.secure_url)
-            }
-          }}
-          options={{
-            multiple: !isBanner,
-            maxFiles: isBanner ? 1 : 10,
-          }}
+      {/* URL Input Field */}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder={isBanner ? "Enter banner image URL" : "Enter image URL"}
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+        />
+        <button
+          type="button"
+          onClick={handleAdd}
+          className="px-6 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition font-medium"
         >
-          {({ open }) => (
-            <button
-              type="button"
-              onClick={() => open()}
-              className="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition"
-            >
-              {isBanner ? 'Upload Banner Image' : 'Upload Images'}
-            </button>
-          )}
-        </CldUploadWidget>
-      ) : (
-        <div className="p-4 bg-yellow-100 border border-yellow-400 rounded-md">
-          <p className="text-sm text-yellow-800">
-            Cloudinary is not configured. Please set NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME in your environment variables.
-          </p>
-          <p className="text-xs text-yellow-700 mt-2">
-            For now, you can manually enter image URLs in the input field below.
-          </p>
-          <input
-            type="text"
-            placeholder="Enter image URL"
-            className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md"
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                const url = e.target.value.trim();
-                if (url) {
-                  onUpload(url);
-                  e.target.value = '';
-                }
-              }
-            }}
-          />
-        </div>
-      )}
+          Add
+        </button>
+      </div>
+      <p className="text-xs text-gray-500">
+        Paste an image URL and press Enter or click Add to add it
+      </p>
 
       {/* Image Previews */}
       {images.length > 0 && (

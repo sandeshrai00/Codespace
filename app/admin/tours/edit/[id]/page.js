@@ -24,7 +24,8 @@ export default async function EditTourPage({ params }) {
     redirect('/admin');
   }
 
-  const tour = await getTour(params.id);
+  const { id } = await params;
+  const tour = await getTour(id);
 
   if (!tour) {
     redirect('/admin/dashboard');

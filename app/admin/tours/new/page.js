@@ -80,7 +80,7 @@ export default function NewTourPage() {
       if (response.ok) {
         setSuccess('Tour created successfully!')
         setTimeout(() => {
-          router.push('/admin/dashboard')
+          window.location.href = '/admin/dashboard'
         }, 1500)
       } else {
         setError(data.error || 'Failed to create tour')

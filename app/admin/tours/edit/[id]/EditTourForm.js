@@ -86,7 +86,7 @@ export default function EditTourForm({ tour }) {
       if (response.ok) {
         setSuccess('Tour updated successfully!')
         setTimeout(() => {
-          router.push('/admin/dashboard')
+          window.location.href = '/admin/dashboard'
         }, 1500)
       } else {
         setError(data.error || 'Failed to update tour')
