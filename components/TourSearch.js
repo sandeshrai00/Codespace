@@ -69,24 +69,21 @@ export default function TourSearch({ tours }) {
   return (
     <div>
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-8">
+        <div className="flex flex-col md:flex-row gap-3 mb-3">
           {/* Search Input */}
-          <div className="lg:col-span-2">
-            <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
-              Search Tours
-            </label>
+          <div className="flex-1">
             <div className="relative">
               <input
                 id="search"
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search by title or location..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
+                placeholder="Search tours..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
               />
               <svg 
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -97,15 +94,12 @@ export default function TourSearch({ tours }) {
           </div>
 
           {/* Price Range Filter */}
-          <div>
-            <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-              Price Range
-            </label>
+          <div className="md:w-40">
             <select
               id="price"
               value={priceRange}
               onChange={(e) => setPriceRange(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
             >
               <option value="all">All Prices</option>
               <option value="under500">Under $500</option>
@@ -116,15 +110,12 @@ export default function TourSearch({ tours }) {
           </div>
 
           {/* Location Filter */}
-          <div>
-            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
-              Location
-            </label>
+          <div className="md:w-40">
             <select
               id="location"
               value={locationFilter}
               onChange={(e) => setLocationFilter(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
             >
               <option value="all">All Locations</option>
               {uniqueLocations.map(location => (
@@ -134,15 +125,12 @@ export default function TourSearch({ tours }) {
           </div>
 
           {/* Duration Filter */}
-          <div>
-            <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-2">
-              Duration
-            </label>
+          <div className="md:w-40">
             <select
               id="duration"
               value={durationFilter}
               onChange={(e) => setDurationFilter(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
             >
               <option value="all">All Durations</option>
               <option value="1-3">1-3 Days</option>
@@ -154,14 +142,14 @@ export default function TourSearch({ tours }) {
         </div>
 
         {/* Filter Actions */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
-          <div className="text-sm text-gray-600">
+        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div className="text-xs text-gray-600">
             Showing <span className="font-semibold text-primary-600">{filteredTours.length}</span> of <span className="font-semibold">{tours.length}</span> tours
           </div>
           {hasActiveFilters && (
             <button
               onClick={handleClearFilters}
-              className="px-4 py-2 text-sm font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition"
+              className="px-3 py-1 text-xs font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition"
             >
               Clear Filters
             </button>
@@ -180,7 +168,7 @@ export default function TourSearch({ tours }) {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-white rounded-lg shadow-md">
+          <div className="text-center py-20 bg-white rounded-xl shadow-sm">
             <div className="text-6xl mb-6">🔍</div>
             <h3 className="text-2xl font-bold text-gray-900 mb-4">No tours match your filters</h3>
             <p className="text-gray-600 mb-6">Try adjusting your search criteria to find more tours.</p>
