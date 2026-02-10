@@ -4,7 +4,12 @@ import WhatsAppFloat from '@/components/WhatsAppFloat'
 export const metadata = {
   title: 'GoHoliday - Your Dream Vacation Awaits',
   description: 'Discover amazing travel packages and tours with GoHoliday',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=5',
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 }
 
 export default function RootLayout({ children }) {
