@@ -1,0 +1,200 @@
+'use client'
+
+import { useState, useMemo } from 'react'
+import TourCard from './TourCard'
+
+export default function TourSearch({ tours }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [priceRange, setPriceRange] = useState('all')
+  const [locationFilter, setLocationFilter] = useState('all')
+  const [durationFilter, setDurationFilter] = useState('all')
+
+  // Extract unique locations from tours
+  const uniqueLocations = useMemo(() => {
+    const locations = tours.map(tour => tour.location)
+    return [...new Set(locations)].sort()
+  }, [tours])
+
+  // Filter tours based on all criteria
+  const filteredTours = useMemo(() => {
+    return tours.filter(tour => {
+      // Search term filter (title or location)
+      const matchesSearch = searchTerm === '' || 
+        tour.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tour.location.toLowerCase().includes(searchTerm.toLowerCase())
+
+      // Price range filter
+      let matchesPrice = true
+      if (priceRange === 'under500') {
+        matchesPrice = tour.price < 500
+      } else if (priceRange === '500-1000') {
+        matchesPrice = tour.price >= 500 && tour.price < 1000
+      } else if (priceRange === '1000-2000') {
+        matchesPrice = tour.price >= 1000 && tour.price < 2000
+      } else if (priceRange === '2000plus') {
+        matchesPrice = tour.price >= 2000
+      }
+
+      // Location filter
+      const matchesLocation = locationFilter === 'all' || tour.location === locationFilter
+
+      // Duration filter
+      let matchesDuration = true
+      if (durationFilter !== 'all') {
+        const durationLower = tour.duration.toLowerCase()
+        if (durationFilter === '1-3') {
+          matchesDuration = /1|2|3.*day/i.test(durationLower) && !/week/i.test(durationLower)
+        } else if (durationFilter === '4-7') {
+          matchesDuration = /4|5|6|7.*day/i.test(durationLower) && !/week/i.test(durationLower)
+        } else if (durationFilter === '1-2weeks') {
+          matchesDuration = /1.*week|2.*week/i.test(durationLower) || /8|9|10|11|12|13|14.*day/i.test(durationLower)
+        } else if (durationFilter === '2weeksplus') {
+          matchesDuration = /\d+.*week/i.test(durationLower) && !/1.*week|2.*week/i.test(durationLower) || /1[5-9]|[2-9]\d.*day/i.test(durationLower)
+        }
+      }
+
+      return matchesSearch && matchesPrice && matchesLocation && matchesDuration
+    })
+  }, [tours, searchTerm, priceRange, locationFilter, durationFilter])
+
+  const handleClearFilters = () => {
+    setSearchTerm('')
+    setPriceRange('all')
+    setLocationFilter('all')
+    setDurationFilter('all')
+  }
+
+  const hasActiveFilters = searchTerm !== '' || priceRange !== 'all' || locationFilter !== 'all' || durationFilter !== 'all'
+
+  return (
+    <div>
+      {/* Search and Filter Bar */}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {/* Search Input */}
+          <div className="lg:col-span-2">
+            <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+              Search Tours
+            </label>
+            <div className="relative">
+              <input
+                id="search"
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search by title or location..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
+              />
+              <svg 
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Price Range Filter */}
+          <div>
+            <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
+              Price Range
+            </label>
+            <select
+              id="price"
+              value={priceRange}
+              onChange={(e) => setPriceRange(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
+            >
+              <option value="all">All Prices</option>
+              <option value="under500">Under $500</option>
+              <option value="500-1000">$500 - $1000</option>
+              <option value="1000-2000">$1000 - $2000</option>
+              <option value="2000plus">$2000+</option>
+            </select>
+          </div>
+
+          {/* Location Filter */}
+          <div>
+            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
+              Location
+            </label>
+            <select
+              id="location"
+              value={locationFilter}
+              onChange={(e) => setLocationFilter(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
+            >
+              <option value="all">All Locations</option>
+              {uniqueLocations.map(location => (
+                <option key={location} value={location}>{location}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Duration Filter */}
+          <div>
+            <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-2">
+              Duration
+            </label>
+            <select
+              id="duration"
+              value={durationFilter}
+              onChange={(e) => setDurationFilter(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
+            >
+              <option value="all">All Durations</option>
+              <option value="1-3">1-3 Days</option>
+              <option value="4-7">4-7 Days</option>
+              <option value="1-2weeks">1-2 Weeks</option>
+              <option value="2weeksplus">2+ Weeks</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Filter Actions */}
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+          <div className="text-sm text-gray-600">
+            Showing <span className="font-semibold text-primary-600">{filteredTours.length}</span> of <span className="font-semibold">{tours.length}</span> tours
+          </div>
+          {hasActiveFilters && (
+            <button
+              onClick={handleClearFilters}
+              className="px-4 py-2 text-sm font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition"
+            >
+              Clear Filters
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Results Grid */}
+      <div className="transition-all duration-300">
+        {filteredTours.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredTours.map((tour) => (
+              <div key={tour.id} className="animate-fade-in">
+                <TourCard tour={tour} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 bg-white rounded-lg shadow-md">
+            <div className="text-6xl mb-6">🔍</div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">No tours match your filters</h3>
+            <p className="text-gray-600 mb-6">Try adjusting your search criteria to find more tours.</p>
+            {hasActiveFilters && (
+              <button
+                onClick={handleClearFilters}
+                className="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition"
+              >
+                Clear All Filters
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

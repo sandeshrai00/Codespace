@@ -1,4 +1,5 @@
 import './globals.css'
+import WhatsAppFloat from '@/components/WhatsAppFloat'
 
 export const metadata = {
   title: 'GoHoliday - Your Dream Vacation Awaits',
@@ -8,7 +9,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+      </head>
+      <body className="font-sans">
+        {children}
+        <WhatsAppFloat />
+      </body>
     </html>
   )
 }
