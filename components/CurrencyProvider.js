@@ -4,6 +4,8 @@ import { createContext, useContext, useState } from 'react'
 
 const CurrencyContext = createContext()
 
+// Exchange rates as of February 2026 - hardcoded for simplicity
+// In production, consider using a currency API for real-time rates
 export const EXCHANGE_RATES = {
   USD: 1,
   EUR: 0.92,
