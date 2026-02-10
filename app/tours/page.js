@@ -10,7 +10,7 @@ async function getAllTours() {
       sql: 'SELECT * FROM tours ORDER BY created_at DESC',
       args: []
     });
-    return result.rows;
+    return result.rows.map(row => JSON.parse(JSON.stringify(row)));
   } catch (error) {
     console.error('Error fetching tours:', error);
     return [];

@@ -11,7 +11,8 @@ async function getActiveAnnouncement() {
       sql: 'SELECT * FROM announcements WHERE is_active = 1 LIMIT 1',
       args: []
     });
-    return result.rows[0] || null;
+    const row = result.rows[0] || null;
+    return row ? JSON.parse(JSON.stringify(row)) : null;
   } catch (error) {
     console.error('Error fetching announcement:', error);
     return null;
@@ -25,7 +26,7 @@ async function getFeaturedTours() {
       sql: 'SELECT * FROM tours ORDER BY created_at DESC LIMIT 3',
       args: []
     });
-    return result.rows;
+    return result.rows.map(row => JSON.parse(JSON.stringify(row)));
   } catch (error) {
     console.error('Error fetching tours:', error);
     return [];

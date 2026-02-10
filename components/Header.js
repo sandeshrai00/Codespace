@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import CurrencySwitcher from './CurrencySwitcher'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -41,6 +42,7 @@ export default function Header() {
             <Link href="/tours" className="text-gray-700 hover:text-primary-600 transition font-medium">
               Tours
             </Link>
+            <CurrencySwitcher />
             <a 
               href={whatsappUrl}
               target="_blank"
@@ -88,6 +90,9 @@ export default function Header() {
             >
               Tours
             </Link>
+            <div className="py-2">
+              <CurrencySwitcher />
+            </div>
             <a 
               href={whatsappUrl}
               target="_blank"

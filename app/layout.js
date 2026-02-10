@@ -1,5 +1,6 @@
 import './globals.css'
 import WhatsAppFloat from '@/components/WhatsAppFloat'
+import { CurrencyProvider } from '@/components/CurrencyProvider'
 
 export const metadata = {
   title: 'GoHoliday - Your Dream Vacation Awaits',
@@ -16,8 +17,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="font-sans">
-        {children}
-        <WhatsAppFloat />
+        <CurrencyProvider>
+          {children}
+          <WhatsAppFloat />
+        </CurrencyProvider>
       </body>
     </html>
   )

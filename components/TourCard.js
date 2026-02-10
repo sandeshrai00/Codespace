@@ -2,8 +2,10 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import { useCurrency } from './CurrencyProvider'
 
 export default function TourCard({ tour }) {
+  const { convertPrice } = useCurrency()
   const truncateDescription = (text, maxLength = 120) => {
     if (text.length <= maxLength) return text
     return text.substring(0, maxLength) + '...'
@@ -59,7 +61,7 @@ export default function TourCard({ tour }) {
 
           <div className="flex items-center justify-between gap-3 mt-auto">
             <div className="text-2xl font-bold text-primary-600">
-              ${tour.price}
+              {convertPrice(tour.price)}
             </div>
             <div className="flex flex-col gap-2">
               <button 
