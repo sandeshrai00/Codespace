@@ -11,8 +11,9 @@ export default function TourCard({ tour, featured = false }) {
     return text.substring(0, maxLength) + '...'
   }
 
-  // Generate a random rating between 4.5 and 5.0 for display
-  const rating = (4.5 + Math.random() * 0.5).toFixed(1)
+  // Generate a deterministic rating based on tour ID to avoid hydration mismatches
+  const hash = tour.id.toString().split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+  const rating = (4.5 + (hash % 6) / 10).toFixed(1)
 
   return (
     <Link href={`/tours/${tour.id}`} className="block group">
@@ -24,7 +25,7 @@ export default function TourCard({ tour, featured = false }) {
               src={tour.banner_image}
               alt={tour.title}
               fill
-              className="object-cover group-hover:scale-110 transition-transform duration-500"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center">

@@ -23,7 +23,7 @@ async function getFeaturedTours() {
   try {
     const turso = getTurso();
     const result = await turso.execute({
-      sql: 'SELECT * FROM tours ORDER BY created_at DESC LIMIT 6',
+      sql: 'SELECT id, title, description, price, location, duration, banner_image, dates, created_at FROM tours ORDER BY created_at DESC LIMIT 6',
       args: []
     });
     return result.rows.map(row => JSON.parse(JSON.stringify(row)));
@@ -76,6 +76,7 @@ export default async function HomePage() {
                   <input
                     type="text"
                     placeholder="Where do you want to go? (e.g., Bali, Nepal, Europe...)"
+                    aria-label="Search destination"
                     className="w-full px-6 py-4 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-lg"
                   />
                 </div>
