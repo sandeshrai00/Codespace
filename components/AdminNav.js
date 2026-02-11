@@ -18,12 +18,12 @@ export default function AdminNav() {
   }
 
   return (
-    <nav className="bg-gray-900 text-white shadow-lg">
+    <nav className="bg-secondary-900 text-white shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/admin/dashboard" className="text-xl font-bold text-cyan-400 hover:text-cyan-300 transition">
-            GoHoliday Admin
+          <Link href="/admin/dashboard" className="text-xl font-bold text-primary-400 hover:text-primary-300 transition">
+            ✈️ GoHoliday Admin
           </Link>
 
           {/* Navigation Links */}
@@ -48,7 +48,7 @@ export default function AdminNav() {
             </Link>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md transition font-medium"
+              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg transition font-medium shadow-md"
             >
               Logout
             </button>

@@ -18,7 +18,7 @@ export default function CurrencySwitcher() {
       <select
         value={currency}
         onChange={(e) => setCurrency(e.target.value)}
-        className="appearance-none bg-transparent border border-gray-300 rounded-md px-3 py-2 pr-8 text-sm font-medium text-gray-700 hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition cursor-pointer"
+        className="appearance-none bg-white border-2 border-gray-200 rounded-lg px-4 py-2 pr-10 text-sm font-medium text-gray-700 hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition cursor-pointer"
         aria-label="Select currency"
       >
         {currencies.map((curr) => (
@@ -27,7 +27,7 @@ export default function CurrencySwitcher() {
           </option>
         ))}
       </select>
-      <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
         <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>

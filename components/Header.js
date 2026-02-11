@@ -1,14 +1,23 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CurrencySwitcher from './CurrencySwitcher'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
+    <header className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${isScrolled ? 'shadow-md' : 'border-b border-gray-100'}`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -24,6 +33,9 @@ export default function Header() {
             </Link>
             <Link href="/tours" className="text-gray-700 hover:text-primary-600 transition font-medium">
               Tours
+            </Link>
+            <Link href="/tours" className="text-gray-700 hover:text-primary-600 transition font-medium">
+              Destinations
             </Link>
             <CurrencySwitcher />
           </nav>
@@ -60,6 +72,13 @@ export default function Header() {
               onClick={() => setIsMenuOpen(false)}
             >
               Tours
+            </Link>
+            <Link 
+              href="/tours" 
+              className="block py-2 text-gray-700 hover:text-primary-600 transition font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Destinations
             </Link>
             <div className="py-2">
               <CurrencySwitcher />

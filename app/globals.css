@@ -5,8 +5,10 @@
 @tailwind utilities;
 
 :root {
-  --primary: #0891b2;
-  --primary-dark: #0e7490;
+  --primary: #DC2626;
+  --primary-dark: #B91C1C;
+  --secondary: #1E40AF;
+  --secondary-dark: #1E3A8A;
 }
 
 html {
@@ -31,4 +33,17 @@ body {
 
 .animate-on-scroll {
   animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Image zoom on hover effect */
+.hover-zoom {
+  overflow: hidden;
+}
+
+.hover-zoom img {
+  transition: transform 0.3s ease-in-out;
+}
+
+.hover-zoom:hover img {
+  transform: scale(1.05);
 }
