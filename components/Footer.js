@@ -17,7 +17,7 @@ export default function Footer() {
               className="h-8 w-auto brightness-0 invert"
             />
             <p className="text-sm text-gray-400 text-center md:text-left">
-              Your trusted travel partner
+              Nepal-Thailand travel specialists
             </p>
           </div>
 
