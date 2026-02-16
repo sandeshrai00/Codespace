@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import CurrencySwitcher from './CurrencySwitcher'
 
@@ -21,9 +22,15 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 text-xl font-bold text-gray-900 hover:text-primary-600 transition-all duration-300 group">
-            <span className="text-2xl group-hover:scale-110 transition-transform">✈️</span>
-            <span className="bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">GoHoliday</span>
+          <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-all duration-300 group">
+            <Image 
+              src="/img/logo.svg" 
+              alt="GoHoliday Logo" 
+              width={140}
+              height={40}
+              className="h-10 w-auto"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}
