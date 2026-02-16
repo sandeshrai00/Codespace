@@ -10,7 +10,7 @@ export default function Footer() {
           {/* Logo */}
           <div className="flex flex-col items-center md:items-start gap-3">
             <Image 
-              src="/img/logo.svg" 
+              src="/img/logo.jpg" 
               alt="GoHoliday Logo" 
               width={120}
               height={35}
