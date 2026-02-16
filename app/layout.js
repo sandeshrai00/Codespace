@@ -3,8 +3,8 @@ import WhatsAppFloat from '@/components/WhatsAppFloat'
 import { CurrencyProvider } from '@/components/CurrencyProvider'
 
 export const metadata = {
-  title: 'GoHoliday - Your Dream Vacation Awaits',
-  description: 'Discover amazing travel packages and tours with GoHoliday',
+  title: 'GoHoliday - Nepal-Thailand Travel Specialists',
+  description: 'Expert-curated travel experiences between Nepal and Thailand. Discover the perfect blend of Himalayan mountains and tropical beaches with our specialized tours.',
 }
 
 export const viewport = {
