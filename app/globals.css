@@ -51,6 +51,12 @@ body {
   animation: fadeIn 0.6s ease-in-out;
 }
 
+/* Float animation delay for decorative elements */
+.animate-float-delayed {
+  animation: float 3s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
 /* Image zoom on hover effect */
 .hover-zoom {
   overflow: hidden;
