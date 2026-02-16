@@ -5,10 +5,11 @@
 @tailwind utilities;
 
 :root {
-  --primary: #DC2626;
-  --primary-dark: #B91C1C;
-  --secondary: #1E40AF;
-  --secondary-dark: #1E3A8A;
+  --primary: #4F46E5;
+  --primary-dark: #4338CA;
+  --secondary: #334155;
+  --secondary-dark: #0F172A;
+  --surface: #FFFFFF;
 }
 
 html {
@@ -46,4 +47,19 @@ body {
 
 .hover-zoom:hover img {
   transform: scale(1.05);
+}
+
+/* Glassmorphism utility class */
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.glass-morphism-dark {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
