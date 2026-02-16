@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('')
@@ -37,11 +38,20 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary-900 via-primary-800 to-secondary-900 flex items-center justify-center px-4">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-lg shadow-2xl p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">GoHoliday Admin</h1>
+            <div className="flex justify-center mb-4">
+              <Image 
+                src="/img/logo.png" 
+                alt="GoHoliday Logo" 
+                width={140}
+                height={40}
+                className="h-10 w-auto"
+              />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Portal</h1>
             <p className="text-gray-600">Sign in to manage your tours</p>
           </div>
 
@@ -62,7 +72,7 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-all"
                 placeholder="admin@goholiday.com"
               />
             </div>
@@ -77,7 +87,7 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-all"
                 placeholder="Enter your password"
               />
             </div>
@@ -85,7 +95,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition font-bold disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-gradient-to-r from-primary-700 to-primary-800 text-white rounded-xl hover:from-primary-800 hover:to-primary-900 transition-all font-bold disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>

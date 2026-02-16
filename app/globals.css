@@ -5,10 +5,10 @@
 @tailwind utilities;
 
 :root {
-  --primary: #4F46E5;
-  --primary-dark: #4338CA;
-  --secondary: #334155;
-  --secondary-dark: #0F172A;
+  --primary: #1e40af;
+  --primary-dark: #1e3a8a;
+  --secondary: #475569;
+  --secondary-dark: #0f172a;
   --surface: #FFFFFF;
 }
 

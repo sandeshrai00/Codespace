@@ -51,7 +51,7 @@ export default async function HomePage() {
       )}
 
       {/* Hero Section with Search Bar Overlay - Modern Style */}
-      <section className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white py-24 md:py-32 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-primary-700 via-primary-800 to-primary-900 text-white py-24 md:py-32 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -63,28 +63,28 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in">
-              Explore the World with <span className="text-primary-200">GoHoliday</span>
+              Premium Nepal to Thailand <span className="text-accent-400">&</span> Thailand to Nepal Tours
             </h1>
-            <p className="text-xl md:text-2xl mb-10 text-primary-100 max-w-3xl mx-auto">
-              Discover unforgettable adventures, amazing destinations, and create memories that last a lifetime
+            <p className="text-xl md:text-2xl mb-10 text-blue-100 max-w-3xl mx-auto">
+              Experience the perfect blend of Himalayan mountains and tropical beaches. Discover authentic culture, breathtaking landscapes, and unforgettable adventures between two incredible destinations.
             </p>
             
             {/* Search Bar Card - Glass Morphism */}
-            <div className="glass-morphism rounded-3xl shadow-glass-lg p-6 md:p-8 max-w-4xl mx-auto border border-white/20">
+            <div className="backdrop-blur-xl bg-white/10 rounded-3xl shadow-2xl p-6 md:p-8 max-w-4xl mx-auto border border-white/20">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
                   <input
                     type="text"
-                    placeholder="Where do you want to go? (e.g., Bali, Nepal, Europe...)"
+                    placeholder="Nepal, Thailand, or explore both destinations..."
                     aria-label="Search destination"
-                    className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-primary-600 text-lg transition-all"
+                    className="w-full px-6 py-4 border-2 border-transparent rounded-2xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 text-lg transition-all shadow-lg"
                   />
                 </div>
                 <Link 
                   href="/tours" 
-                  className="px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-2xl font-bold text-lg hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg hover:shadow-xl whitespace-nowrap hover:scale-105 transform"
+                  className="px-8 py-4 bg-gradient-to-r from-accent-500 to-accent-600 text-white rounded-2xl font-bold text-lg hover:from-accent-600 hover:to-accent-700 transition-all shadow-lg hover:shadow-xl whitespace-nowrap hover:scale-105 transform"
                 >
-                  Search Tours
+                  Explore Tours
                 </Link>
               </div>
             </div>
