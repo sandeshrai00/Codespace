@@ -17,7 +17,7 @@ export default function TourCard({ tour, featured = false }) {
 
   return (
     <Link href={`/tours/${tour.id}`} className="block group">
-      <div className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col overflow-hidden border border-gray-100">
+      <div className="bg-white rounded-2xl shadow-card hover:shadow-glass-lg transition-all duration-500 h-full flex flex-col overflow-hidden border border-gray-100 group-hover:scale-[1.02] group-hover:border-primary-200">
         {/* Banner Image with hover zoom */}
         <div className="relative h-56 w-full overflow-hidden hover-zoom">
           {tour.banner_image ? (
@@ -25,25 +25,25 @@ export default function TourCard({ tour, featured = false }) {
               src={tour.banner_image}
               alt={tour.title}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              className="object-cover group-hover:scale-105 transition-transform duration-700"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-600 flex items-center justify-center">
+            <div className="w-full h-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
               <span className="text-white text-4xl">🏖️</span>
             </div>
           )}
           
           {/* Badge */}
           {featured && (
-            <div className="absolute top-3 right-3 bg-primary-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-              Best Seller
+            <div className="absolute top-3 right-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-glass animate-pulse">
+              ⭐ Best Seller
             </div>
           )}
         </div>
 
         {/* Card Content */}
-        <div className="p-5 flex-1 flex flex-col">
-          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors line-clamp-2">
+        <div className="p-6 flex-1 flex flex-col">
+          <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors line-clamp-2">
             {tour.title}
           </h3>
           
@@ -70,7 +70,7 @@ export default function TourCard({ tour, featured = false }) {
             </div>
           </div>
           
-          <p className="text-gray-600 text-sm mb-4 flex-1 line-clamp-2">
+          <p className="text-gray-600 text-sm mb-4 flex-1 line-clamp-2 leading-relaxed">
             {truncateDescription(tour.description)}
           </p>
 
@@ -78,13 +78,13 @@ export default function TourCard({ tour, featured = false }) {
           <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
             <div>
               <div className="text-xs text-gray-500 mb-1">From</div>
-              <div className="text-2xl font-bold text-primary-600">
+              <div className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
                 {convertPrice(tour.price)}
               </div>
             </div>
             <div className="flex items-center gap-1 text-primary-600 font-semibold text-sm group-hover:gap-2 transition-all">
               <span>View Details</span>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </div>

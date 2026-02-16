@@ -17,25 +17,28 @@ export default function Header() {
   }, [])
 
   return (
-    <header className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${isScrolled ? 'shadow-md' : 'border-b border-gray-100'}`}>
+    <header className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'glass-morphism shadow-glass' : 'bg-white/90 backdrop-blur-md border-b border-gray-100'}`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 text-xl font-bold text-gray-900 hover:text-primary-600 transition">
-            <span>✈️</span>
-            <span>GoHoliday</span>
+          <Link href="/" className="flex items-center gap-2 text-xl font-bold text-gray-900 hover:text-primary-600 transition-all duration-300 group">
+            <span className="text-2xl group-hover:scale-110 transition-transform">✈️</span>
+            <span className="bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">GoHoliday</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-primary-600 transition font-medium">
+            <Link href="/" className="relative text-gray-700 hover:text-primary-600 transition-colors font-medium group">
               Home
+              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link href="/tours" className="text-gray-700 hover:text-primary-600 transition font-medium">
+            <Link href="/tours" className="relative text-gray-700 hover:text-primary-600 transition-colors font-medium group">
               Tours
+              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link href="/tours" className="text-gray-700 hover:text-primary-600 transition font-medium">
+            <Link href="/tours" className="relative text-gray-700 hover:text-primary-600 transition-colors font-medium group">
               Destinations
+              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <CurrencySwitcher />
           </nav>
