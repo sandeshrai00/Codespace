@@ -16,6 +16,21 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 body {
   @apply text-gray-900 bg-gray-50;
 }
@@ -34,6 +49,12 @@ body {
 
 .animate-on-scroll {
   animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Float animation delay for decorative elements */
+.animate-float-delayed {
+  animation: float 3s ease-in-out infinite;
+  animation-delay: 1s;
 }
 
 /* Image zoom on hover effect */
