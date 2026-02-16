@@ -2,6 +2,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import TourCard from '@/components/TourCard'
 import Link from 'next/link'
+import Image from 'next/image'
 import { getTurso } from '@/lib/turso'
 
 async function getActiveAnnouncement() {
@@ -113,10 +114,13 @@ export default async function HomePage() {
               className="group relative h-96 md:h-[500px] rounded-3xl overflow-hidden shadow-card hover:shadow-glass-lg transition-all duration-500 hover:scale-[1.02]"
             >
               <div className="absolute inset-0">
-                <img 
+                <Image 
                   src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=2070" 
                   alt="Nepal destination featuring snow-capped Himalayan mountain peaks and traditional temples"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  priority
                 />
               </div>
               {/* Gradient Overlay for Readability */}
@@ -147,10 +151,12 @@ export default async function HomePage() {
               className="group relative h-96 md:h-[500px] rounded-3xl overflow-hidden shadow-card hover:shadow-glass-lg transition-all duration-500 hover:scale-[1.02]"
             >
               <div className="absolute inset-0">
-                <img 
+                <Image 
                   src="https://images.unsplash.com/photo-1528181304800-2f14081989ec?q=80&w=2070" 
                   alt="Thailand destination with golden temples, tropical beaches, and vibrant culture"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-primary-900/90 via-primary-900/50 to-transparent group-hover:from-primary-800/95 transition-all duration-300"></div>
