@@ -4,10 +4,14 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import CurrencySwitcher from './CurrencySwitcher'
+import { supabase } from '@/lib/supabase'
+import { getUserDisplayName } from '@/lib/userUtils'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [user, setUser] = useState(null)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +20,29 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    // Check current session
+    if (supabase) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setUser(session?.user ?? null)
+      })
+
+      // Listen for auth changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null)
+      })
+
+      return () => subscription.unsubscribe()
+    }
+  }, [])
+
+  const handleSignOut = async () => {
+    if (supabase) {
+      await supabase.auth.signOut()
+      setIsProfileOpen(false)
+    }
+  }
 
   return (
     <header className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'glass-morphism shadow-glass' : 'bg-white/90 backdrop-blur-md border-b border-gray-100'}`}>
@@ -48,6 +75,42 @@ export default function Header() {
               <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <CurrencySwitcher />
+            
+            {/* Auth Section */}
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-50 text-primary-700 hover:bg-primary-100 transition"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span className="font-medium">{getUserDisplayName(user)}</span>
+                </button>
+                
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-sm text-gray-600 truncate">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link 
+                href="/login" 
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition"
+              >
+                Login
+              </Link>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -93,6 +156,29 @@ export default function Header() {
             <div className="py-2">
               <CurrencySwitcher />
             </div>
+            
+            {/* Mobile Auth Section */}
+            {user ? (
+              <div className="pt-2 border-t border-gray-200 mt-2">
+                <div className="px-2 py-2 text-sm text-gray-600">
+                  {getUserDisplayName(user)}
+                </div>
+                <button
+                  onClick={handleSignOut}
+                  className="w-full text-left px-2 py-2 text-red-600 hover:bg-red-50 rounded transition"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <Link 
+                href="/login" 
+                className="block mt-2 px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition text-center"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Login
+              </Link>
+            )}
           </div>
         )}
       </div>
