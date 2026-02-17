@@ -13,6 +13,7 @@ export default function TourReviews({ tourId }) {
   const [comment, setComment] = useState('')
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
+  const [existingReview, setExistingReview] = useState(null)
 
   const fetchReviews = useCallback(async () => {
     if (!supabase) {
@@ -87,16 +88,58 @@ export default function TourReviews({ tourId }) {
     }
   }, [tourId])
 
+  const fetchExistingReview = useCallback(async (userId) => {
+    if (!supabase || !userId) return
+
+    try {
+      const numericTourId = Number(tourId)
+      if (isNaN(numericTourId)) return
+
+      const { data, error } = await supabase
+        .from('reviews')
+        .select('id, tour_id, user_id, rating, comment, created_at, updated_at')
+        .eq('tour_id', numericTourId)
+        .eq('user_id', userId)
+        .single()
+
+      if (error && error.code !== 'PGRST116') {
+        // PGRST116 is "no rows returned" which is expected if user hasn't reviewed yet
+        console.error('Error fetching existing review:', error)
+        return
+      }
+
+      if (data) {
+        setExistingReview(data)
+        setRating(data.rating)
+        setComment(data.comment)
+      }
+    } catch (error) {
+      console.error('Error in fetchExistingReview:', error)
+    }
+  }, [tourId])
+
   useEffect(() => {
     // Check current user
     if (supabase) {
       supabase.auth.getSession().then(({ data: { session } }) => {
-        setUser(session?.user ?? null)
+        const currentUser = session?.user ?? null
+        setUser(currentUser)
+        if (currentUser) {
+          fetchExistingReview(currentUser.id)
+        }
       })
 
       // Listen for auth changes
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-        setUser(session?.user ?? null)
+        const currentUser = session?.user ?? null
+        setUser(currentUser)
+        if (currentUser) {
+          fetchExistingReview(currentUser.id)
+        } else {
+          setExistingReview(null)
+          setRating(5)
+          setComment('')
+        }
       })
 
       // Fetch reviews
@@ -106,7 +149,7 @@ export default function TourReviews({ tourId }) {
     } else {
       setLoading(false)
     }
-  }, [fetchReviews])
+  }, [fetchReviews, fetchExistingReview])
 
   const handleSubmitReview = async (e) => {
     e.preventDefault()
@@ -128,20 +171,22 @@ export default function TourReviews({ tourId }) {
 
       const { error } = await supabase
         .from('reviews')
-        .insert([
+        .upsert([
           {
             tour_id: Number(tourId),
             user_id: user.id,
             rating,
             comment,
           }
-        ])
+        ], { onConflict: 'tour_id, user_id' })
 
       if (error) throw error
 
-      setMessage('Review submitted successfully!')
-      setRating(5)
-      setComment('')
+      const isUpdate = existingReview !== null
+      setMessage(isUpdate ? 'Review updated successfully!' : 'Review submitted successfully!')
+      
+      // Refetch the user's review to ensure state is accurate
+      await fetchExistingReview(user.id)
       
       // Refresh reviews
       fetchReviews()
@@ -214,7 +259,9 @@ export default function TourReviews({ tourId }) {
           {/* Submit Review Form */}
           {user ? (
             <form onSubmit={handleSubmitReview} className="mb-8 p-6 bg-gray-50 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Write a Review</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                {existingReview ? 'Edit Your Review' : 'Write a Review'}
+              </h3>
               
               {error && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
@@ -255,7 +302,7 @@ export default function TourReviews({ tourId }) {
                 disabled={submitting}
                 className="px-6 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {submitting ? 'Submitting...' : 'Submit Review'}
+                {submitting ? 'Submitting...' : (existingReview ? 'Update Review' : 'Submit Review')}
               </button>
             </form>
           ) : (
