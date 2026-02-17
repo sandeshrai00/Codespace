@@ -24,6 +24,12 @@ export default function LoginPage() {
     setError('')
     setMessage('')
 
+    if (!supabase) {
+      setError('Supabase is not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.')
+      setLoading(false)
+      return
+    }
+
     try {
       if (isLogin) {
         // Sign in

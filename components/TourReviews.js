@@ -15,22 +15,31 @@ export default function TourReviews({ tourId }) {
 
   useEffect(() => {
     // Check current user
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-    })
+    if (supabase) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setUser(session?.user ?? null)
+      })
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
+      // Listen for auth changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null)
+      })
 
-    // Fetch reviews
-    fetchReviews()
+      // Fetch reviews
+      fetchReviews()
 
-    return () => subscription.unsubscribe()
+      return () => subscription.unsubscribe()
+    } else {
+      setLoading(false)
+    }
   }, [tourId])
 
   const fetchReviews = async () => {
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
+
     try {
       setLoading(true)
       const { data, error } = await supabase
@@ -59,6 +68,11 @@ export default function TourReviews({ tourId }) {
     
     if (!user) {
       setError('Please login to submit a review')
+      return
+    }
+
+    if (!supabase) {
+      setError('Supabase is not configured')
       return
     }
 
@@ -127,119 +141,128 @@ export default function TourReviews({ tourId }) {
     <div className="bg-white rounded-lg p-6 shadow-sm">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Customer Reviews</h2>
 
-      {/* Rating Summary */}
-      {reviews.length > 0 && (
-        <div className="mb-8 p-4 bg-gray-50 rounded-lg">
-          <div className="flex items-center gap-4">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gray-900">{averageRating}</div>
-              <div className="text-sm text-gray-600">out of 5</div>
-            </div>
-            <div>
-              {renderStars(Math.round(averageRating))}
-              <div className="text-sm text-gray-600 mt-1">
-                Based on {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Submit Review Form */}
-      {user ? (
-        <form onSubmit={handleSubmitReview} className="mb-8 p-6 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Write a Review</h3>
-          
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-              {error}
-            </div>
-          )}
-          
-          {message && (
-            <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">
-              {message}
-            </div>
-          )}
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Rating
-            </label>
-            {renderStars(rating, true, setRating)}
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
-              Your Review
-            </label>
-            <textarea
-              id="comment"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              required
-              rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Share your experience with this tour..."
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={submitting}
-            className="px-6 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {submitting ? 'Submitting...' : 'Submit Review'}
-          </button>
-        </form>
-      ) : (
-        <div className="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg text-center">
-          <p className="text-gray-700 mb-3">Please login to write a review</p>
-          <a
-            href="/login"
-            className="inline-block px-6 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition"
-          >
-            Login
-          </a>
-        </div>
-      )}
-
-      {/* Reviews List */}
-      {loading ? (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-primary-600"></div>
-          <p className="mt-2 text-gray-600">Loading reviews...</p>
-        </div>
-      ) : reviews.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          <svg className="w-16 h-16 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-          </svg>
-          <p>No reviews yet. Be the first to review this tour!</p>
+      {!supabase ? (
+        <div className="p-6 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+          <p className="text-gray-700 mb-2">Review system is not configured yet.</p>
+          <p className="text-sm text-gray-600">Please configure Supabase environment variables to enable reviews.</p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {reviews.map((review) => (
-            <div key={review.id} className="p-4 border border-gray-200 rounded-lg">
-              <div className="flex items-start justify-between mb-2">
+        <>
+          {/* Rating Summary */}
+          {reviews.length > 0 && (
+            <div className="mb-8 p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-4">
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-gray-900">{averageRating}</div>
+                  <div className="text-sm text-gray-600">out of 5</div>
+                </div>
                 <div>
-                  <div className="font-semibold text-gray-900">
-                    {review.profiles?.full_name || review.profiles?.email?.split('@')[0] || 'Anonymous'}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    {new Date(review.created_at).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
+                  {renderStars(Math.round(averageRating))}
+                  <div className="text-sm text-gray-600 mt-1">
+                    Based on {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
                   </div>
                 </div>
-                {renderStars(review.rating)}
               </div>
-              <p className="text-gray-700 leading-relaxed">{review.comment}</p>
             </div>
-          ))}
-        </div>
+          )}
+
+          {/* Submit Review Form */}
+          {user ? (
+            <form onSubmit={handleSubmitReview} className="mb-8 p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Write a Review</h3>
+              
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
+              
+              {message && (
+                <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">
+                  {message}
+                </div>
+              )}
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Rating
+                </label>
+                {renderStars(rating, true, setRating)}
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
+                  Your Review
+                </label>
+                <textarea
+                  id="comment"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  required
+                  rows={4}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="Share your experience with this tour..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="px-6 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {submitting ? 'Submitting...' : 'Submit Review'}
+              </button>
+            </form>
+          ) : (
+            <div className="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg text-center">
+              <p className="text-gray-700 mb-3">Please login to write a review</p>
+              <a
+                href="/login"
+                className="inline-block px-6 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition"
+              >
+                Login
+              </a>
+            </div>
+          )}
+
+          {/* Reviews List */}
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-primary-600"></div>
+              <p className="mt-2 text-gray-600">Loading reviews...</p>
+            </div>
+          ) : reviews.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <svg className="w-16 h-16 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+              <p>No reviews yet. Be the first to review this tour!</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {reviews.map((review) => (
+                <div key={review.id} className="p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <div className="font-semibold text-gray-900">
+                        {review.profiles?.full_name || review.profiles?.email?.split('@')[0] || 'Anonymous'}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {new Date(review.created_at).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </div>
+                    </div>
+                    {renderStars(review.rating)}
+                  </div>
+                  <p className="text-gray-700 leading-relaxed">{review.comment}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   )
