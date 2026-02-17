@@ -103,8 +103,8 @@ export default function NewTourPage() {
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">Add New Tour</h1>
+          <div className="bg-white rounded-lg shadow-md p-4 md:p-8">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Add New Tour</h1>
 
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
@@ -243,18 +243,18 @@ export default function NewTourPage() {
                 />
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-3 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition font-bold disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  className="w-full sm:flex-1 py-3 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition font-bold disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Creating Tour...' : 'Create Tour'}
                 </button>
                 <button
                   type="button"
                   onClick={() => router.push('/admin/dashboard')}
-                  className="px-6 py-3 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition font-medium"
+                  className="w-full sm:w-auto px-6 py-3 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition font-medium"
                 >
                   Cancel
                 </button>

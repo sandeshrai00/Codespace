@@ -34,17 +34,17 @@ export default async function AnnouncementsPage() {
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Manage Announcements</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">Manage Announcements</h1>
 
           {/* Add New Announcement Form */}
-          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Add New Announcement</h2>
+          <div className="bg-white rounded-lg shadow-md p-4 md:p-6 mb-8">
+            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4">Add New Announcement</h2>
             <AnnouncementForm />
           </div>
 
           {/* Announcements List */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">All Announcements</h2>
+          <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
+            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4">All Announcements</h2>
             <AnnouncementList announcements={announcements} />
           </div>
         </div>

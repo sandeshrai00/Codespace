@@ -94,7 +94,7 @@ export default function AnnouncementForm() {
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="w-full sm:w-auto px-6 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {loading ? 'Creating...' : 'Create Announcement'}
         </button>
