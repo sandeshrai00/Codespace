@@ -66,7 +66,7 @@ export default async function HomePage() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in">
               Your Nepal-Thailand Travel <span className="text-accent-400">Specialists</span>
             </h1>
-            <p className="text-lg sm:text-xl md:text-2xl mb-10 text-blue-100 max-w-3xl mx-auto">
+            <p className="text-xl sm:text-xl md:text-2xl mb-10 text-blue-100 max-w-3xl mx-auto">
               Experience the perfect blend of Himalayan mountains and tropical beaches. Discover authentic culture, breathtaking landscapes, and unforgettable adventures between two incredible destinations.
             </p>
             
