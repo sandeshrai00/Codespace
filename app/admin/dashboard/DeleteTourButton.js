@@ -38,7 +38,7 @@ export default function DeleteTourButton({ tourId, tourTitle }) {
     <button
       onClick={handleDelete}
       disabled={isDeleting}
-      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
+      className="flex-1 md:flex-none px-3 py-1 md:py-1 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
     >
       {isDeleting ? 'Deleting...' : 'Delete'}
     </button>

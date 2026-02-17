@@ -64,31 +64,79 @@ export default function AnnouncementList({ announcements }) {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full">
-        <thead className="bg-gray-50 border-b-2 border-gray-200">
-          <tr>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-              Message
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-              Status
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-              Created
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {announcements.map((announcement) => (
-            <tr key={announcement.id} className="hover:bg-gray-50">
-              <td className="px-4 py-4">
-                <div className="text-gray-900">{announcement.message}</div>
-              </td>
-              <td className="px-4 py-4">
+    <>
+      {/* Desktop Table View */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gray-50 border-b-2 border-gray-200">
+            <tr>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                Message
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                Created
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {announcements.map((announcement) => (
+              <tr key={announcement.id} className="hover:bg-gray-50">
+                <td className="px-4 py-4">
+                  <div className="text-gray-900">{announcement.message}</div>
+                </td>
+                <td className="px-4 py-4">
+                  {announcement.is_active ? (
+                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                      Active
+                    </span>
+                  ) : (
+                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                      Inactive
+                    </span>
+                  )}
+                </td>
+                <td className="px-4 py-4">
+                  <div className="text-sm text-gray-600">
+                    {new Date(announcement.created_at).toLocaleDateString()}
+                  </div>
+                </td>
+                <td className="px-4 py-4">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleToggleActive(announcement.id, announcement.is_active)}
+                      disabled={actionLoading === announcement.id}
+                      className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      {actionLoading === announcement.id ? 'Loading...' : announcement.is_active ? 'Deactivate' : 'Activate'}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(announcement.id, announcement.message)}
+                      disabled={actionLoading === announcement.id}
+                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden space-y-4">
+        {announcements.map((announcement) => (
+          <div key={announcement.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <div className="mb-3">
+              <p className="text-gray-900 mb-2">{announcement.message}</p>
+              <div className="flex items-center justify-between">
                 {announcement.is_active ? (
                   <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
                     Active
@@ -98,34 +146,30 @@ export default function AnnouncementList({ announcements }) {
                     Inactive
                   </span>
                 )}
-              </td>
-              <td className="px-4 py-4">
                 <div className="text-sm text-gray-600">
                   {new Date(announcement.created_at).toLocaleDateString()}
                 </div>
-              </td>
-              <td className="px-4 py-4">
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleToggleActive(announcement.id, announcement.is_active)}
-                    disabled={actionLoading === announcement.id}
-                    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  >
-                    {actionLoading === announcement.id ? 'Loading...' : announcement.is_active ? 'Deactivate' : 'Activate'}
-                  </button>
-                  <button
-                    onClick={() => handleDelete(announcement.id, announcement.message)}
-                    disabled={actionLoading === announcement.id}
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleToggleActive(announcement.id, announcement.is_active)}
+                disabled={actionLoading === announcement.id}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {actionLoading === announcement.id ? 'Loading...' : announcement.is_active ? 'Deactivate' : 'Activate'}
+              </button>
+              <button
+                onClick={() => handleDelete(announcement.id, announcement.message)}
+                disabled={actionLoading === announcement.id}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   )
 }
