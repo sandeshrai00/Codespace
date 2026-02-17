@@ -21,7 +21,7 @@ export default function NotFound() {
           </h1>
           <p className="text-lg text-gray-600 mb-8">
             Oops! It looks like this destination doesn&apos;t exist on our map. 
-            Let&apos;s get you back to exploring amazing Nepal-Thailand tours.
+            Let&apos;s get you back to exploring amazing tours.
           </p>
           
           {/* Action Buttons */}
