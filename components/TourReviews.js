@@ -22,17 +22,24 @@ export default function TourReviews({ tourId }) {
 
     try {
       setLoading(true)
+      // Explicitly cast tourId to number to avoid string/number mismatch
+      const numericTourId = Number(tourId)
+      
       const { data, error } = await supabase
         .from('reviews')
         .select(`
           *,
-          profiles (
+          profiles!left (
             full_name,
             email
           )
         `)
-        .eq('tour_id', tourId)
+        .eq('tour_id', numericTourId)
         .order('created_at', { ascending: false })
+
+      // Add debugging logs
+      console.log('Fetched reviews:', data)
+      console.log('Fetch reviews error:', error)
 
       if (error) throw error
       setReviews(data || [])
