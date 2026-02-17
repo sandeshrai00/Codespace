@@ -97,7 +97,7 @@ export default function TourReviews({ tourId }) {
 
       const { data, error } = await supabase
         .from('reviews')
-        .select('*')
+        .select('id, tour_id, user_id, rating, comment, created_at, updated_at')
         .eq('tour_id', numericTourId)
         .eq('user_id', userId)
         .single()
@@ -185,8 +185,8 @@ export default function TourReviews({ tourId }) {
       const isUpdate = existingReview !== null
       setMessage(isUpdate ? 'Review updated successfully!' : 'Review submitted successfully!')
       
-      // Update existingReview state after successful upsert
-      setExistingReview({ tour_id: Number(tourId), user_id: user.id, rating, comment })
+      // Refetch the user's review to ensure state is accurate
+      await fetchExistingReview(user.id)
       
       // Refresh reviews
       fetchReviews()
