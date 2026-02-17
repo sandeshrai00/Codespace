@@ -22,17 +22,31 @@ export default function TourReviews({ tourId }) {
 
     try {
       setLoading(true)
+      // Explicitly cast tourId to number to avoid string/number mismatch
+      const numericTourId = Number(tourId)
+      
+      // Validate that tourId is a valid number
+      if (isNaN(numericTourId)) {
+        console.error('Invalid tourId:', tourId)
+        setLoading(false)
+        return
+      }
+      
       const { data, error } = await supabase
         .from('reviews')
         .select(`
           *,
-          profiles (
+          profiles!left (
             full_name,
             email
           )
         `)
-        .eq('tour_id', tourId)
+        .eq('tour_id', numericTourId)
         .order('created_at', { ascending: false })
+
+      // Add debugging logs (as requested in requirements for debugging)
+      console.log('Fetched reviews:', data)
+      console.log('Fetch reviews error:', error)
 
       if (error) throw error
       setReviews(data || [])
@@ -86,7 +100,7 @@ export default function TourReviews({ tourId }) {
         .from('reviews')
         .insert([
           {
-            tour_id: tourId,
+            tour_id: Number(tourId),
             user_id: user.id,
             rating,
             comment,
