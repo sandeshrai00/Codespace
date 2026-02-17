@@ -26,8 +26,10 @@ export default function ForgotPasswordPage() {
     }
 
     try {
+      // Use environment variable for base URL if available, otherwise fallback to window.location.origin
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/login/update-password`,
+        redirectTo: `${baseUrl}/login/update-password`,
       })
 
       if (error) throw error

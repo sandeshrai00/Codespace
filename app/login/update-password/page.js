@@ -67,8 +67,8 @@ export default function UpdatePasswordPage() {
       setNewPassword('')
       setConfirmPassword('')
       
-      // Redirect to login after 2 seconds
-      setTimeout(() => router.push('/login'), 2000)
+      // Redirect to login immediately
+      router.push('/login')
     } catch (error) {
       setError(error.message)
     } finally {
