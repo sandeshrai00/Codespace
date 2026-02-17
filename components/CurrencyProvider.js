@@ -59,11 +59,16 @@ export function CurrencyProvider({ children }) {
   }, [])
   
   const convertPrice = (price, fromCurrency = 'USD') => {
+    // Validate currencies exist in exchangeRates
+    const validFromCurrency = exchangeRates[fromCurrency] ? fromCurrency : 'USD'
+    const validToCurrency = exchangeRates[currency] ? currency : 'USD'
+    
     // Convert from source currency to USD first
-    const priceInUSD = price / exchangeRates[fromCurrency]
+    const priceInUSD = price / exchangeRates[validFromCurrency]
     // Then convert from USD to target currency
-    const converted = priceInUSD * exchangeRates[currency]
-    return `${CURRENCY_SYMBOLS[currency]}${converted.toLocaleString(undefined, { 
+    const converted = priceInUSD * exchangeRates[validToCurrency]
+    
+    return `${CURRENCY_SYMBOLS[validToCurrency] || '$'}${converted.toLocaleString(undefined, { 
       minimumFractionDigits: 0, 
       maximumFractionDigits: 0 
     })}`
