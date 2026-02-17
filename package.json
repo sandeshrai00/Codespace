@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "init-db": "node lib/init-db.js",
-    "migrate-currency": "node lib/migrate-currency.js"
+    "migrate-currency": "node lib/migrate-currency.js",
+    "migrate-multilingual": "node lib/migrate-multilingual.js"
   },
   "repository": {
     "type": "git",
