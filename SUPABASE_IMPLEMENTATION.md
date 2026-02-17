@@ -182,6 +182,37 @@ npm run dev
 - Check RLS policies
 - Inspect browser console for errors
 
+### PGRST200 Relationship Error
+If you see the error "Could not find a relationship between 'reviews' and 'profiles'":
+
+**Cause**: The reviews table was created with `user_id` referencing `auth.users(id)` instead of `public.profiles(id)`.
+
+**Solution**:
+1. Open your Supabase SQL Editor
+2. Run the following SQL to fix the foreign key relationship:
+   ```sql
+   -- Drop the existing reviews table
+   DROP TABLE IF EXISTS public.reviews CASCADE;
+   
+   -- Recreate with correct foreign key
+   CREATE TABLE IF NOT EXISTS public.reviews (
+     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+     tour_id INTEGER NOT NULL,
+     user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+     rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+     comment TEXT NOT NULL,
+     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+     UNIQUE(tour_id, user_id)
+   );
+   
+   -- Re-enable RLS and recreate policies (see SUPABASE_SCHEMA.sql)
+   ```
+3. The application will automatically detect the error and provide fallback behavior
+4. Check browser console for detailed fix instructions
+
+**Note**: The latest version of `SUPABASE_SCHEMA.sql` includes the correct foreign key reference.
+
 ## Support Resources
 
 - Supabase Docs: https://supabase.com/docs
