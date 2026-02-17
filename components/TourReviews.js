@@ -51,37 +51,31 @@ export default function TourReviews({ tourId }) {
       // Handle PGRST200 relationship error
       if (error && error.code === 'PGRST200') {
         console.warn('⚠️ PGRST200 Relationship Error: Could not find a relationship between reviews and profiles')
-        console.warn('📋 To fix this error, run the following SQL in your Supabase SQL Editor:')
-        console.warn(`
--- Drop the existing reviews table if needed
-DROP TABLE IF EXISTS public.reviews CASCADE;
-
--- Recreate the reviews table with the correct foreign key
-CREATE TABLE IF NOT EXISTS public.reviews (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  tour_id INTEGER NOT NULL,
-  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
-  rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
-  comment TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-  UNIQUE(tour_id, user_id)
-);
-
--- Enable RLS and recreate policies (see SUPABASE_SCHEMA.sql for full details)
-        `)
+        console.warn('📋 To fix this error, please run the updated SQL schema from SUPABASE_SCHEMA.sql')
+        console.warn('The key change needed: user_id must reference public.profiles(id), not auth.users(id)')
+        console.warn('See SUPABASE_IMPLEMENTATION.md for detailed troubleshooting steps.')
         
         // Fallback: Fetch reviews without profiles join
-        console.log('🔄 Attempting to fetch reviews without profile information...')
-        const { data: fallbackData, error: fallbackError } = await supabase
-          .from('reviews')
-          .select('*')
-          .eq('tour_id', numericTourId)
-          .order('created_at', { ascending: false })
-        
-        if (fallbackError) throw fallbackError
-        setReviews(fallbackData || [])
-        return
+        console.log('🔄 Attempting to fetch reviews without profile information as a fallback...')
+        try {
+          const { data: fallbackData, error: fallbackError } = await supabase
+            .from('reviews')
+            .select('*')
+            .eq('tour_id', numericTourId)
+            .order('created_at', { ascending: false })
+          
+          if (fallbackError) {
+            console.error('Fallback query also failed:', fallbackError)
+            throw new Error(`Failed to fetch reviews even without profiles join: ${fallbackError.message}`)
+          }
+          
+          console.log('✅ Fallback successful: Reviews fetched without profile information')
+          setReviews(fallbackData || [])
+          return
+        } catch (fallbackErr) {
+          console.error('Error during fallback fetch:', fallbackErr)
+          throw fallbackErr
+        }
       }
 
       if (error) throw error
