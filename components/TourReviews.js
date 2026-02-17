@@ -17,6 +17,10 @@ export default function TourReviews({ tourId }) {
   const [isEditing, setIsEditing] = useState(false)
   const formRef = useRef(null)
 
+  // Constants for scroll behavior
+  const SCROLL_OFFSET = 100 // Offset from top when scrolling to form
+  const SCROLL_DELAY = 100 // Delay to ensure form is rendered before scrolling
+
   const fetchReviews = useCallback(async () => {
     if (!supabase) {
       setLoading(false)
@@ -368,11 +372,11 @@ export default function TourReviews({ tourId }) {
                         setTimeout(() => {
                           if (formRef.current) {
                             window.scrollTo({
-                              top: formRef.current.offsetTop - 100,
+                              top: formRef.current.offsetTop - SCROLL_OFFSET,
                               behavior: 'smooth'
                             })
                           }
-                        }, 100)
+                        }, SCROLL_DELAY)
                       }}
                       className="mt-3 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
                     >
