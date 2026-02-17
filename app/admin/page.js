@@ -44,9 +44,9 @@ export default function AdminLoginPage() {
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <Image 
-                src="/img/logo.svg" 
+                src="/img/logo.png" 
                 alt="GoHoliday Logo" 
-                width={140}
+                width={92}
                 height={40}
                 className="h-10 w-auto"
               />
