@@ -85,10 +85,11 @@ export default function Footer() {
             <p className="text-center sm:text-left">
               © {new Date().getFullYear()} GoHoliday. All rights reserved.
             </p>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
               <Link href="/tours" className="hover:text-accent-500 transition-colors">
                 Privacy Policy
               </Link>
+              <span className="text-gray-600">•</span>
               <Link href="/tours" className="hover:text-accent-500 transition-colors">
                 Terms of Service
               </Link>
