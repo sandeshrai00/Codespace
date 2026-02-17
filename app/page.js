@@ -45,7 +45,7 @@ export default async function HomePage() {
       {/* Announcement Banner */}
       {announcement && (
         <div className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 px-4 shadow-md">
-          <div className="container mx-auto text-center">
+          <div className="container mx-auto px-4 sm:px-6 text-center">
             <p className="text-sm md:text-base font-medium">📢 {announcement.message}</p>
           </div>
         </div>
@@ -61,29 +61,29 @@ export default async function HomePage() {
           }}></div>
         </div>
         
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in">
               Your Nepal-Thailand Travel <span className="text-accent-400">Specialists</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-10 text-blue-100 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl md:text-2xl mb-10 text-blue-100 max-w-3xl mx-auto">
               Experience the perfect blend of Himalayan mountains and tropical beaches. Discover authentic culture, breathtaking landscapes, and unforgettable adventures between two incredible destinations.
             </p>
             
             {/* Search Bar Card */}
-            <div className="backdrop-blur-xl bg-white/10 rounded-3xl shadow-2xl p-6 md:p-8 max-w-4xl mx-auto border border-white/20">
-              <div className="flex flex-col md:flex-row gap-4">
+            <div className="backdrop-blur-xl bg-white/10 rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 max-w-4xl mx-auto border border-white/20">
+              <div className="flex flex-col md:flex-row gap-3 sm:gap-4">
                 <div className="flex-1">
                   <input
                     type="text"
                     placeholder="Nepal, Thailand, or explore both destinations..."
                     aria-label="Search destination"
-                    className="w-full px-6 py-4 border-2 border-transparent rounded-2xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-accent-600 text-lg transition-all shadow-lg"
+                    className="w-full px-4 sm:px-6 py-3 sm:py-4 border-2 border-transparent rounded-2xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-accent-600 text-base sm:text-lg transition-all shadow-lg"
                   />
                 </div>
                 <Link 
                   href="/tours" 
-                  className="px-8 py-4 bg-gradient-to-r from-accent-600 to-accent-700 text-white rounded-2xl font-bold text-lg hover:from-accent-700 hover:to-accent-800 transition-all shadow-lg hover:shadow-xl whitespace-nowrap hover:scale-105 transform"
+                  className="w-full md:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-accent-600 to-accent-700 text-white rounded-2xl font-bold text-base sm:text-lg hover:from-accent-700 hover:to-accent-800 transition-all shadow-lg hover:shadow-xl text-center md:whitespace-nowrap hover:scale-105 transform"
                 >
                   Explore Tours
                 </Link>
@@ -95,7 +95,7 @@ export default async function HomePage() {
 
       {/* Popular Destinations Section - Nepal & Thailand Focus */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               Our Specialized Destinations
@@ -107,7 +107,7 @@ export default async function HomePage() {
           </div>
 
           {/* Two Equal Cards - Side by Side */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto">
             {/* Nepal - Premium Featured Card */}
             <Link 
               href="/tours" 
@@ -184,7 +184,7 @@ export default async function HomePage() {
 
       {/* Featured Tours Section */}
       <section id="featured" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               Featured Nepal-Thailand Tours
@@ -197,7 +197,7 @@ export default async function HomePage() {
 
           {featuredTours.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12">
                 {featuredTours.map((tour, index) => (
                   <TourCard key={tour.id} tour={tour} featured={index < 2} />
                 ))}
@@ -225,7 +225,7 @@ export default async function HomePage() {
 
       {/* Why Choose Us Section - Nepal-Thailand Expertise */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               Why Choose GoHoliday for Nepal-Thailand Tours
@@ -236,7 +236,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 max-w-6xl mx-auto">
             {/* Feature 1 */}
             <div className="bg-white border-2 border-gray-100 p-8 rounded-3xl shadow-card hover:shadow-glass-lg hover:border-primary-300 transition-all duration-300 hover:scale-105">
               <div className="w-16 h-16 bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl flex items-center justify-center mb-4 mx-auto">
