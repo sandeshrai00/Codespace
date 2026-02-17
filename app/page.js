@@ -152,7 +152,7 @@ export default async function HomePage() {
             >
               <div className="absolute inset-0">
                 <Image 
-                  src="https://images.unsplash.com/photo-1528181304800-2f14081989ec?q=80&w=2070" 
+                  src="https://images.unsplash.com/photo-1563492065599-3520f775eeed?q=80&w=2070" 
                   alt="Thailand destination with golden temples, tropical beaches, and vibrant culture"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
@@ -280,39 +280,6 @@ export default async function HomePage() {
               <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">Best Value</h3>
               <p className="text-gray-600 text-center text-sm">Competitive pricing with no hidden costs</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter Section */}
-      <section className="py-20 bg-gradient-to-r from-primary-800 via-primary-700 to-primary-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-            backgroundSize: '30px 30px'
-          }}></div>
-        </div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Get Exclusive Nepal-Thailand Travel Deals
-            </h2>
-            <p className="text-xl text-primary-100 mb-8">
-              Subscribe for special offers on tours between the Himalayas and tropical paradise
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                className="flex-1 px-6 py-4 rounded-2xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-600 text-lg transition-all"
-              />
-              <button className="px-8 py-4 bg-accent-600 text-white rounded-2xl font-bold text-lg hover:bg-accent-700 transition-all shadow-lg hover:shadow-xl whitespace-nowrap hover:scale-105 transform">
-                Subscribe
-              </button>
-            </div>
-            <p className="text-sm text-primary-100 mt-4">
-              We respect your privacy. Unsubscribe at any time.
-            </p>
           </div>
         </div>
       </section>
