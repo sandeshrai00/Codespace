@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { getProfileDisplayName } from '@/lib/userUtils'
 
@@ -14,6 +14,12 @@ export default function TourReviews({ tourId }) {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [existingReview, setExistingReview] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const formRef = useRef(null)
+
+  // Constants for scroll behavior
+  const SCROLL_OFFSET = 100 // Offset from top when scrolling to form
+  const SCROLL_DELAY = 100 // Delay to ensure form is rendered before scrolling
 
   const fetchReviews = useCallback(async () => {
     if (!supabase) {
@@ -185,6 +191,9 @@ export default function TourReviews({ tourId }) {
       const isUpdate = existingReview !== null
       setMessage(isUpdate ? 'Review updated successfully!' : 'Review submitted successfully!')
       
+      // Set isEditing to false after successful submission
+      setIsEditing(false)
+      
       // Refetch the user's review to ensure state is accurate
       await fetchExistingReview(user.id)
       
@@ -257,8 +266,8 @@ export default function TourReviews({ tourId }) {
           )}
 
           {/* Submit Review Form */}
-          {user ? (
-            <form onSubmit={handleSubmitReview} className="mb-8 p-6 bg-gray-50 rounded-lg">
+          {user && (!existingReview || isEditing) && (
+            <form ref={formRef} onSubmit={handleSubmitReview} className="mb-8 p-6 bg-gray-50 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 {existingReview ? 'Edit Your Review' : 'Write a Review'}
               </h3>
@@ -305,7 +314,10 @@ export default function TourReviews({ tourId }) {
                 {submitting ? 'Submitting...' : (existingReview ? 'Update Review' : 'Submit Review')}
               </button>
             </form>
-          ) : (
+          )}
+
+          {/* Login Prompt */}
+          {!user && (
             <div className="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg text-center">
               <p className="text-gray-700 mb-3">Please login to write a review</p>
               <a
@@ -350,6 +362,27 @@ export default function TourReviews({ tourId }) {
                     {renderStars(review.rating)}
                   </div>
                   <p className="text-gray-700 leading-relaxed">{review.comment}</p>
+                  
+                  {/* Update Review Button for user's own review */}
+                  {user && review.user_id === user.id && (
+                    <button
+                      onClick={() => {
+                        setIsEditing(true)
+                        // Scroll to form smoothly
+                        setTimeout(() => {
+                          if (formRef.current) {
+                            window.scrollTo({
+                              top: formRef.current.offsetTop - SCROLL_OFFSET,
+                              behavior: 'smooth'
+                            })
+                          }
+                        }, SCROLL_DELAY)
+                      }}
+                      className="mt-3 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+                    >
+                      Update Review
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
