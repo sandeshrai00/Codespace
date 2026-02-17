@@ -7,20 +7,14 @@ const CurrencyContext = createContext()
 // Fallback exchange rates - used if API fails
 const FALLBACK_RATES = {
   USD: 1,
-  EUR: 0.92,
   INR: 83.12,
-  GBP: 0.79,
-  AUD: 1.53,
   THB: 34.50,
   NPR: 133.00,
 }
 
 export const CURRENCY_SYMBOLS = {
   USD: '$',
-  EUR: '€',
   INR: '₹',
-  GBP: '£',
-  AUD: 'A$',
   THB: '฿',
   NPR: 'Rs',
 }
@@ -38,10 +32,7 @@ export function CurrencyProvider({ children }) {
           const data = await response.json()
           setExchangeRates({
             USD: 1,
-            EUR: data.rates.EUR || FALLBACK_RATES.EUR,
             INR: data.rates.INR || FALLBACK_RATES.INR,
-            GBP: data.rates.GBP || FALLBACK_RATES.GBP,
-            AUD: data.rates.AUD || FALLBACK_RATES.AUD,
             THB: data.rates.THB || FALLBACK_RATES.THB,
             NPR: data.rates.NPR || FALLBACK_RATES.NPR,
           })

@@ -184,10 +184,7 @@ export default function NewTourPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                   >
                     <option value="USD">$ USD - US Dollar</option>
-                    <option value="EUR">€ EUR - Euro</option>
                     <option value="INR">₹ INR - Indian Rupee</option>
-                    <option value="GBP">£ GBP - British Pound</option>
-                    <option value="AUD">A$ AUD - Australian Dollar</option>
                     <option value="THB">฿ THB - Thai Baht</option>
                     <option value="NPR">Rs NPR - Nepali Rupee</option>
                   </select>

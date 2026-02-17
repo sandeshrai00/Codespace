@@ -28,10 +28,7 @@ This guide provides comprehensive instructions for testing the dynamic currency 
 - Click on the dropdown
 - Verify all currencies are listed:
   - $ USD - US Dollar
-  - € EUR - Euro
   - ₹ INR - Indian Rupee
-  - £ GBP - British Pound
-  - A$ AUD - Australian Dollar
   - ฿ THB - Thai Baht
   - Rs NPR - Nepali Rupee
 - Select a different currency
@@ -107,10 +104,7 @@ This guide provides comprehensive instructions for testing the dynamic currency 
 **Test:** System handles API failures gracefully
 - **Note:** This test requires temporarily blocking the exchange rate API
 - If API is unavailable, system should use fallback rates:
-  - EUR: 0.92
   - INR: 83.12
-  - GBP: 0.79
-  - AUD: 1.53
   - THB: 34.50
   - NPR: 133.00
 

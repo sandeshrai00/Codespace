@@ -1,7 +1,7 @@
 # Implementation Summary: Dynamic Currency Switching
 
 ## Overview
-Successfully implemented dynamic currency switching functionality supporting USD, INR, THB, and NPR (plus EUR, GBP, and AUD) in the GoHoliday tour booking system.
+Successfully implemented dynamic currency switching functionality supporting USD, INR, THB, and NPR in the GoHoliday tour booking system.
 
 ## Changes Made
 
@@ -11,10 +11,11 @@ Successfully implemented dynamic currency switching functionality supporting USD
 - Allows each tour to store its base pricing currency
 
 ### 2. Currency Provider (`components/CurrencyProvider.js`)
-- ✅ Extended `CURRENCY_SYMBOLS` to include:
+- ✅ Supports `CURRENCY_SYMBOLS`:
+  - USD: '$' (US Dollar)
+  - INR: '₹' (Indian Rupee)
   - THB: '฿' (Thai Baht)
   - NPR: 'Rs' (Nepali Rupee)
-  - Maintained existing: USD, EUR, INR, GBP, AUD
 - ✅ Implemented real-time exchange rate fetching from `https://api.exchangerate-api.com/v4/latest/USD`
 - ✅ Added fallback exchange rates for resilience
 - ✅ Exchange rates refresh every hour automatically
@@ -25,14 +26,13 @@ Successfully implemented dynamic currency switching functionality supporting USD
   - Fallback to USD for invalid currencies
 
 ### 3. Currency Switcher (`components/CurrencySwitcher.js`)
-- ✅ Added Thai Baht (THB) to dropdown
-- ✅ Added Nepali Rupee (NPR) to dropdown
-- Now supports 7 total currencies
+- ✅ Supports 4 currencies in dropdown
+- Available currencies: USD, INR, THB, NPR
 
 ### 4. Admin Panel - Add Tour Form (`app/admin/tours/new/page.js`)
 - ✅ Added `currency` field to form state
 - ✅ Added currency selector dropdown next to price field
-- ✅ Dropdown includes all 7 supported currencies with symbols
+- ✅ Dropdown includes all 4 supported currencies with symbols (USD, INR, THB, NPR)
 - ✅ Default currency: USD
 
 ### 5. Admin Panel - Edit Tour Form (`app/admin/tours/edit/[id]/EditTourForm.js`)
@@ -161,10 +161,7 @@ No new environment variables required.
 | Currency | Symbol | Code | Default Rate |
 |----------|--------|------|--------------|
 | US Dollar | $ | USD | 1.00 |
-| Euro | € | EUR | 0.92 |
 | Indian Rupee | ₹ | INR | 83.12 |
-| British Pound | £ | GBP | 0.79 |
-| Australian Dollar | A$ | AUD | 1.53 |
 | Thai Baht | ฿ | THB | 34.50 |
 | Nepali Rupee | Rs | NPR | 133.00 |
 
