@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import ImageGallery from '@/components/ImageGallery'
 import TourDetailSidebar from '@/components/TourDetailSidebar'
+import TourReviews from '@/components/TourReviews'
 import { getTurso } from '@/lib/turso'
 import { notFound } from 'next/navigation'
 
@@ -86,6 +87,11 @@ export default async function TourDetailPage({ params }) {
                   <ImageGallery images={galleryImages} tourTitle={tour.title} />
                 </div>
               )}
+
+              {/* Reviews Section */}
+              <div className="mb-8">
+                <TourReviews tourId={tour.id} />
+              </div>
             </div>
 
             {/* Sidebar */}
