@@ -47,11 +47,13 @@ CREATE POLICY "Users can update their own profile"
 -- Create reviews table
 -- ============================================
 -- This table stores tour reviews and ratings
+-- IMPORTANT: user_id references public.profiles(id) to enable proper joins
+-- This fixes the PGRST200 relationship error when fetching reviews with profiles
 
 CREATE TABLE IF NOT EXISTS public.reviews (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   tour_id INTEGER NOT NULL,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
   comment TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
