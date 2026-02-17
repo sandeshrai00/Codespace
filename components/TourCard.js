@@ -19,7 +19,7 @@ export default function TourCard({ tour, featured = false }) {
     <Link href={`/tours/${tour.id}`} className="block group">
       <div className="bg-white rounded-2xl shadow-card hover:shadow-glass-lg transition-all duration-500 h-full flex flex-col overflow-hidden border border-gray-100 group-hover:scale-[1.02] group-hover:border-primary-200">
         {/* Banner Image with hover zoom */}
-        <div className="relative h-56 w-full overflow-hidden hover-zoom">
+        <div className="relative h-40 sm:h-48 md:h-56 w-full overflow-hidden hover-zoom">
           {tour.banner_image ? (
             <Image
               src={tour.banner_image}
@@ -42,7 +42,7 @@ export default function TourCard({ tour, featured = false }) {
         </div>
 
         {/* Card Content */}
-        <div className="p-6 flex-1 flex flex-col">
+        <div className="p-4 sm:p-5 md:p-6 flex-1 flex flex-col">
           <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors line-clamp-2">
             {tour.title}
           </h3>
@@ -75,10 +75,10 @@ export default function TourCard({ tour, featured = false }) {
           </p>
 
           {/* Price and CTA */}
-          <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
+          <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-3 mt-auto pt-4 border-t border-gray-100">
             <div>
               <div className="text-xs text-gray-500 mb-1">From</div>
-              <div className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
+              <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
                 {convertPrice(tour.price)}
               </div>
             </div>

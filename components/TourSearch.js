@@ -142,8 +142,8 @@ export default function TourSearch({ tours }) {
         </div>
 
         {/* Filter Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-          <div className="text-sm text-gray-700">
+        <div className="flex flex-col xs:flex-row items-center justify-between gap-2 pt-4 border-t border-gray-200">
+          <div className="text-sm text-gray-700 text-center xs:text-left">
             <span className="font-semibold text-primary-600">{filteredTours.length}</span> tours found
           </div>
           {hasActiveFilters && (
@@ -160,7 +160,7 @@ export default function TourSearch({ tours }) {
       {/* Results Grid */}
       <div className="transition-all duration-300">
         {filteredTours.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {filteredTours.map((tour) => (
               <div key={tour.id} className="animate-fade-in">
                 <TourCard tour={tour} />
