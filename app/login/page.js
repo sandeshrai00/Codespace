@@ -200,6 +200,13 @@ export default function LoginPage() {
                     placeholder="Enter your password"
                     minLength={6}
                   />
+                  {isLogin && (
+                    <div className="mt-2 text-right">
+                      <Link href="/login/forgot-password" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+                        Forgot Password?
+                      </Link>
+                    </div>
+                  )}
                 </div>
 
                 <button
