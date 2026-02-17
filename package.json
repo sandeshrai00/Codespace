@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "init-db": "node lib/init-db.js"
+    "init-db": "node lib/init-db.js",
+    "migrate-currency": "node lib/migrate-currency.js"
   },
   "repository": {
     "type": "git",
