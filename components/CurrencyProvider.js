@@ -1,17 +1,18 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 const CurrencyContext = createContext()
 
-// Exchange rates as of February 2026 - hardcoded for simplicity
-// In production, consider using a currency API for real-time rates
-export const EXCHANGE_RATES = {
+// Fallback exchange rates - used if API fails
+const FALLBACK_RATES = {
   USD: 1,
   EUR: 0.92,
   INR: 83.12,
   GBP: 0.79,
   AUD: 1.53,
+  THB: 34.50,
+  NPR: 133.00,
 }
 
 export const CURRENCY_SYMBOLS = {
@@ -20,13 +21,48 @@ export const CURRENCY_SYMBOLS = {
   INR: '₹',
   GBP: '£',
   AUD: 'A$',
+  THB: '฿',
+  NPR: 'Rs',
 }
 
 export function CurrencyProvider({ children }) {
   const [currency, setCurrency] = useState('USD')
+  const [exchangeRates, setExchangeRates] = useState(FALLBACK_RATES)
   
-  const convertPrice = (priceInUSD) => {
-    const converted = priceInUSD * EXCHANGE_RATES[currency]
+  // Fetch real-time exchange rates
+  useEffect(() => {
+    const fetchRates = async () => {
+      try {
+        const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD')
+        if (response.ok) {
+          const data = await response.json()
+          setExchangeRates({
+            USD: 1,
+            EUR: data.rates.EUR || FALLBACK_RATES.EUR,
+            INR: data.rates.INR || FALLBACK_RATES.INR,
+            GBP: data.rates.GBP || FALLBACK_RATES.GBP,
+            AUD: data.rates.AUD || FALLBACK_RATES.AUD,
+            THB: data.rates.THB || FALLBACK_RATES.THB,
+            NPR: data.rates.NPR || FALLBACK_RATES.NPR,
+          })
+        }
+      } catch (error) {
+        console.warn('Failed to fetch exchange rates, using fallback:', error)
+        // Keep using fallback rates
+      }
+    }
+    
+    fetchRates()
+    // Refresh rates every hour
+    const interval = setInterval(fetchRates, 3600000)
+    return () => clearInterval(interval)
+  }, [])
+  
+  const convertPrice = (price, fromCurrency = 'USD') => {
+    // Convert from source currency to USD first
+    const priceInUSD = price / exchangeRates[fromCurrency]
+    // Then convert from USD to target currency
+    const converted = priceInUSD * exchangeRates[currency]
     return `${CURRENCY_SYMBOLS[currency]}${converted.toLocaleString(undefined, { 
       minimumFractionDigits: 0, 
       maximumFractionDigits: 0 
@@ -34,7 +70,7 @@ export function CurrencyProvider({ children }) {
   }
   
   return (
-    <CurrencyContext.Provider value={{ currency, setCurrency, convertPrice }}>
+    <CurrencyContext.Provider value={{ currency, setCurrency, convertPrice, exchangeRates }}>
       {children}
     </CurrencyContext.Provider>
   )

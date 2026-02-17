@@ -79,7 +79,7 @@ export default function TourCard({ tour, featured = false }) {
             <div>
               <div className="text-xs text-gray-500 mb-1">From</div>
               <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
-                {convertPrice(tour.price)}
+                {convertPrice(tour.price, tour.currency || 'USD')}
               </div>
             </div>
             <div className="flex items-center gap-1 text-primary-600 font-semibold text-sm group-hover:gap-2 transition-all">

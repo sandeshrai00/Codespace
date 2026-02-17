@@ -15,7 +15,7 @@ export async function POST(request) {
     }
 
     const data = await request.json()
-    const { id, title, description, price, duration, dates, location, banner_image, image_urls } = data
+    const { id, title, description, price, currency, duration, dates, location, banner_image, image_urls } = data
 
     // Validation
     if (!id || !title || !description || !price || !duration || !dates || !location) {
@@ -28,10 +28,10 @@ export async function POST(request) {
     const turso = getTurso();
     await turso.execute({
       sql: `UPDATE tours 
-            SET title = ?, description = ?, price = ?, duration = ?, dates = ?, 
+            SET title = ?, description = ?, price = ?, currency = ?, duration = ?, dates = ?, 
                 location = ?, banner_image = ?, image_urls = ?, updated_at = CURRENT_TIMESTAMP
             WHERE id = ?`,
-      args: [title, description, price, duration, dates, location, banner_image || null, image_urls || '[]', id]
+      args: [title, description, price, currency || 'USD', duration, dates, location, banner_image || null, image_urls || '[]', id]
     });
 
     revalidatePath('/admin/dashboard')
