@@ -51,20 +51,22 @@ export default function ImageGallery({ images, tourTitle }) {
   return (
     <>
       {/* Thumbnail Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {images.map((imageUrl, index) => (
           <div
             key={index}
             onClick={() => openLightbox(index)}
-            className="relative h-48 rounded-lg overflow-hidden cursor-pointer shadow-card hover:shadow-card-hover transition-all group"
+            className={`relative h-48 rounded-xl overflow-hidden cursor-pointer shadow-card hover:shadow-card-hover transition-all duration-500 group ${
+              index === 0 ? 'sm:col-span-2' : ''
+            }`}
           >
             <Image
               src={imageUrl}
               alt={`${tourTitle} - Image ${index + 1}`}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
           </div>
         ))}
       </div>
