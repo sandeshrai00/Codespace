@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
+import { getProfileDisplayName } from '@/lib/userUtils'
 
 export default function TourReviews({ tourId }) {
   const [reviews, setReviews] = useState([])
@@ -13,28 +14,7 @@ export default function TourReviews({ tourId }) {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
 
-  useEffect(() => {
-    // Check current user
-    if (supabase) {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setUser(session?.user ?? null)
-      })
-
-      // Listen for auth changes
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-        setUser(session?.user ?? null)
-      })
-
-      // Fetch reviews
-      fetchReviews()
-
-      return () => subscription.unsubscribe()
-    } else {
-      setLoading(false)
-    }
-  }, [tourId])
-
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     if (!supabase) {
       setLoading(false)
       return
@@ -61,7 +41,28 @@ export default function TourReviews({ tourId }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [tourId])
+
+  useEffect(() => {
+    // Check current user
+    if (supabase) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setUser(session?.user ?? null)
+      })
+
+      // Listen for auth changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null)
+      })
+
+      // Fetch reviews
+      fetchReviews()
+
+      return () => subscription.unsubscribe()
+    } else {
+      setLoading(false)
+    }
+  }, [fetchReviews])
 
   const handleSubmitReview = async (e) => {
     e.preventDefault()
@@ -245,7 +246,7 @@ export default function TourReviews({ tourId }) {
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <div className="font-semibold text-gray-900">
-                        {review.profiles?.full_name || review.profiles?.email?.split('@')[0] || 'Anonymous'}
+                        {getProfileDisplayName(review.profiles)}
                       </div>
                       <div className="text-sm text-gray-500">
                         {new Date(review.created_at).toLocaleDateString('en-US', {
