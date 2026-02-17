@@ -46,7 +46,7 @@ export default function AdminLoginPage() {
               <Image 
                 src="/img/logo.png" 
                 alt="GoHoliday Logo" 
-                width={140}
+                width={92}
                 height={40}
                 className="h-10 w-auto"
               />

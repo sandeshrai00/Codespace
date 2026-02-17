@@ -29,7 +29,7 @@ export default function AdminNav() {
             <Image 
               src="/img/logo.png" 
               alt="GoHoliday Admin" 
-              width={120}
+              width={74}
               height={32}
               className="h-8 w-auto hover:opacity-90 transition"
             />
