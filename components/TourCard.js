@@ -4,16 +4,14 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useCurrency } from './CurrencyProvider'
 
-export default function TourCard({ tour, featured = false }) {
+export default function TourCard({ tour }) {
   const { convertPrice } = useCurrency()
   const truncateDescription = (text, maxLength = 100) => {
     if (text.length <= maxLength) return text
     return text.substring(0, maxLength) + '...'
   }
 
-  // Generate a deterministic rating based on tour ID to avoid hydration mismatches
-  const hash = tour.id.toString().split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-  const rating = (4.5 + (hash % 6) / 10).toFixed(1)
+
 
   return (
     <Link href={`/tours/${tour.id}`} className="block group">
@@ -32,13 +30,7 @@ export default function TourCard({ tour, featured = false }) {
               <span className="text-white text-4xl">🏖️</span>
             </div>
           )}
-          
-          {/* Badge */}
-          {featured && (
-            <div className="absolute top-3 right-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-glass animate-pulse">
-              ⭐ Best Seller
-            </div>
-          )}
+
         </div>
 
         {/* Card Content */}
@@ -56,17 +48,13 @@ export default function TourCard({ tour, featured = false }) {
             <span className="font-medium">{tour.location}</span>
           </div>
 
-          {/* Duration and Rating */}
+          {/* Duration */}
           <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
             <div className="flex items-center gap-1">
               <svg className="w-4 h-4 text-secondary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>{tour.duration}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-yellow-500">★</span>
-              <span className="font-semibold text-gray-900">{rating}</span>
             </div>
           </div>
           
