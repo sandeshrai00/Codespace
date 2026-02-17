@@ -3,25 +3,29 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useCurrency } from './CurrencyProvider'
+import { getLocalizedField } from '@/lib/i18n'
 
-export default function TourCard({ tour }) {
+export default function TourCard({ tour, lang = 'en' }) {
   const { convertPrice } = useCurrency()
   const truncateDescription = (text, maxLength = 100) => {
     if (text.length <= maxLength) return text
     return text.substring(0, maxLength) + '...'
   }
 
-
+  // Get localized fields
+  const localizedTitle = getLocalizedField(tour, 'title', lang)
+  const localizedDescription = getLocalizedField(tour, 'description', lang)
+  const localizedLocation = getLocalizedField(tour, 'location', lang)
 
   return (
-    <Link href={`/tours/${tour.id}`} className="block group">
+    <Link href={`/${lang}/tours/${tour.id}`} className="block group">
       <div className="bg-white rounded-2xl shadow-card hover:shadow-glass-lg transition-all duration-500 h-full flex flex-col overflow-hidden border border-gray-100 group-hover:scale-[1.02] group-hover:border-primary-200">
         {/* Banner Image with hover zoom */}
         <div className="relative h-40 sm:h-48 md:h-56 w-full overflow-hidden hover-zoom">
           {tour.banner_image ? (
             <Image
               src={tour.banner_image}
-              alt={tour.title}
+              alt={localizedTitle}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-700"
             />
@@ -36,7 +40,7 @@ export default function TourCard({ tour }) {
         {/* Card Content */}
         <div className="p-4 sm:p-5 md:p-6 flex-1 flex flex-col">
           <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors line-clamp-2">
-            {tour.title}
+            {localizedTitle}
           </h3>
           
           {/* Location with icon */}
@@ -45,7 +49,7 @@ export default function TourCard({ tour }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span className="font-medium">{tour.location}</span>
+            <span className="font-medium">{localizedLocation}</span>
           </div>
 
           {/* Duration */}
@@ -59,7 +63,7 @@ export default function TourCard({ tour }) {
           </div>
           
           <p className="text-gray-600 text-sm mb-4 flex-1 line-clamp-2 leading-relaxed">
-            {truncateDescription(tour.description)}
+            {truncateDescription(localizedDescription)}
           </p>
 
           {/* Price and CTA */}

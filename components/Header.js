@@ -4,10 +4,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import CurrencySwitcher from './CurrencySwitcher'
+import LanguageSwitcher from './LanguageSwitcher'
 import { supabase } from '@/lib/supabase'
 import { getUserDisplayName } from '@/lib/userUtils'
 
-export default function Header() {
+export default function Header({ lang = 'en', dict }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [user, setUser] = useState(null)
@@ -49,7 +50,7 @@ export default function Header() {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-all duration-300 group">
+          <Link href={`/${lang}`} className="flex items-center gap-2 hover:opacity-90 transition-all duration-300 group">
             <Image 
               src="/img/logo.png" 
               alt="GoHoliday Logo" 
@@ -62,19 +63,20 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="relative text-gray-700 hover:text-primary-600 transition-colors font-medium group">
-              Home
+            <Link href={`/${lang}`} className="relative text-gray-700 hover:text-primary-600 transition-colors font-medium group">
+              {dict?.nav?.home || 'Home'}
               <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link href="/tours" className="relative text-gray-700 hover:text-primary-600 transition-colors font-medium group">
-              Tours
+            <Link href={`/${lang}/tours`} className="relative text-gray-700 hover:text-primary-600 transition-colors font-medium group">
+              {dict?.nav?.tours || 'Tours'}
               <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link href="/tours" className="relative text-gray-700 hover:text-primary-600 transition-colors font-medium group">
-              Destinations
+            <Link href={`/${lang}/tours`} className="relative text-gray-700 hover:text-primary-600 transition-colors font-medium group">
+              {dict?.nav?.destinations || 'Destinations'}
               <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <CurrencySwitcher />
+            <LanguageSwitcher />
             
             {/* Auth Section */}
             {user ? (
@@ -98,17 +100,17 @@ export default function Header() {
                       onClick={handleSignOut}
                       className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition"
                     >
-                      Sign Out
+                      {dict?.nav?.signOut || 'Sign Out'}
                     </button>
                   </div>
                 )}
               </div>
             ) : (
               <Link 
-                href="/login" 
+                href={`/${lang}/login`}
                 className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition"
               >
-                Login
+                {dict?.nav?.login || 'Login'}
               </Link>
             )}
           </nav>
@@ -133,28 +135,31 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden pb-4 animate-slide-down">
             <Link 
-              href="/" 
+              href={`/${lang}`}
               className="block py-2 text-gray-700 hover:text-primary-600 transition font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
-              Home
+              {dict?.nav?.home || 'Home'}
             </Link>
             <Link 
-              href="/tours" 
+              href={`/${lang}/tours`}
               className="block py-2 text-gray-700 hover:text-primary-600 transition font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
-              Tours
+              {dict?.nav?.tours || 'Tours'}
             </Link>
             <Link 
-              href="/tours" 
+              href={`/${lang}/tours`}
               className="block py-2 text-gray-700 hover:text-primary-600 transition font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
-              Destinations
+              {dict?.nav?.destinations || 'Destinations'}
             </Link>
             <div className="py-2">
               <CurrencySwitcher />
+            </div>
+            <div className="py-2">
+              <LanguageSwitcher />
             </div>
             
             {/* Mobile Auth Section */}
@@ -167,16 +172,16 @@ export default function Header() {
                   onClick={handleSignOut}
                   className="w-full text-left px-2 py-2 text-red-600 hover:bg-red-50 rounded transition"
                 >
-                  Sign Out
+                  {dict?.nav?.signOut || 'Sign Out'}
                 </button>
               </div>
             ) : (
               <Link 
-                href="/login" 
+                href={`/${lang}/login`}
                 className="block mt-2 px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition text-center"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Login
+                {dict?.nav?.login || 'Login'}
               </Link>
             )}
           </div>
