@@ -15,7 +15,7 @@ export async function POST(request) {
     }
 
     const data = await request.json()
-    const { title, description, price, duration, dates, location, banner_image, image_urls } = data
+    const { title, description, price, currency, duration, dates, location, banner_image, image_urls } = data
 
     // Validation
     if (!title || !description || !price || !duration || !dates || !location) {
@@ -27,9 +27,9 @@ export async function POST(request) {
 
     const turso = getTurso();
     await turso.execute({
-      sql: `INSERT INTO tours (title, description, price, duration, dates, location, banner_image, image_urls) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      args: [title, description, price, duration, dates, location, banner_image || null, image_urls || '[]']
+      sql: `INSERT INTO tours (title, description, price, currency, duration, dates, location, banner_image, image_urls) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [title, description, price, currency || 'USD', duration, dates, location, banner_image || null, image_urls || '[]']
     });
 
     revalidatePath('/admin/dashboard')

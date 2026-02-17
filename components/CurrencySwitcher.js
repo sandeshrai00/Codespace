@@ -11,6 +11,8 @@ export default function CurrencySwitcher() {
     { code: 'INR', name: 'Indian Rupee' },
     { code: 'GBP', name: 'British Pound' },
     { code: 'AUD', name: 'Australian Dollar' },
+    { code: 'THB', name: 'Thai Baht' },
+    { code: 'NPR', name: 'Nepali Rupee' },
   ]
 
   return (

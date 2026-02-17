@@ -6,7 +6,7 @@ export default function TourDetailSidebar({ tour }) {
   const { convertPrice } = useCurrency()
 
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919800000000'
-  const bookingMessage = `Hi! I'm interested in booking the tour: "${tour.title}" (${tour.location}) - ${convertPrice(tour.price)} for ${tour.duration}. Can you share more details and help me book?`
+  const bookingMessage = `Hi! I'm interested in booking the tour: "${tour.title}" (${tour.location}) - ${convertPrice(tour.price, tour.currency || 'USD')} for ${tour.duration}. Can you share more details and help me book?`
   const bookingWhatsAppUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(bookingMessage)}`
 
   return (
@@ -14,7 +14,7 @@ export default function TourDetailSidebar({ tour }) {
       <div className="mb-6 pb-6 border-b border-gray-200">
         <div className="text-sm text-gray-600 mb-2">From</div>
         <div className="text-4xl font-bold text-primary-600 mb-1">
-          {convertPrice(tour.price)}
+          {convertPrice(tour.price, tour.currency || 'USD')}
         </div>
         <p className="text-gray-600">per person</p>
       </div>

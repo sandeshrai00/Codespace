@@ -25,6 +25,7 @@ export default function EditTourForm({ tour }) {
     title: tour.title || '',
     description: tour.description || '',
     price: tour.price || '',
+    currency: tour.currency || 'USD',
     duration: tour.duration || '',
     dates: tour.dates || '',
     location: tour.location || '',
@@ -156,7 +157,7 @@ export default function EditTourForm({ tour }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-                    Price (USD) *
+                    Price *
                   </label>
                   <input
                     id="price"
@@ -173,6 +174,30 @@ export default function EditTourForm({ tour }) {
                 </div>
 
                 <div>
+                  <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-2">
+                    Currency *
+                  </label>
+                  <select
+                    id="currency"
+                    name="currency"
+                    value={formData.currency}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  >
+                    <option value="USD">$ USD - US Dollar</option>
+                    <option value="EUR">€ EUR - Euro</option>
+                    <option value="INR">₹ INR - Indian Rupee</option>
+                    <option value="GBP">£ GBP - British Pound</option>
+                    <option value="AUD">A$ AUD - Australian Dollar</option>
+                    <option value="THB">฿ THB - Thai Baht</option>
+                    <option value="NPR">Rs NPR - Nepali Rupee</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
                   <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-2">
                     Duration *
                   </label>
@@ -187,22 +212,22 @@ export default function EditTourForm({ tour }) {
                     placeholder="5 Days / 4 Nights"
                   />
                 </div>
-              </div>
 
-              <div>
-                <label htmlFor="dates" className="block text-sm font-medium text-gray-700 mb-2">
-                  Available Dates *
-                </label>
-                <input
-                  id="dates"
-                  name="dates"
-                  type="text"
-                  value={formData.dates}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                  placeholder="January - March, June - August"
-                />
+                <div>
+                  <label htmlFor="dates" className="block text-sm font-medium text-gray-700 mb-2">
+                    Available Dates *
+                  </label>
+                  <input
+                    id="dates"
+                    name="dates"
+                    type="text"
+                    value={formData.dates}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                    placeholder="January - March, June - August"
+                  />
+                </div>
               </div>
 
               <div>

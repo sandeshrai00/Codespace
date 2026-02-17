@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { getTurso } from '@/lib/turso'
 import DeleteTourButton from './DeleteTourButton'
+import TourPriceDisplay from './TourPriceDisplay'
 
 async function getStats() {
   try {
@@ -143,7 +144,7 @@ export default async function AdminDashboardPage() {
                           <div className="font-medium text-gray-900">{tour.title}</div>
                         </td>
                         <td className="px-4 py-4">
-                          <div className="text-cyan-600 font-semibold">${tour.price}</div>
+                          <TourPriceDisplay price={tour.price} currency={tour.currency} />
                         </td>
                         <td className="px-4 py-4">
                           <div className="text-gray-700">{tour.duration}</div>
@@ -189,7 +190,9 @@ export default async function AdminDashboardPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-gray-900 mb-1 truncate">{tour.title}</h3>
-                        <p className="text-cyan-600 font-bold text-lg">${tour.price}</p>
+                        <div className="text-lg font-bold">
+                          <TourPriceDisplay price={tour.price} currency={tour.currency} />
+                        </div>
                       </div>
                     </div>
                     <div className="space-y-2 mb-3">
