@@ -45,7 +45,7 @@ export default async function TourDetailPage({ params }) {
       <Header />
       
       {/* Banner Image */}
-      <section className="relative h-[400px] w-full">
+      <section className="relative h-[300px] md:h-[450px] w-full">
         {tour.banner_image ? (
           <Image
             src={tour.banner_image}
