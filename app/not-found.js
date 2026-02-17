@@ -20,8 +20,8 @@ export default function NotFound() {
             Page Not Found
           </h1>
           <p className="text-lg text-gray-600 mb-8">
-            Oops! It looks like this destination doesn't exist on our map. 
-            Let's get you back to exploring amazing Nepal-Thailand tours.
+            Oops! It looks like this destination doesn&apos;t exist on our map. 
+            Let&apos;s get you back to exploring amazing Nepal-Thailand tours.
           </p>
           
           {/* Action Buttons */}
