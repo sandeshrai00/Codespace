@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -24,8 +25,14 @@ export default function AdminNav() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/admin/dashboard" className="text-xl font-bold text-primary-400 hover:text-primary-300 transition">
-            ✈️ GoHoliday Admin
+          <Link href="/admin/dashboard" className="flex items-center">
+            <Image 
+              src="/img/logo.png" 
+              alt="GoHoliday Admin" 
+              width={120}
+              height={32}
+              className="h-8 w-auto hover:opacity-90 transition"
+            />
           </Link>
 
           {/* Desktop Navigation Links */}

@@ -1,12 +1,19 @@
 'use client'
 
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 
 export default function WhatsAppFloat() {
   const [showTooltip, setShowTooltip] = useState(false)
+  const pathname = usePathname()
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919800000000'
   const message = encodeURIComponent("Hi! I'm interested in GoHoliday tours. Can you help me?")
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`
+
+  // Hide WhatsApp float on admin pages
+  if (pathname?.startsWith('/admin')) {
+    return null
+  }
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
