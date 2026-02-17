@@ -37,10 +37,7 @@ After running the migration, you can verify the changes by:
 
 The following currencies are now supported:
 - USD (US Dollar) - $
-- EUR (Euro) - €
 - INR (Indian Rupee) - ₹
-- GBP (British Pound) - £
-- AUD (Australian Dollar) - A$
 - THB (Thai Baht) - ฿
 - NPR (Nepali Rupee) - Rs
 
@@ -49,10 +46,7 @@ The following currencies are now supported:
 The system fetches real-time exchange rates from `https://api.exchangerate-api.com/v4/latest/USD`. 
 
 If the API is unavailable, the system falls back to hardcoded rates:
-- EUR: 0.92
 - INR: 83.12
-- GBP: 0.79
-- AUD: 1.53
 - THB: 34.50
 - NPR: 133.00
 
