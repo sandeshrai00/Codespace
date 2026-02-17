@@ -48,6 +48,42 @@ export default function TourReviews({ tourId }) {
       console.log('Fetched reviews:', data)
       console.log('Fetch reviews error:', error)
 
+      // Handle PGRST200 relationship error
+      if (error && error.code === 'PGRST200') {
+        console.warn('⚠️ PGRST200 Relationship Error: Could not find a relationship between reviews and profiles')
+        console.warn('📋 To fix this error, run the following SQL in your Supabase SQL Editor:')
+        console.warn(`
+-- Drop the existing reviews table if needed
+DROP TABLE IF EXISTS public.reviews CASCADE;
+
+-- Recreate the reviews table with the correct foreign key
+CREATE TABLE IF NOT EXISTS public.reviews (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  tour_id INTEGER NOT NULL,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  UNIQUE(tour_id, user_id)
+);
+
+-- Enable RLS and recreate policies (see SUPABASE_SCHEMA.sql for full details)
+        `)
+        
+        // Fallback: Fetch reviews without profiles join
+        console.log('🔄 Attempting to fetch reviews without profile information...')
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('reviews')
+          .select('*')
+          .eq('tour_id', numericTourId)
+          .order('created_at', { ascending: false })
+        
+        if (fallbackError) throw fallbackError
+        setReviews(fallbackData || [])
+        return
+      }
+
       if (error) throw error
       setReviews(data || [])
     } catch (error) {
