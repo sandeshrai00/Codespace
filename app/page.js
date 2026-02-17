@@ -24,7 +24,7 @@ async function getFeaturedTours() {
   try {
     const turso = getTurso();
     const result = await turso.execute({
-      sql: 'SELECT id, title, description, price, location, duration, banner_image, dates, created_at FROM tours ORDER BY created_at DESC LIMIT 6',
+      sql: 'SELECT id, title, description, price, currency, location, duration, banner_image, dates, created_at FROM tours ORDER BY created_at DESC LIMIT 6',
       args: []
     });
     return result.rows.map(row => JSON.parse(JSON.stringify(row)));
