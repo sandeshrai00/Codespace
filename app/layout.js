@@ -15,7 +15,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html>
       <body className="font-sans">
         <CurrencyProvider>
           {children}
