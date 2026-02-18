@@ -21,8 +21,7 @@ export default function TourCard({ tour, lang = 'en', dict }) {
     <Link href={`/${lang}/tours/${tour.id}`} className="block group">
       <div className="bg-white rounded-2xl shadow-lg hover:shadow-glass-lg transition-all duration-500 h-full flex flex-col overflow-hidden border border-gray-100 group-hover:scale-[1.02] group-hover:border-primary-200">
         {/* Banner Image with hover zoom and floating price badge */}
-        <div className="p-2">
-          <div className="relative h-32 sm:h-48 w-full overflow-hidden rounded-t-xl rounded-b-[1.5rem] sm:rounded-b-[2rem] hover-zoom">
+        <div className="relative h-32 sm:h-48 w-full overflow-hidden rounded-b-[1.25rem] sm:rounded-b-[1.5rem] hover-zoom">
             {tour.banner_image ? (
               <Image
                 src={tour.banner_image}
@@ -42,7 +41,6 @@ export default function TourCard({ tour, lang = 'en', dict }) {
                 {convertPrice(tour.price, tour.currency || 'USD')}
               </div>
             </div>
-          </div>
         </div>
 
         {/* Card Content */}
