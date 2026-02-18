@@ -5,12 +5,16 @@ import { useState } from 'react'
 export default function AnnouncementBanner({ message }) {
   const [isVisible, setIsVisible] = useState(true)
 
+  const handleDismiss = () => {
+    setIsVisible(false)
+  }
+
   if (!isVisible || !message) {
     return null
   }
 
   return (
-    <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white shadow-lg animate-slide-down">
+    <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white shadow-lg animate-slide-down" role="alert" aria-live="polite">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between py-3 md:py-4 gap-4">
           {/* Icon + Message */}
@@ -34,14 +38,14 @@ export default function AnnouncementBanner({ message }) {
             </div>
             
             {/* Message Text */}
-            <p className="text-sm md:text-base font-medium text-white/95 truncate sm:whitespace-normal">
+            <p className="text-sm md:text-base font-medium text-white/95 line-clamp-2 sm:line-clamp-1">
               {message}
             </p>
           </div>
 
           {/* Dismiss Button */}
           <button
-            onClick={() => setIsVisible(false)}
+            onClick={handleDismiss}
             className="flex-shrink-0 p-1.5 hover:bg-white/10 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 group"
             aria-label="Dismiss announcement"
           >
