@@ -148,14 +148,12 @@ export default function Header({ lang = 'en', dict }) {
             </div>
 
             {/* Switchers Section */}
-            <div className="px-2 py-3 space-y-2 border-t border-gray-100">
+            <div className="px-2 py-3 border-t border-gray-100">
               <div className="px-3">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Settings</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Settings</p>
               </div>
-              <div className="px-3">
+              <div className="flex items-center justify-center gap-3">
                 <CurrencySwitcher />
-              </div>
-              <div className="px-3">
                 <LanguageSwitcher />
               </div>
             </div>

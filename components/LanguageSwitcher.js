@@ -39,9 +39,10 @@ export default function LanguageSwitcher() {
 
   return (
     <div className="relative">
+      {/* Desktop Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-2xl text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-all duration-200 border border-transparent hover:border-primary-200"
+        className="hidden md:flex items-center gap-2 px-3 py-2 rounded-2xl text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-all duration-200 border border-transparent hover:border-primary-200"
         aria-label={`Select language - Current: ${currentConfig.name}`}
         aria-expanded={isOpen}
       >
@@ -54,6 +55,16 @@ export default function LanguageSwitcher() {
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
+      </button>
+
+      {/* Mobile Circular Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="md:hidden rounded-full w-10 h-10 flex items-center justify-center text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-all duration-200 border border-transparent hover:border-primary-200"
+        aria-label={`Select language - Current: ${currentConfig.name}`}
+        aria-expanded={isOpen}
+      >
+        <span className="text-2xl">{currentConfig.flag}</span>
       </button>
 
       {isOpen && (
