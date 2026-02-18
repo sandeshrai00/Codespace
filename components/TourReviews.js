@@ -1,10 +1,30 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { getProfileDisplayName } from '@/lib/userUtils'
 
-export default function TourReviews({ tourId }) {
+// Helper function to get localized comment
+function getLocalizedComment(review, lang) {
+  if (!review) return '';
+  
+  // Try to get the localized comment based on the language
+  const commentField = `comment_${lang}`;
+  if (review[commentField]) {
+    return review[commentField];
+  }
+  
+  // Fallback to English if the localized version doesn't exist
+  if (review.comment_en) {
+    return review.comment_en;
+  }
+  
+  // Final fallback to the default comment field
+  return review.comment || '';
+}
+
+export default function TourReviews({ tourId, lang = 'en', dict }) {
   const [reviews, setReviews] = useState([])
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -101,9 +121,11 @@ export default function TourReviews({ tourId }) {
       const numericTourId = Number(tourId)
       if (isNaN(numericTourId)) return
 
+      // Fetch both legacy comment field and new language-specific fields
+      // for backward compatibility with existing reviews
       const { data, error } = await supabase
         .from('reviews')
-        .select('id, tour_id, user_id, rating, comment, created_at, updated_at')
+        .select('id, tour_id, user_id, rating, comment, comment_en, comment_th, comment_zh, created_at, updated_at')
         .eq('tour_id', numericTourId)
         .eq('user_id', userId)
         .single()
@@ -161,12 +183,12 @@ export default function TourReviews({ tourId }) {
     e.preventDefault()
     
     if (!user) {
-      setError('Please login to submit a review')
+      setError(dict?.reviews?.errorLogin || 'Please login to submit a review')
       return
     }
 
     if (!supabase) {
-      setError('Supabase is not configured')
+      setError(dict?.reviews?.errorConfig || 'Supabase is not configured')
       return
     }
 
@@ -174,6 +196,27 @@ export default function TourReviews({ tourId }) {
       setSubmitting(true)
       setError('')
       setMessage('')
+
+      // Translate the comment to Thai and Chinese
+      const translationResponse = await fetch('/api/reviews/translate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ comment }),
+      })
+
+      let translatedComment = {
+        comment_en: comment,
+        comment_th: comment,
+        comment_zh: comment
+      }
+
+      if (translationResponse.ok) {
+        translatedComment = await translationResponse.json()
+      } else {
+        console.warn('Translation failed, using original comment for all languages')
+      }
 
       const { error } = await supabase
         .from('reviews')
@@ -183,13 +226,16 @@ export default function TourReviews({ tourId }) {
             user_id: user.id,
             rating,
             comment,
+            comment_en: translatedComment.comment_en,
+            comment_th: translatedComment.comment_th,
+            comment_zh: translatedComment.comment_zh,
           }
         ], { onConflict: 'tour_id, user_id' })
 
       if (error) throw error
 
       const isUpdate = existingReview !== null
-      setMessage(isUpdate ? 'Review updated successfully!' : 'Review submitted successfully!')
+      setMessage(isUpdate ? (dict?.reviews?.successUpdate || 'Review updated successfully!') : (dict?.reviews?.successSubmit || 'Review submitted successfully!'))
       
       // Set isEditing to false after successful submission
       setIsEditing(false)
@@ -238,12 +284,12 @@ export default function TourReviews({ tourId }) {
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Customer Reviews</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">{dict?.reviews?.title || 'Customer Reviews'}</h2>
 
       {!supabase ? (
         <div className="p-6 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
-          <p className="text-gray-700 mb-2">Review system is not configured yet.</p>
-          <p className="text-sm text-gray-600">Please configure Supabase environment variables to enable reviews.</p>
+          <p className="text-gray-700 mb-2">{dict?.reviews?.notConfigured || 'Review system is not configured yet.'}</p>
+          <p className="text-sm text-gray-600">{dict?.reviews?.configureMessage || 'Please configure Supabase environment variables to enable reviews.'}</p>
         </div>
       ) : (
         <>
@@ -253,12 +299,12 @@ export default function TourReviews({ tourId }) {
               <div className="flex items-center gap-4">
                 <div className="text-center">
                   <div className="text-4xl font-bold text-gray-900">{averageRating}</div>
-                  <div className="text-sm text-gray-600">out of 5</div>
+                  <div className="text-sm text-gray-600">{dict?.reviews?.outOf5 || 'out of 5'}</div>
                 </div>
                 <div>
                   {renderStars(Math.round(averageRating))}
                   <div className="text-sm text-gray-600 mt-1">
-                    Based on {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
+                    {dict?.reviews?.basedOn || 'Based on'} {reviews.length} {reviews.length === 1 ? (dict?.reviews?.reviewSingular || 'review') : (dict?.reviews?.reviewPlural || 'reviews')}
                   </div>
                 </div>
               </div>
@@ -269,7 +315,7 @@ export default function TourReviews({ tourId }) {
           {user && (!existingReview || isEditing) && (
             <form ref={formRef} onSubmit={handleSubmitReview} className="mb-8 p-6 bg-gray-50 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                {existingReview ? 'Edit Your Review' : 'Write a Review'}
+                {existingReview ? (dict?.reviews?.editReview || 'Edit Your Review') : (dict?.reviews?.writeReview || 'Write a Review')}
               </h3>
               
               {error && (
@@ -286,14 +332,14 @@ export default function TourReviews({ tourId }) {
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Rating
+                  {dict?.reviews?.rating || 'Rating'}
                 </label>
                 {renderStars(rating, true, setRating)}
               </div>
 
               <div className="mb-4">
                 <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
-                  Your Review
+                  {dict?.reviews?.yourReview || 'Your Review'}
                 </label>
                 <textarea
                   id="comment"
@@ -302,7 +348,7 @@ export default function TourReviews({ tourId }) {
                   required
                   rows={4}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Share your experience with this tour..."
+                  placeholder={dict?.reviews?.placeholder || "Share your experience with this tour..."}
                 />
               </div>
 
@@ -311,7 +357,7 @@ export default function TourReviews({ tourId }) {
                 disabled={submitting}
                 className="px-6 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {submitting ? 'Submitting...' : (existingReview ? 'Update Review' : 'Submit Review')}
+                {submitting ? (dict?.reviews?.submitting || 'Submitting...') : (existingReview ? (dict?.reviews?.updateReview || 'Update Review') : (dict?.reviews?.submitReview || 'Submit Review'))}
               </button>
             </form>
           )}
@@ -319,13 +365,13 @@ export default function TourReviews({ tourId }) {
           {/* Login Prompt */}
           {!user && (
             <div className="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg text-center">
-              <p className="text-gray-700 mb-3">Please login to write a review</p>
-              <a
+              <p className="text-gray-700 mb-3">{dict?.reviews?.loginPrompt || 'Please login to write a review'}</p>
+              <Link
                 href="/login"
                 className="inline-block px-6 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition"
               >
-                Login
-              </a>
+                {dict?.reviews?.loginButton || 'Login'}
+              </Link>
             </div>
           )}
 
@@ -333,14 +379,14 @@ export default function TourReviews({ tourId }) {
           {loading ? (
             <div className="text-center py-8">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-primary-600"></div>
-              <p className="mt-2 text-gray-600">Loading reviews...</p>
+              <p className="mt-2 text-gray-600">{dict?.reviews?.loadingReviews || 'Loading reviews...'}</p>
             </div>
           ) : reviews.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <svg className="w-16 h-16 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
               </svg>
-              <p>No reviews yet. Be the first to review this tour!</p>
+              <p>{dict?.reviews?.noReviewsYet || 'No reviews yet. Be the first to review this tour!'}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -361,7 +407,7 @@ export default function TourReviews({ tourId }) {
                     </div>
                     {renderStars(review.rating)}
                   </div>
-                  <p className="text-gray-700 leading-relaxed">{review.comment}</p>
+                  <p className="text-gray-700 leading-relaxed">{getLocalizedComment(review, lang)}</p>
                   
                   {/* Update Review Button for user's own review */}
                   {user && review.user_id === user.id && (
@@ -380,7 +426,7 @@ export default function TourReviews({ tourId }) {
                       }}
                       className="mt-3 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
                     >
-                      Update Review
+                      {dict?.reviews?.updateButton || 'Update Review'}
                     </button>
                   )}
                 </div>
