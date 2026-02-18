@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useCurrency } from './CurrencyProvider'
 import { getLocalizedField } from '@/lib/i18n'
 
-export default function TourCard({ tour, lang = 'en' }) {
+export default function TourCard({ tour, lang = 'en', dict }) {
   const { convertPrice } = useCurrency()
   const truncateDescription = (text, maxLength = 100) => {
     if (text.length <= maxLength) return text
@@ -75,7 +75,7 @@ export default function TourCard({ tour, lang = 'en' }) {
               </div>
             </div>
             <div className="flex items-center gap-1 text-primary-600 font-semibold text-sm group-hover:gap-2 transition-all">
-              <span>View Details</span>
+              <span>{dict?.tours?.viewDetails || 'View Details'}</span>
               <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
