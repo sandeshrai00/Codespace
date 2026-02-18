@@ -4,13 +4,12 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { getDictionary } from '@/lib/i18n'
-import { getUserDisplayName } from '@/lib/userUtils'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProfileSidebar from '@/components/ProfileSidebar'
 
 // Auto-close delay constants (in milliseconds)
-const AUTO_CLOSE_DELAY_SHORT = 2000  // For name and password updates
+const AUTO_CLOSE_DELAY_SHORT = 2000  // For password updates
 const AUTO_CLOSE_DELAY_LONG = 3000   // For email updates (longer message to read)
 
 export default function SettingsPage() {
@@ -19,14 +18,8 @@ export default function SettingsPage() {
   const [dict, setDict] = useState(null)
   
   // Edit mode states
-  const [isEditingName, setIsEditingName] = useState(false)
   const [isEditingEmail, setIsEditingEmail] = useState(false)
   const [isEditingPassword, setIsEditingPassword] = useState(false)
-  
-  // Name update states
-  const [fullName, setFullName] = useState('')
-  const [isUpdatingName, setIsUpdatingName] = useState(false)
-  const [nameUpdateMessage, setNameUpdateMessage] = useState({ type: '', text: '' })
   
   // Email update states
   const [newEmail, setNewEmail] = useState('')
@@ -41,7 +34,6 @@ export default function SettingsPage() {
   const [passwordUpdateMessage, setPasswordUpdateMessage] = useState({ type: '', text: '' })
   
   // Refs for timeout IDs (prevents memory leaks)
-  const nameTimeoutRef = useRef(null)
   const emailTimeoutRef = useRef(null)
   const passwordTimeoutRef = useRef(null)
   
@@ -57,7 +49,6 @@ export default function SettingsPage() {
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
-      if (nameTimeoutRef.current) clearTimeout(nameTimeoutRef.current)
       if (emailTimeoutRef.current) clearTimeout(emailTimeoutRef.current)
       if (passwordTimeoutRef.current) clearTimeout(passwordTimeoutRef.current)
     }
@@ -81,7 +72,6 @@ export default function SettingsPage() {
         }
         
         setUser(session.user)
-        setFullName(session.user.user_metadata?.full_name || '')
       } catch (error) {
         console.error('Error fetching user:', error)
         router.push(`/${lang}/login`)
@@ -99,7 +89,6 @@ export default function SettingsPage() {
           router.push(`/${lang}/login`)
         } else {
           setUser(session.user)
-          setFullName(session.user.user_metadata?.full_name || '')
         }
       })
 
@@ -132,59 +121,6 @@ export default function SettingsPage() {
   const getFormattedAuthProvider = (user) => {
     const provider = getAuthProvider(user)
     return provider.charAt(0).toUpperCase() + provider.slice(1)
-  }
-
-  // Handle name update
-  const handleNameUpdate = async (e) => {
-    e.preventDefault()
-    
-    if (!fullName || !fullName.trim()) {
-      setNameUpdateMessage({
-        type: 'error',
-        text: dict?.settings?.nameRequired || 'Please enter your full name'
-      })
-      return
-    }
-
-    setIsUpdatingName(true)
-    setNameUpdateMessage({ type: '', text: '' })
-
-    try {
-      const { error } = await supabase.auth.updateUser({
-        data: { full_name: fullName.trim() }
-      })
-
-      if (error) throw error
-
-      setNameUpdateMessage({
-        type: 'success',
-        text: dict?.settings?.nameUpdateSuccess || 'Your name has been updated successfully!'
-      })
-      // Exit edit mode after successful update
-      nameTimeoutRef.current = setTimeout(() => {
-        setIsEditingName(false)
-        setNameUpdateMessage({ type: '', text: '' })
-      }, AUTO_CLOSE_DELAY_SHORT)
-    } catch (error) {
-      console.error('Error updating name:', error)
-      setNameUpdateMessage({
-        type: 'error',
-        text: dict?.settings?.nameUpdateError || 'Failed to update name. Please try again.'
-      })
-    } finally {
-      setIsUpdatingName(false)
-    }
-  }
-  
-  // Handle cancel name edit
-  const handleCancelNameEdit = () => {
-    if (nameTimeoutRef.current) {
-      clearTimeout(nameTimeoutRef.current)
-      nameTimeoutRef.current = null
-    }
-    setIsEditingName(false)
-    setFullName(user?.user_metadata?.full_name || '')
-    setNameUpdateMessage({ type: '', text: '' })
   }
 
   // Handle email update
@@ -403,90 +339,10 @@ export default function SettingsPage() {
             <div className="flex-1">
               {/* Page Header */}
               <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-900">{dict?.settings?.settings || 'Settings'}</h1>
-                <p className="text-gray-600 mt-1">{dict?.settings?.subtitle || 'Manage your account settings'}</p>
+                <h1 className="text-2xl font-bold text-gray-900">{dict?.settings?.accountSettings || 'Account Settings'}</h1>
+                <p className="text-gray-600 mt-1">{dict?.settings?.subtitle || 'Manage your account security'}</p>
               </div>
 
-          {/* Name Settings Card */}
-          <div className="bg-white border border-gray-200 rounded-lg mb-6">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">
-                {dict?.settings?.nameSettings || 'Name Settings'}
-              </h2>
-            </div>
-
-            <div className="px-6 py-6">
-              {!isEditingName ? (
-                // Display mode - show current info with Edit button
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">
-                      Current Name
-                    </label>
-                    <p className="text-base text-gray-900">{getUserDisplayName(user)}</p>
-                  </div>
-                  
-                  <button
-                    type="button"
-                    onClick={() => setIsEditingName(true)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    {dict?.settings?.editName || 'Edit Name'}
-                  </button>
-                </div>
-              ) : (
-                // Edit mode - show form
-                <form onSubmit={handleNameUpdate} className="space-y-4">
-                  {/* Full Name Input */}
-                  <div>
-                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
-                      {dict?.settings?.fullNameLabel || 'Full Name'}
-                    </label>
-                    <input
-                      type="text"
-                      id="fullName"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder={dict?.settings?.fullNamePlaceholder || 'Enter your full name'}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                      disabled={isUpdatingName}
-                      required
-                    />
-                  </div>
-
-                  {/* Message Display */}
-                  {nameUpdateMessage.text && (
-                    <div className={`p-3 rounded-lg ${
-                      nameUpdateMessage.type === 'success' 
-                        ? 'bg-green-50 text-green-800' 
-                        : 'bg-red-50 text-red-800'
-                    }`}>
-                      <p className="text-sm">{nameUpdateMessage.text}</p>
-                    </div>
-                  )}
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-3">
-                    <button
-                      type="submit"
-                      disabled={isUpdatingName}
-                      className="px-6 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    >
-                      {isUpdatingName ? (dict?.settings?.updatingName || 'Updating...') : (dict?.settings?.updateNameButton || 'Update Name')}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleCancelNameEdit}
-                      disabled={isUpdatingName}
-                      className="px-6 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {dict?.common?.cancel || 'Cancel'}
-                    </button>
-                  </div>
-                </form>
-              )}
-            </div>
-          </div>
 
           {/* Email Settings Card */}
           <div className="bg-white border border-gray-200 rounded-lg mb-6">
