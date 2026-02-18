@@ -5,21 +5,28 @@ import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 import { getUserDisplayName } from '@/lib/userUtils'
+import { getDictionary } from '@/lib/i18n'
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [dict, setDict] = useState(null)
   const router = useRouter()
   const params = useParams()
   const lang = params.lang || 'en'
 
+  // Load dictionary
+  useEffect(() => {
+    getDictionary(lang).then(setDict)
+  }, [lang])
+
   // Generate a consistent random profile picture based on user email
   const getProfilePicture = (userEmail) => {
-    if (!userEmail) {
-      const randomNum = Math.floor(Math.random() * 6) + 1
-      return `/img/profile${randomNum}.jpg`
-    }
     // Use email to generate consistent number for same user
+    // If no email, default to profile picture 1
+    if (!userEmail) {
+      return '/img/profile1.jpg'
+    }
     const hash = userEmail.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
     const profileNum = (hash % 6) + 1
     return `/img/profile${profileNum}.jpg`
@@ -218,7 +225,7 @@ export default function ProfilePage() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            Back to Home
+            {dict?.nav?.home || 'Home'}
           </button>
         </div>
       </div>
