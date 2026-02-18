@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { getDictionary } from '@/lib/i18n'
 import { getUserDisplayName } from '@/lib/userUtils'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ProfileSidebar from '@/components/ProfileSidebar'
 
 // Auto-close delay constants (in milliseconds)
 const AUTO_CLOSE_DELAY_SHORT = 2000  // For name and password updates
@@ -393,87 +393,53 @@ export default function SettingsPage() {
   return (
     <>
       <Header lang={lang} dict={dict} />
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Back to Profile Link */}
-          <div className="mb-6">
-            <Link
-              href={`/${lang}/profile`}
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-primary-600 transition-colors duration-200"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              <span className="font-medium">{dict?.settings?.backToProfile || 'Back to Profile'}</span>
-            </Link>
-          </div>
-
-          {/* Settings Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+      <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Sidebar */}
+            <ProfileSidebar lang={lang} dict={dict} />
+            
+            {/* Main Content */}
+            <div className="flex-1">
+              {/* Page Header */}
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-900">{dict?.settings?.settings || 'Settings'}</h1>
+                <p className="text-gray-600 mt-1">{dict?.settings?.subtitle || 'Manage your account settings'}</p>
               </div>
-              <div>
-                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                  {dict?.settings?.accountSettings || 'Account Settings'}
-                </h1>
-                <p className="text-gray-600 mt-1">Manage your account preferences and security</p>
-              </div>
-            </div>
-          </div>
 
           {/* Name Settings Card */}
-          <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-6">
-            <div className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 sm:px-8 py-6">
-              <div className="flex items-center gap-3">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                <div>
-                  <h2 className="text-xl font-bold text-white">
-                    {dict?.settings?.nameSettings || 'Name Settings'}
-                  </h2>
-                  <p className="text-purple-100 text-sm mt-1">
-                    {dict?.settings?.nameDescription || 'Update your display name'}
-                  </p>
-                </div>
-              </div>
+          <div className="bg-white border border-gray-200 rounded-lg mb-6">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {dict?.settings?.nameSettings || 'Name Settings'}
+              </h2>
             </div>
 
-            <div className="px-6 sm:px-8 py-8">
+            <div className="px-6 py-6">
               {!isEditingName ? (
                 // Display mode - show current info with Edit button
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-500 mb-1">
                       Current Name
                     </label>
-                    <div className="px-4 py-3 bg-gray-50 rounded-xl border-2 border-gray-200 text-gray-900 font-medium text-lg">
-                      {getUserDisplayName(user)}
-                    </div>
+                    <p className="text-base text-gray-900">{getUserDisplayName(user)}</p>
                   </div>
                   
                   <button
                     type="button"
                     onClick={() => setIsEditingName(true)}
-                    className="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    <span>{dict?.settings?.editName || 'Edit Name'}</span>
+                    {dict?.settings?.editName || 'Edit Name'}
                   </button>
                 </div>
               ) : (
                 // Edit mode - show form
-                <form onSubmit={handleNameUpdate} className="space-y-6">
+                <form onSubmit={handleNameUpdate} className="space-y-4">
                   {/* Full Name Input */}
                   <div>
-                    <label htmlFor="fullName" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
                       {dict?.settings?.fullNameLabel || 'Full Name'}
                     </label>
                     <input
@@ -482,7 +448,7 @@ export default function SettingsPage() {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder={dict?.settings?.fullNamePlaceholder || 'Enter your full name'}
-                      className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                       disabled={isUpdatingName}
                       required
                     />
@@ -490,57 +456,31 @@ export default function SettingsPage() {
 
                   {/* Message Display */}
                   {nameUpdateMessage.text && (
-                    <div className={`p-4 rounded-xl border-2 ${
+                    <div className={`p-3 rounded-lg ${
                       nameUpdateMessage.type === 'success' 
-                        ? 'bg-green-50 border-green-300 text-green-800' 
-                        : 'bg-red-50 border-red-300 text-red-800'
+                        ? 'bg-green-50 text-green-800' 
+                        : 'bg-red-50 text-red-800'
                     }`}>
-                      <div className="flex items-start gap-3">
-                        {nameUpdateMessage.type === 'success' ? (
-                          <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        ) : (
-                          <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        )}
-                        <p className="text-sm flex-1 font-medium">{nameUpdateMessage.text}</p>
-                      </div>
+                      <p className="text-sm">{nameUpdateMessage.text}</p>
                     </div>
                   )}
 
                   {/* Action Buttons */}
-                  <div className="pt-2 flex gap-4">
+                  <div className="flex gap-3">
                     <button
                       type="submit"
                       disabled={isUpdatingName}
-                      className="flex-1 px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                      className="px-6 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                      {isUpdatingName ? (
-                        <>
-                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                          <span>{dict?.settings?.updatingName || 'Updating name...'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          <span>{dict?.settings?.updateNameButton || 'Update Name'}</span>
-                        </>
-                      )}
+                      {isUpdatingName ? (dict?.settings?.updatingName || 'Updating...') : (dict?.settings?.updateNameButton || 'Update Name')}
                     </button>
                     <button
                       type="button"
                       onClick={handleCancelNameEdit}
                       disabled={isUpdatingName}
-                      className="px-6 py-4 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="px-6 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                      <span className="hidden sm:inline">{dict?.common?.cancel || 'Cancel'}</span>
+                      {dict?.common?.cancel || 'Cancel'}
                     </button>
                   </div>
                 </form>
@@ -549,68 +489,53 @@ export default function SettingsPage() {
           </div>
 
           {/* Email Settings Card */}
-          <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-6">
-            <div className="bg-gradient-to-r from-primary-500 to-primary-600 px-6 sm:px-8 py-6">
-              <div className="flex items-center gap-3">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <div>
-                  <h2 className="text-xl font-bold text-white">
-                    {dict?.settings?.emailSettings || 'Email Settings'}
-                  </h2>
-                  <p className="text-primary-100 text-sm mt-1">
-                    {dict?.settings?.emailDescription || 'Change the email address associated with your account'}
-                  </p>
-                </div>
-              </div>
+          <div className="bg-white border border-gray-200 rounded-lg mb-6">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {dict?.settings?.emailSettings || 'Email Settings'}
+              </h2>
             </div>
 
-            <div className="px-6 sm:px-8 py-8">
+            <div className="px-6 py-6">
               {isOAuthUser(user) ? (
                 // OAuth user - show message
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 border border-blue-200 text-center">
-                  <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="bg-blue-50 rounded-lg p-6 border border-blue-200 text-center">
+                  <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  <h3 className="text-base font-semibold text-gray-900 mb-1">
                     {dict?.profile?.accountManagedBy || 'Account managed by'} {getFormattedAuthProvider(user)}
                   </h3>
-                  <p className="text-gray-700">
+                  <p className="text-sm text-gray-600">
                     {dict?.profile?.cannotChangeEmail || 'Email cannot be changed for OAuth accounts'}
                   </p>
                 </div>
               ) : !isEditingEmail ? (
                 // Display mode - show current email with Edit button
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-500 mb-1">
                       Current Email Address
                     </label>
-                    <div className="px-4 py-3 bg-gray-50 rounded-xl border-2 border-gray-200 text-gray-900 font-medium text-lg break-all">
-                      {user.email}
-                    </div>
+                    <p className="text-base text-gray-900 break-all">{user.email}</p>
                   </div>
                   
                   <button
                     type="button"
                     onClick={() => setIsEditingEmail(true)}
-                    className="w-full px-6 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl font-semibold hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    <span>{dict?.settings?.editEmail || 'Change Email'}</span>
+                    {dict?.settings?.editEmail || 'Change Email'}
                   </button>
                 </div>
               ) : (
                 // Edit mode - show update form
-                <form onSubmit={handleEmailUpdate} className="space-y-6">
+                <form onSubmit={handleEmailUpdate} className="space-y-4">
                   {/* New Email Input */}
                   <div>
-                    <label htmlFor="newEmail" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="newEmail" className="block text-sm font-medium text-gray-700 mb-1">
                       {dict?.settings?.newEmailLabel || dict?.profile?.newEmail || 'New Email Address'}
                     </label>
                     <input
@@ -619,7 +544,7 @@ export default function SettingsPage() {
                       value={newEmail}
                       onChange={(e) => setNewEmail(e.target.value)}
                       placeholder={dict?.profile?.newEmailPlaceholder || 'Enter new email address'}
-                      className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                       disabled={isUpdatingEmail}
                       required
                     />
@@ -627,7 +552,7 @@ export default function SettingsPage() {
 
                   {/* Password Input */}
                   <div>
-                    <label htmlFor="emailPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="emailPassword" className="block text-sm font-medium text-gray-700 mb-1">
                       {dict?.settings?.passwordLabel || dict?.profile?.currentPassword || 'Current Password'}
                     </label>
                     <input
@@ -636,71 +561,42 @@ export default function SettingsPage() {
                       value={emailPassword}
                       onChange={(e) => setEmailPassword(e.target.value)}
                       placeholder={dict?.profile?.passwordPlaceholder || 'Enter your current password'}
-                      className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                       disabled={isUpdatingEmail}
                       required
                     />
-                    <p className="mt-2 text-sm text-gray-500 flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                    <p className="mt-2 text-xs text-gray-500">
                       {dict?.settings?.passwordHelp || dict?.profile?.passwordHint || 'Required for security verification'}
                     </p>
                   </div>
 
                   {/* Message Display */}
                   {emailUpdateMessage.text && (
-                    <div className={`p-4 rounded-xl border-2 ${
+                    <div className={`p-3 rounded-lg ${
                       emailUpdateMessage.type === 'success' 
-                        ? 'bg-green-50 border-green-300 text-green-800' 
-                        : 'bg-red-50 border-red-300 text-red-800'
+                        ? 'bg-green-50 text-green-800' 
+                        : 'bg-red-50 text-red-800'
                     }`}>
-                      <div className="flex items-start gap-3">
-                        {emailUpdateMessage.type === 'success' ? (
-                          <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        ) : (
-                          <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        )}
-                        <p className="text-sm flex-1 font-medium">{emailUpdateMessage.text}</p>
-                      </div>
+                      <p className="text-sm">{emailUpdateMessage.text}</p>
                     </div>
                   )}
 
                   {/* Action Buttons */}
-                  <div className="pt-2 flex gap-4">
+                  <div className="flex gap-3">
                     <button
                       type="submit"
                       disabled={isUpdatingEmail}
-                      className="flex-1 px-6 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl font-semibold hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                      className="px-6 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                      {isUpdatingEmail ? (
-                        <>
-                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                          <span>{dict?.profile?.updating || 'Updating...'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          <span>{dict?.settings?.updateEmailButton || dict?.profile?.updateEmail || 'Update Email'}</span>
-                        </>
-                      )}
+                      {isUpdatingEmail ? (dict?.profile?.updating || 'Updating...') : (dict?.settings?.updateEmailButton || dict?.profile?.updateEmail || 'Update Email')}
                     </button>
                     <button
                       type="button"
                       onClick={handleCancelEmailEdit}
                       disabled={isUpdatingEmail}
-                      className="px-6 py-4 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="px-6 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                      <span className="hidden sm:inline">{dict?.common?.cancel || 'Cancel'}</span>
+                      {dict?.common?.cancel || 'Cancel'}
                     </button>
                   </div>
                 </form>
@@ -709,68 +605,48 @@ export default function SettingsPage() {
           </div>
 
           {/* Password Settings Card */}
-          <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-6">
-            <div className="bg-gradient-to-r from-accent-500 to-accent-600 px-6 sm:px-8 py-6">
-              <div className="flex items-center gap-3">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-                <div>
-                  <h2 className="text-xl font-bold text-white">
-                    {dict?.settings?.passwordSettings || 'Password Settings'}
-                  </h2>
-                  <p className="text-accent-100 text-sm mt-1">
-                    {dict?.settings?.passwordDescription || 'Change your account password'}
-                  </p>
-                </div>
-              </div>
+          <div className="bg-white border border-gray-200 rounded-lg mb-6">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {dict?.settings?.passwordSettings || 'Password Settings'}
+              </h2>
             </div>
 
-            <div className="px-6 sm:px-8 py-8">
+            <div className="px-6 py-6">
               {isOAuthUser(user) ? (
                 // OAuth user - show message
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 border border-blue-200 text-center">
-                  <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="bg-blue-50 rounded-lg p-6 border border-blue-200 text-center">
+                  <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  <h3 className="text-base font-semibold text-gray-900 mb-1">
                     {dict?.profile?.accountManagedBy || 'Account managed by'} {getFormattedAuthProvider(user)}
                   </h3>
-                  <p className="text-gray-700">
+                  <p className="text-sm text-gray-600">
                     Password cannot be changed for OAuth accounts
                   </p>
                 </div>
               ) : !isEditingPassword ? (
                 // Display mode - show Change Password button
-                <div className="space-y-6">
-                  <div className="text-center py-4">
-                    <div className="w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-10 h-10 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
-                    </div>
-                    <p className="text-gray-600 mb-4">Keep your account secure by regularly updating your password</p>
-                  </div>
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-600">Keep your account secure by regularly updating your password</p>
                   
                   <button
                     type="button"
                     onClick={() => setIsEditingPassword(true)}
-                    className="w-full px-6 py-4 bg-gradient-to-r from-accent-600 to-accent-700 text-white rounded-xl font-semibold hover:from-accent-700 hover:to-accent-800 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    <span>{dict?.settings?.changePassword || 'Change Password'}</span>
+                    {dict?.settings?.changePassword || 'Change Password'}
                   </button>
                 </div>
               ) : (
                 // Edit mode - show password change form
-                <form onSubmit={handlePasswordUpdate} className="space-y-6">
+                <form onSubmit={handlePasswordUpdate} className="space-y-4">
                   {/* New Password Input */}
                   <div>
-                    <label htmlFor="newPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
                       {dict?.settings?.newPasswordLabel || 'New Password'}
                     </label>
                     <input
@@ -779,7 +655,7 @@ export default function SettingsPage() {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder={dict?.settings?.newPasswordPlaceholder || 'Enter new password (min 6 characters)'}
-                      className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                       disabled={isUpdatingPassword}
                       minLength={6}
                       required
@@ -788,7 +664,7 @@ export default function SettingsPage() {
 
                   {/* Confirm Password Input */}
                   <div>
-                    <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
                       {dict?.settings?.confirmPasswordLabel || 'Confirm New Password'}
                     </label>
                     <input
@@ -797,7 +673,7 @@ export default function SettingsPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder={dict?.settings?.confirmPasswordPlaceholder || 'Re-enter new password'}
-                      className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                       disabled={isUpdatingPassword}
                       minLength={6}
                       required
@@ -806,61 +682,37 @@ export default function SettingsPage() {
 
                   {/* Message Display */}
                   {passwordUpdateMessage.text && (
-                    <div className={`p-4 rounded-xl border-2 ${
+                    <div className={`p-3 rounded-lg ${
                       passwordUpdateMessage.type === 'success' 
-                        ? 'bg-green-50 border-green-300 text-green-800' 
-                        : 'bg-red-50 border-red-300 text-red-800'
+                        ? 'bg-green-50 text-green-800' 
+                        : 'bg-red-50 text-red-800'
                     }`}>
-                      <div className="flex items-start gap-3">
-                        {passwordUpdateMessage.type === 'success' ? (
-                          <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        ) : (
-                          <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        )}
-                        <p className="text-sm flex-1 font-medium">{passwordUpdateMessage.text}</p>
-                      </div>
+                      <p className="text-sm">{passwordUpdateMessage.text}</p>
                     </div>
                   )}
 
                   {/* Action Buttons */}
-                  <div className="pt-2 flex gap-4">
+                  <div className="flex gap-3">
                     <button
                       type="submit"
                       disabled={isUpdatingPassword}
-                      className="flex-1 px-6 py-4 bg-gradient-to-r from-accent-600 to-accent-700 text-white rounded-xl font-semibold hover:from-accent-700 hover:to-accent-800 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                      className="px-6 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                      {isUpdatingPassword ? (
-                        <>
-                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                          <span>{dict?.settings?.updatingPassword || 'Updating password...'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          <span>{dict?.settings?.updatePasswordButton || 'Update Password'}</span>
-                        </>
-                      )}
+                      {isUpdatingPassword ? (dict?.settings?.updatingPassword || 'Updating...') : (dict?.settings?.updatePasswordButton || 'Update Password')}
                     </button>
                     <button
                       type="button"
                       onClick={handleCancelPasswordEdit}
                       disabled={isUpdatingPassword}
-                      className="px-6 py-4 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="px-6 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                      <span className="hidden sm:inline">{dict?.common?.cancel || 'Cancel'}</span>
+                      {dict?.common?.cancel || 'Cancel'}
                     </button>
                   </div>
                 </form>
               )}
+            </div>
+          </div>
             </div>
           </div>
         </div>
