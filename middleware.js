@@ -11,6 +11,7 @@ const publicPaths = [
   '/favicon.ico',
   '/logo.png',
   '/images',
+  '/img',
 ];
 
 function getLocaleFromRequest(request) {
@@ -89,9 +90,6 @@ export function middleware(request) {
 
 export const config = {
   matcher: [
-    // Match all pathnames except for
-    // - … if they start with /api, /admin, /_next, or /images
-    // - … the ones containing a dot (e.g. favicon.ico)
-    '/((?!api|admin|_next|images|favicon.ico|logo.png).*)',
+    '/((?!api|admin|_next|images|img|favicon.ico|logo.png).*)',
   ],
 };
