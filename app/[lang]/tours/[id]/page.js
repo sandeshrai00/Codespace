@@ -109,7 +109,7 @@ export default async function TourDetailPage({ params }) {
       {/* Reviews Section */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          <TourReviews tourId={tour.id} />
+          <TourReviews tourId={tour.id} lang={lang} dict={dict} />
         </div>
       </section>
 

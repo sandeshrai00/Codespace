@@ -56,6 +56,9 @@ CREATE TABLE IF NOT EXISTS public.reviews (
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
   comment TEXT NOT NULL,
+  comment_en TEXT,
+  comment_th TEXT,
+  comment_zh TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   
