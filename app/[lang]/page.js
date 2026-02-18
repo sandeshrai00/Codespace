@@ -57,7 +57,7 @@ export default async function HomePage({ params }) {
       )}
 
       {/* Hero Section - Professional Nepal-Thailand Focus */}
-      <section className="relative bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 text-white py-24 md:py-32 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 text-white py-16 md:py-20 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -75,20 +75,20 @@ export default async function HomePage({ params }) {
               {dict.home.heroDescription}
             </p>
             
-            {/* Search Bar Card */}
-            <div className="backdrop-blur-xl bg-white/10 rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 max-w-4xl mx-auto border border-white/20">
-              <div className="flex flex-col md:flex-row gap-3 sm:gap-4">
+            {/* Search Bar - Horizontal Minimal Design */}
+            <div className="backdrop-blur-sm bg-white/95 rounded-xl shadow-md p-3 max-w-3xl mx-auto border border-gray-200">
+              <div className="flex flex-col md:flex-row gap-2">
                 <div className="flex-1">
                   <input
                     type="text"
                     placeholder={dict.home.searchPlaceholder}
                     aria-label="Search destination"
-                    className="w-full px-4 sm:px-6 py-3 sm:py-4 border-2 border-transparent rounded-2xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-accent-600 text-base sm:text-lg transition-all shadow-lg"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-accent-500 focus:border-accent-500 text-base transition-all"
                   />
                 </div>
                 <Link 
                   href={`/${lang}/tours`}
-                  className="w-full md:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-accent-600 to-accent-700 text-white rounded-2xl font-bold text-base sm:text-lg hover:from-accent-700 hover:to-accent-800 transition-all shadow-lg hover:shadow-xl text-center md:whitespace-nowrap hover:scale-105 transform"
+                  className="md:w-auto px-6 py-3 bg-accent-600 text-white rounded-lg font-semibold text-base hover:bg-accent-700 transition-all text-center md:whitespace-nowrap"
                 >
                   {dict.home.exploreTours}
                 </Link>
