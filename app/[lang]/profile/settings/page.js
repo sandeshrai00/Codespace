@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { getDictionary } from '@/lib/i18n'
+import { getUserDisplayName } from '@/lib/userUtils'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
@@ -12,10 +13,24 @@ export default function SettingsPage() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [dict, setDict] = useState(null)
+  
+  // Name update states
+  const [fullName, setFullName] = useState('')
+  const [isUpdatingName, setIsUpdatingName] = useState(false)
+  const [nameUpdateMessage, setNameUpdateMessage] = useState({ type: '', text: '' })
+  
+  // Email update states
   const [newEmail, setNewEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [emailPassword, setEmailPassword] = useState('')
   const [isUpdatingEmail, setIsUpdatingEmail] = useState(false)
   const [emailUpdateMessage, setEmailUpdateMessage] = useState({ type: '', text: '' })
+  
+  // Password update states
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false)
+  const [passwordUpdateMessage, setPasswordUpdateMessage] = useState({ type: '', text: '' })
+  
   const router = useRouter()
   const params = useParams()
   const lang = params.lang || 'en'
@@ -43,6 +58,7 @@ export default function SettingsPage() {
         }
         
         setUser(session.user)
+        setFullName(session.user.user_metadata?.full_name || '')
       } catch (error) {
         console.error('Error fetching user:', error)
         router.push(`/${lang}/login`)
@@ -60,6 +76,7 @@ export default function SettingsPage() {
           router.push(`/${lang}/login`)
         } else {
           setUser(session.user)
+          setFullName(session.user.user_metadata?.full_name || '')
         }
       })
 
@@ -88,6 +105,49 @@ export default function SettingsPage() {
     return provider !== 'email'
   }
 
+  // Format auth provider name for display
+  const getFormattedAuthProvider = (user) => {
+    const provider = getAuthProvider(user)
+    return provider.charAt(0).toUpperCase() + provider.slice(1)
+  }
+
+  // Handle name update
+  const handleNameUpdate = async (e) => {
+    e.preventDefault()
+    
+    if (!fullName || !fullName.trim()) {
+      setNameUpdateMessage({
+        type: 'error',
+        text: dict?.settings?.nameRequired || 'Please enter your full name'
+      })
+      return
+    }
+
+    setIsUpdatingName(true)
+    setNameUpdateMessage({ type: '', text: '' })
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: { full_name: fullName.trim() }
+      })
+
+      if (error) throw error
+
+      setNameUpdateMessage({
+        type: 'success',
+        text: dict?.settings?.nameUpdateSuccess || 'Your name has been updated successfully!'
+      })
+    } catch (error) {
+      console.error('Error updating name:', error)
+      setNameUpdateMessage({
+        type: 'error',
+        text: dict?.settings?.nameUpdateError || 'Failed to update name. Please try again.'
+      })
+    } finally {
+      setIsUpdatingName(false)
+    }
+  }
+
   // Handle email update
   const handleEmailUpdate = async (e) => {
     e.preventDefault()
@@ -108,7 +168,7 @@ export default function SettingsPage() {
       return
     }
 
-    if (!password || !password.trim()) {
+    if (!emailPassword || !emailPassword.trim()) {
       setEmailUpdateMessage({
         type: 'error',
         text: dict?.profile?.passwordRequired || 'Please enter your current password for verification'
@@ -123,7 +183,7 @@ export default function SettingsPage() {
       // Verify the current password first
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: user.email,
-        password: password
+        password: emailPassword
       })
 
       if (signInError) {
@@ -149,7 +209,7 @@ export default function SettingsPage() {
       
       // Reset form fields
       setNewEmail('')
-      setPassword('')
+      setEmailPassword('')
     } catch (error) {
       console.error('Error updating email:', error)
       
@@ -168,6 +228,55 @@ export default function SettingsPage() {
       }
     } finally {
       setIsUpdatingEmail(false)
+    }
+  }
+
+  // Handle password update
+  const handlePasswordUpdate = async (e) => {
+    e.preventDefault()
+    
+    if (!newPassword || newPassword.length < 6) {
+      setPasswordUpdateMessage({
+        type: 'error',
+        text: dict?.settings?.passwordTooShort || 'Password must be at least 6 characters long'
+      })
+      return
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordUpdateMessage({
+        type: 'error',
+        text: dict?.settings?.passwordsDoNotMatch || 'Passwords do not match'
+      })
+      return
+    }
+
+    setIsUpdatingPassword(true)
+    setPasswordUpdateMessage({ type: '', text: '' })
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      })
+
+      if (error) throw error
+
+      setPasswordUpdateMessage({
+        type: 'success',
+        text: dict?.settings?.passwordUpdateSuccess || 'Your password has been updated successfully!'
+      })
+      
+      // Reset form fields
+      setNewPassword('')
+      setConfirmPassword('')
+    } catch (error) {
+      console.error('Error updating password:', error)
+      setPasswordUpdateMessage({
+        type: 'error',
+        text: dict?.settings?.passwordUpdateError || 'Failed to update password. Please try again.'
+      })
+    } finally {
+      setIsUpdatingPassword(false)
     }
   }
 
@@ -246,8 +355,103 @@ export default function SettingsPage() {
             </div>
           </div>
 
+          {/* Name Settings Card */}
+          <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-6">
+            <div className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 sm:px-8 py-6">
+              <div className="flex items-center gap-3">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <div>
+                  <h2 className="text-xl font-bold text-white">
+                    {dict?.settings?.nameSettings || 'Name Settings'}
+                  </h2>
+                  <p className="text-purple-100 text-sm mt-1">
+                    {dict?.settings?.nameDescription || 'Update your display name'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="px-6 sm:px-8 py-8">
+              <form onSubmit={handleNameUpdate} className="space-y-6">
+                {/* Current Name Display */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Current Name
+                  </label>
+                  <div className="px-4 py-3 bg-gray-50 rounded-xl border-2 border-gray-200 text-gray-700 font-medium">
+                    {getUserDisplayName(user)}
+                  </div>
+                </div>
+
+                {/* Full Name Input */}
+                <div>
+                  <label htmlFor="fullName" className="block text-sm font-semibold text-gray-700 mb-2">
+                    {dict?.settings?.fullNameLabel || 'Full Name'}
+                  </label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder={dict?.settings?.fullNamePlaceholder || 'Enter your full name'}
+                    className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    disabled={isUpdatingName}
+                    required
+                  />
+                </div>
+
+                {/* Message Display */}
+                {nameUpdateMessage.text && (
+                  <div className={`p-4 rounded-xl border-2 ${
+                    nameUpdateMessage.type === 'success' 
+                      ? 'bg-green-50 border-green-300 text-green-800' 
+                      : 'bg-red-50 border-red-300 text-red-800'
+                  }`}>
+                    <div className="flex items-start gap-3">
+                      {nameUpdateMessage.type === 'success' ? (
+                        <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      ) : (
+                        <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      )}
+                      <p className="text-sm flex-1 font-medium">{nameUpdateMessage.text}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={isUpdatingName}
+                    className="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                  >
+                    {isUpdatingName ? (
+                      <>
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                        <span>{dict?.settings?.updatingName || 'Updating name...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span>{dict?.settings?.updateNameButton || 'Update Name'}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
           {/* Email Settings Card */}
-          <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
+          <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-6">
             <div className="bg-gradient-to-r from-primary-500 to-primary-600 px-6 sm:px-8 py-6">
               <div className="flex items-center gap-3">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -274,7 +478,7 @@ export default function SettingsPage() {
                     </svg>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    {dict?.profile?.accountManagedBy || 'Account managed by'} {getAuthProvider(user).charAt(0).toUpperCase() + getAuthProvider(user).slice(1)}
+                    {dict?.profile?.accountManagedBy || 'Account managed by'} {getFormattedAuthProvider(user)}
                   </h3>
                   <p className="text-gray-700">
                     {dict?.profile?.cannotChangeEmail || 'Email cannot be changed for OAuth accounts'}
@@ -312,14 +516,14 @@ export default function SettingsPage() {
 
                   {/* Password Input */}
                   <div>
-                    <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor="emailPassword" className="block text-sm font-semibold text-gray-700 mb-2">
                       {dict?.settings?.passwordLabel || dict?.profile?.currentPassword || 'Current Password'}
                     </label>
                     <input
                       type="password"
-                      id="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      id="emailPassword"
+                      value={emailPassword}
+                      onChange={(e) => setEmailPassword(e.target.value)}
                       placeholder={dict?.profile?.passwordPlaceholder || 'Enter your current password'}
                       className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                       disabled={isUpdatingEmail}
@@ -382,9 +586,126 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Additional Settings Cards Can Go Here */}
-          <div className="mt-6 text-center text-sm text-gray-500">
-            More settings options coming soon
+          {/* Password Settings Card */}
+          <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-6">
+            <div className="bg-gradient-to-r from-accent-500 to-accent-600 px-6 sm:px-8 py-6">
+              <div className="flex items-center gap-3">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <div>
+                  <h2 className="text-xl font-bold text-white">
+                    {dict?.settings?.passwordSettings || 'Password Settings'}
+                  </h2>
+                  <p className="text-accent-100 text-sm mt-1">
+                    {dict?.settings?.passwordDescription || 'Change your account password'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="px-6 sm:px-8 py-8">
+              {isOAuthUser(user) ? (
+                // OAuth user - show message
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 border border-blue-200 text-center">
+                  <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    {dict?.profile?.accountManagedBy || 'Account managed by'} {getFormattedAuthProvider(user)}
+                  </h3>
+                  <p className="text-gray-700">
+                    Password cannot be changed for OAuth accounts
+                  </p>
+                </div>
+              ) : (
+                // Email user - show password change form
+                <form onSubmit={handlePasswordUpdate} className="space-y-6">
+                  {/* New Password Input */}
+                  <div>
+                    <label htmlFor="newPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                      {dict?.settings?.newPasswordLabel || 'New Password'}
+                    </label>
+                    <input
+                      type="password"
+                      id="newPassword"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder={dict?.settings?.newPasswordPlaceholder || 'Enter new password (min 6 characters)'}
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all"
+                      disabled={isUpdatingPassword}
+                      minLength={6}
+                      required
+                    />
+                  </div>
+
+                  {/* Confirm Password Input */}
+                  <div>
+                    <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                      {dict?.settings?.confirmPasswordLabel || 'Confirm New Password'}
+                    </label>
+                    <input
+                      type="password"
+                      id="confirmPassword"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder={dict?.settings?.confirmPasswordPlaceholder || 'Re-enter new password'}
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all"
+                      disabled={isUpdatingPassword}
+                      minLength={6}
+                      required
+                    />
+                  </div>
+
+                  {/* Message Display */}
+                  {passwordUpdateMessage.text && (
+                    <div className={`p-4 rounded-xl border-2 ${
+                      passwordUpdateMessage.type === 'success' 
+                        ? 'bg-green-50 border-green-300 text-green-800' 
+                        : 'bg-red-50 border-red-300 text-red-800'
+                    }`}>
+                      <div className="flex items-start gap-3">
+                        {passwordUpdateMessage.type === 'success' ? (
+                          <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                        <p className="text-sm flex-1 font-medium">{passwordUpdateMessage.text}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Submit Button */}
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      disabled={isUpdatingPassword}
+                      className="w-full px-6 py-4 bg-gradient-to-r from-accent-600 to-accent-700 text-white rounded-xl font-semibold hover:from-accent-700 hover:to-accent-800 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                    >
+                      {isUpdatingPassword ? (
+                        <>
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                          <span>{dict?.settings?.updatingPassword || 'Updating password...'}</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          <span>{dict?.settings?.updatePasswordButton || 'Update Password'}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </div>
