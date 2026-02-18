@@ -121,5 +121,16 @@
     "perPerson": "ต่อคน",
     "days": "วัน",
     "nights": "คืน"
+  },
+  "profile": {
+    "changeEmail": "เปลี่ยนอีเมล",
+    "newEmail": "ที่อยู่อีเมลใหม่",
+    "currentEmail": "อีเมลปัจจุบัน",
+    "updateEmail": "อัปเดตอีเมล",
+    "updating": "กำลังอัปเดต...",
+    "emailUpdateSuccess": "ส่งลิงก์ยืนยันไปยังอีเมลใหม่ของคุณแล้ว โปรดตรวจสอบกล่องจดหมาย",
+    "emailUpdateError": "อัปเดตอีเมลไม่สำเร็จ โปรดลองอีกครั้ง",
+    "accountManagedBy": "บัญชีจัดการโดย",
+    "cannotChangeEmail": "ไม่สามารถเปลี่ยนอีเมลสำหรับบัญชี OAuth"
   }
 }

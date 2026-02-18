@@ -121,5 +121,16 @@
     "perPerson": "每人",
     "days": "天",
     "nights": "晚"
+  },
+  "profile": {
+    "changeEmail": "更改电子邮件",
+    "newEmail": "新电子邮件地址",
+    "currentEmail": "当前电子邮件",
+    "updateEmail": "更新电子邮件",
+    "updating": "更新中...",
+    "emailUpdateSuccess": "确认链接已发送到您的新电子邮件。请检查您的收件箱。",
+    "emailUpdateError": "更新电子邮件失败。请重试。",
+    "accountManagedBy": "帐户管理者",
+    "cannotChangeEmail": "无法更改 OAuth 帐户的电子邮件"
   }
 }
