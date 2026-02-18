@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
@@ -36,10 +36,10 @@ export default function SettingsPage() {
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false)
   const [passwordUpdateMessage, setPasswordUpdateMessage] = useState({ type: '', text: '' })
   
-  // Timeout IDs for cleanup
-  const [nameTimeoutId, setNameTimeoutId] = useState(null)
-  const [emailTimeoutId, setEmailTimeoutId] = useState(null)
-  const [passwordTimeoutId, setPasswordTimeoutId] = useState(null)
+  // Refs for timeout IDs (prevents memory leaks)
+  const nameTimeoutRef = useRef(null)
+  const emailTimeoutRef = useRef(null)
+  const passwordTimeoutRef = useRef(null)
   
   const router = useRouter()
   const params = useParams()
@@ -53,11 +53,11 @@ export default function SettingsPage() {
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
-      if (nameTimeoutId) clearTimeout(nameTimeoutId)
-      if (emailTimeoutId) clearTimeout(emailTimeoutId)
-      if (passwordTimeoutId) clearTimeout(passwordTimeoutId)
+      if (nameTimeoutRef.current) clearTimeout(nameTimeoutRef.current)
+      if (emailTimeoutRef.current) clearTimeout(emailTimeoutRef.current)
+      if (passwordTimeoutRef.current) clearTimeout(passwordTimeoutRef.current)
     }
-  }, [nameTimeoutId, emailTimeoutId, passwordTimeoutId])
+  }, [])
 
   // Fetch user session
   useEffect(() => {
@@ -157,11 +157,10 @@ export default function SettingsPage() {
         text: dict?.settings?.nameUpdateSuccess || 'Your name has been updated successfully!'
       })
       // Exit edit mode after successful update
-      const timeoutId = setTimeout(() => {
+      nameTimeoutRef.current = setTimeout(() => {
         setIsEditingName(false)
         setNameUpdateMessage({ type: '', text: '' })
       }, 2000)
-      setNameTimeoutId(timeoutId)
     } catch (error) {
       console.error('Error updating name:', error)
       setNameUpdateMessage({
@@ -175,9 +174,9 @@ export default function SettingsPage() {
   
   // Handle cancel name edit
   const handleCancelNameEdit = () => {
-    if (nameTimeoutId) {
-      clearTimeout(nameTimeoutId)
-      setNameTimeoutId(null)
+    if (nameTimeoutRef.current) {
+      clearTimeout(nameTimeoutRef.current)
+      nameTimeoutRef.current = null
     }
     setIsEditingName(false)
     setFullName(user?.user_metadata?.full_name || '')
@@ -244,13 +243,12 @@ export default function SettingsPage() {
       })
       
       // Reset form fields and exit edit mode after successful update
-      const timeoutId = setTimeout(() => {
+      emailTimeoutRef.current = setTimeout(() => {
         setNewEmail('')
         setEmailPassword('')
         setIsEditingEmail(false)
         setEmailUpdateMessage({ type: '', text: '' })
       }, 3000)
-      setEmailTimeoutId(timeoutId)
     } catch (error) {
       console.error('Error updating email:', error)
       
@@ -274,9 +272,9 @@ export default function SettingsPage() {
   
   // Handle cancel email edit
   const handleCancelEmailEdit = () => {
-    if (emailTimeoutId) {
-      clearTimeout(emailTimeoutId)
-      setEmailTimeoutId(null)
+    if (emailTimeoutRef.current) {
+      clearTimeout(emailTimeoutRef.current)
+      emailTimeoutRef.current = null
     }
     setIsEditingEmail(false)
     setNewEmail('')
@@ -320,13 +318,12 @@ export default function SettingsPage() {
       })
       
       // Reset form fields and exit edit mode after successful update
-      const timeoutId = setTimeout(() => {
+      passwordTimeoutRef.current = setTimeout(() => {
         setNewPassword('')
         setConfirmPassword('')
         setIsEditingPassword(false)
         setPasswordUpdateMessage({ type: '', text: '' })
       }, 2000)
-      setPasswordTimeoutId(timeoutId)
     } catch (error) {
       console.error('Error updating password:', error)
       setPasswordUpdateMessage({
@@ -340,9 +337,9 @@ export default function SettingsPage() {
   
   // Handle cancel password edit
   const handleCancelPasswordEdit = () => {
-    if (passwordTimeoutId) {
-      clearTimeout(passwordTimeoutId)
-      setPasswordTimeoutId(null)
+    if (passwordTimeoutRef.current) {
+      clearTimeout(passwordTimeoutRef.current)
+      passwordTimeoutRef.current = null
     }
     setIsEditingPassword(false)
     setNewPassword('')
