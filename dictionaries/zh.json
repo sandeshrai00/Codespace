@@ -153,7 +153,6 @@
     "passwordLabel": "当前密码",
     "passwordHelp": "输入您的当前密码以验证此更改",
     "updateEmailButton": "更新电子邮件地址",
-    "canceling": "取消中...",
     "emailUpdateSuccessShort": "确认链接已发送到您的旧电子邮件和新电子邮件地址。"
   }
 }

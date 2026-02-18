@@ -96,8 +96,6 @@ export default function ProfilePage() {
     }
   }
 
-  // Detect auth provider
-
   if (loading) {
     return (
       <>

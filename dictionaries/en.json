@@ -153,7 +153,6 @@
     "passwordLabel": "Current Password",
     "passwordHelp": "Enter your current password to verify this change",
     "updateEmailButton": "Update Email Address",
-    "canceling": "Canceling...",
     "emailUpdateSuccessShort": "Confirmation links have been sent to both your old and new email addresses."
   }
 }
