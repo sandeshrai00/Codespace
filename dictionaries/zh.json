@@ -131,6 +131,9 @@
     "emailUpdateSuccess": "确认链接已发送到您的新电子邮件。请检查您的收件箱。",
     "emailUpdateError": "更新电子邮件失败。请重试。",
     "accountManagedBy": "帐户管理者",
-    "cannotChangeEmail": "无法更改 OAuth 帐户的电子邮件"
+    "cannotChangeEmail": "无法更改 OAuth 帐户的电子邮件",
+    "emailRequired": "请输入有效的电子邮件地址",
+    "emailSameAsCurrent": "新电子邮件必须与当前电子邮件不同",
+    "newEmailPlaceholder": "输入新电子邮件地址"
   }
 }

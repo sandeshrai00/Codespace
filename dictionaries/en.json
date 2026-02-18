@@ -131,6 +131,9 @@
     "emailUpdateSuccess": "Confirmation link sent to your new email. Please check your inbox.",
     "emailUpdateError": "Failed to update email. Please try again.",
     "accountManagedBy": "Account managed by",
-    "cannotChangeEmail": "Email cannot be changed for OAuth accounts"
+    "cannotChangeEmail": "Email cannot be changed for OAuth accounts",
+    "emailRequired": "Please enter a valid email address",
+    "emailSameAsCurrent": "New email must be different from current email",
+    "newEmailPlaceholder": "Enter new email address"
   }
 }

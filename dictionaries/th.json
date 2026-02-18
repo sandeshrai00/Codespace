@@ -131,6 +131,9 @@
     "emailUpdateSuccess": "ส่งลิงก์ยืนยันไปยังอีเมลใหม่ของคุณแล้ว โปรดตรวจสอบกล่องจดหมาย",
     "emailUpdateError": "อัปเดตอีเมลไม่สำเร็จ โปรดลองอีกครั้ง",
     "accountManagedBy": "บัญชีจัดการโดย",
-    "cannotChangeEmail": "ไม่สามารถเปลี่ยนอีเมลสำหรับบัญชี OAuth"
+    "cannotChangeEmail": "ไม่สามารถเปลี่ยนอีเมลสำหรับบัญชี OAuth",
+    "emailRequired": "โปรดป้อนที่อยู่อีเมลที่ถูกต้อง",
+    "emailSameAsCurrent": "อีเมลใหม่ต้องแตกต่างจากอีเมลปัจจุบัน",
+    "newEmailPlaceholder": "ป้อนที่อยู่อีเมลใหม่"
   }
 }

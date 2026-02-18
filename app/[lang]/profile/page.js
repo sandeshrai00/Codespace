@@ -128,7 +128,7 @@ export default function ProfilePage() {
     if (!newEmail || !newEmail.trim()) {
       setEmailUpdateMessage({
         type: 'error',
-        text: dict?.profile?.emailUpdateError || 'Please enter a valid email address'
+        text: dict?.profile?.emailRequired || 'Please enter a valid email address'
       })
       return
     }
@@ -136,7 +136,7 @@ export default function ProfilePage() {
     if (newEmail === user.email) {
       setEmailUpdateMessage({
         type: 'error',
-        text: 'New email must be different from current email'
+        text: dict?.profile?.emailSameAsCurrent || 'New email must be different from current email'
       })
       return
     }
@@ -369,7 +369,7 @@ export default function ProfilePage() {
                         id="newEmail"
                         value={newEmail}
                         onChange={(e) => setNewEmail(e.target.value)}
-                        placeholder="Enter new email address"
+                        placeholder={dict?.profile?.newEmailPlaceholder || 'Enter new email address'}
                         className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                         disabled={isUpdatingEmail}
                         required
