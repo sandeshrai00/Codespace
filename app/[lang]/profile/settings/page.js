@@ -9,6 +9,10 @@ import { getUserDisplayName } from '@/lib/userUtils'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
+// Auto-close delay constants (in milliseconds)
+const AUTO_CLOSE_DELAY_SHORT = 2000  // For name and password updates
+const AUTO_CLOSE_DELAY_LONG = 3000   // For email updates (longer message to read)
+
 export default function SettingsPage() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -160,7 +164,7 @@ export default function SettingsPage() {
       nameTimeoutRef.current = setTimeout(() => {
         setIsEditingName(false)
         setNameUpdateMessage({ type: '', text: '' })
-      }, 2000)
+      }, AUTO_CLOSE_DELAY_SHORT)
     } catch (error) {
       console.error('Error updating name:', error)
       setNameUpdateMessage({
@@ -242,13 +246,13 @@ export default function SettingsPage() {
         text: dict?.settings?.emailUpdateSuccessShort || dict?.profile?.emailUpdateSuccess || 'Confirmation links have been sent to both your old and new email addresses.'
       })
       
-      // Reset form fields and exit edit mode after successful update
+      // Reset form fields and exit edit mode after successful update (longer delay for email due to longer message)
       emailTimeoutRef.current = setTimeout(() => {
         setNewEmail('')
         setEmailPassword('')
         setIsEditingEmail(false)
         setEmailUpdateMessage({ type: '', text: '' })
-      }, 3000)
+      }, AUTO_CLOSE_DELAY_LONG)
     } catch (error) {
       console.error('Error updating email:', error)
       
@@ -323,7 +327,7 @@ export default function SettingsPage() {
         setConfirmPassword('')
         setIsEditingPassword(false)
         setPasswordUpdateMessage({ type: '', text: '' })
-      }, 2000)
+      }, AUTO_CLOSE_DELAY_SHORT)
     } catch (error) {
       console.error('Error updating password:', error)
       setPasswordUpdateMessage({
