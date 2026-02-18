@@ -126,14 +126,19 @@
     "changeEmail": "Change Email",
     "newEmail": "New Email Address",
     "currentEmail": "Current Email",
+    "currentPassword": "Current Password",
     "updateEmail": "Update Email",
     "updating": "Updating...",
-    "emailUpdateSuccess": "Confirmation link sent to your new email. Please check your inbox.",
+    "emailUpdateSuccess": "Confirmation links have been sent to both your current email and your new email address. Please check both inboxes and click the confirmation links to complete the change.",
     "emailUpdateError": "Failed to update email. Please try again.",
     "accountManagedBy": "Account managed by",
     "cannotChangeEmail": "Email cannot be changed for OAuth accounts",
     "emailRequired": "Please enter a valid email address",
     "emailSameAsCurrent": "New email must be different from current email",
-    "newEmailPlaceholder": "Enter new email address"
+    "newEmailPlaceholder": "Enter new email address",
+    "passwordRequired": "Please enter your current password for verification",
+    "passwordPlaceholder": "Enter your current password",
+    "passwordHint": "Required for security verification",
+    "incorrectPassword": "Incorrect password. Please try again."
   }
 }

@@ -14,6 +14,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [dict, setDict] = useState(null)
   const [newEmail, setNewEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showEmailForm, setShowEmailForm] = useState(false)
   const [isUpdatingEmail, setIsUpdatingEmail] = useState(false)
   const [emailUpdateMessage, setEmailUpdateMessage] = useState({ type: '', text: '' })
   const router = useRouter()
@@ -141,10 +143,34 @@ export default function ProfilePage() {
       return
     }
 
+    if (!password || !password.trim()) {
+      setEmailUpdateMessage({
+        type: 'error',
+        text: dict?.profile?.passwordRequired || 'Please enter your current password for verification'
+      })
+      return
+    }
+
     setIsUpdatingEmail(true)
     setEmailUpdateMessage({ type: '', text: '' })
 
     try {
+      // Verify the current password first
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: password
+      })
+
+      if (signInError) {
+        setEmailUpdateMessage({
+          type: 'error',
+          text: dict?.profile?.incorrectPassword || 'Incorrect password. Please try again.'
+        })
+        setIsUpdatingEmail(false)
+        return
+      }
+
+      // If password is correct, proceed with email update
       const { error } = await supabase.auth.updateUser({
         email: newEmail
       })
@@ -153,9 +179,16 @@ export default function ProfilePage() {
 
       setEmailUpdateMessage({
         type: 'success',
-        text: dict?.profile?.emailUpdateSuccess || 'Confirmation link sent to your new email. Please check your inbox.'
+        text: dict?.profile?.emailUpdateSuccess || 'Confirmation links have been sent to both your current email and your new email address. Please check both inboxes and click the confirmation links to complete the change.'
       })
+      
+      // Reset form and hide it after successful submission
       setNewEmail('')
+      setPassword('')
+      setTimeout(() => {
+        setShowEmailForm(false)
+        setEmailUpdateMessage({ type: '', text: '' })
+      }, 5000)
     } catch (error) {
       console.error('Error updating email:', error)
       setEmailUpdateMessage({
@@ -165,6 +198,14 @@ export default function ProfilePage() {
     } finally {
       setIsUpdatingEmail(false)
     }
+  }
+
+  // Handle cancel button
+  const handleCancelEmailChange = () => {
+    setShowEmailForm(false)
+    setNewEmail('')
+    setPassword('')
+    setEmailUpdateMessage({ type: '', text: '' })
   }
 
   if (loading) {
@@ -348,8 +389,21 @@ export default function ProfilePage() {
                       </div>
                     </div>
                   </div>
+                ) : !showEmailForm ? (
+                  // Email user - show "Change Email" button when form is hidden
+                  <div className="text-center">
+                    <button
+                      onClick={() => setShowEmailForm(true)}
+                      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 mx-auto"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                      <span>{dict?.profile?.changeEmail || 'Change Email'}</span>
+                    </button>
+                  </div>
                 ) : (
-                  // Email user - show update form
+                  // Email user - show update form when button is clicked
                   <form onSubmit={handleEmailUpdate} className="space-y-4">
                     <div>
                       <label htmlFor="currentEmail" className="block text-sm font-medium text-gray-700 mb-2">
@@ -376,6 +430,25 @@ export default function ProfilePage() {
                       />
                     </div>
 
+                    <div>
+                      <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                        {dict?.profile?.currentPassword || 'Current Password'}
+                      </label>
+                      <input
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder={dict?.profile?.passwordPlaceholder || 'Enter your current password'}
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        disabled={isUpdatingEmail}
+                        required
+                      />
+                      <p className="mt-2 text-sm text-gray-500">
+                        {dict?.profile?.passwordHint || 'Required for security verification'}
+                      </p>
+                    </div>
+
                     {emailUpdateMessage.text && (
                       <div className={`p-4 rounded-lg ${
                         emailUpdateMessage.type === 'success' 
@@ -397,25 +470,38 @@ export default function ProfilePage() {
                       </div>
                     )}
 
-                    <button
-                      type="submit"
-                      disabled={isUpdatingEmail}
-                      className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                    >
-                      {isUpdatingEmail ? (
-                        <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                          <span>{dict?.profile?.updating || 'Updating...'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                          </svg>
-                          <span>{dict?.profile?.updateEmail || 'Update Email'}</span>
-                        </>
-                      )}
-                    </button>
+                    <div className="flex gap-3">
+                      <button
+                        type="submit"
+                        disabled={isUpdatingEmail}
+                        className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        {isUpdatingEmail ? (
+                          <>
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                            <span>{dict?.profile?.updating || 'Updating...'}</span>
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            <span>{dict?.profile?.updateEmail || 'Update Email'}</span>
+                          </>
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleCancelEmailChange}
+                        disabled={isUpdatingEmail}
+                        className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span>{dict?.common?.cancel || 'Cancel'}</span>
+                      </button>
+                    </div>
                   </form>
                 )}
               </div>
