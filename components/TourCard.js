@@ -45,12 +45,12 @@ export default function TourCard({ tour, lang = 'en', dict }) {
 
         {/* Card Content */}
         <div className="p-3 sm:p-6 flex-1 flex flex-col">
-          <h3 className="text-sm sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-primary-600 transition-colors line-clamp-1 sm:line-clamp-2">
+          <h3 className="text-sm sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-primary-600 transition-colors line-clamp-2" title={localizedTitle}>
             {localizedTitle}
           </h3>
           
           {/* Location & Duration - Combined horizontal row */}
-          <div className="flex flex-row flex-wrap gap-x-3 gap-y-1 mb-2 sm:mb-4 text-[10px] sm:text-sm text-gray-600">
+          <div className="flex flex-row flex-wrap gap-x-3 gap-y-1 mb-2 sm:mb-4 text-xs sm:text-sm text-gray-600">
             <div className="flex items-center gap-1">
               <svg className="w-3 h-3 sm:w-4 sm:h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -72,9 +72,9 @@ export default function TourCard({ tour, lang = 'en', dict }) {
 
           {/* Footer - Simplified */}
           <div className="flex items-center justify-end mt-auto pt-3 sm:pt-4 border-t border-gray-100">
-            <div className="flex items-center gap-1 text-primary-600 font-semibold text-xs sm:text-sm group-hover:gap-2 transition-all">
+            <div className="flex items-center gap-1 text-primary-600 font-semibold text-xs sm:text-sm group-hover:gap-2 transition-all" aria-label={dict?.tours?.viewDetails || 'View Details'}>
               <span className="hidden sm:inline">{dict?.tours?.viewDetails || 'View Details'}</span>
-              <svg className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </div>
