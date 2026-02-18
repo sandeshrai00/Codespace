@@ -42,7 +42,7 @@ export default function LanguageSwitcher() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-2 rounded-2xl text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-all duration-200 border border-transparent hover:border-primary-200"
-        aria-label="Select language"
+        aria-label={`Select language - Current: ${currentConfig.name}`}
         aria-expanded={isOpen}
       >
         <span className="text-2xl">{currentConfig.flag}</span>
