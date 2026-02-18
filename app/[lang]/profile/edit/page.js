@@ -66,7 +66,6 @@ const COUNTRY_CODES = [
 
 export default function ProfileEditPage() {
   const [user, setUser] = useState(null)
-  const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [dict, setDict] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
@@ -119,8 +118,6 @@ export default function ProfileEditPage() {
         if (error) {
           console.error('Error fetching profile:', error)
         } else {
-          setProfile(profileData)
-          
           // Parse phone number to extract country code and number
           let extractedCountryCode = '+1'
           let extractedPhoneNumber = profileData?.phone_number || ''
