@@ -88,7 +88,7 @@ export default function AnnouncementList({ announcements }) {
             {announcements.map((announcement) => (
               <tr key={announcement.id} className="hover:bg-gray-50">
                 <td className="px-4 py-4">
-                  <div className="text-gray-900">{announcement.message}</div>
+                  <div className="text-gray-900">{announcement.message_en || announcement.message}</div>
                 </td>
                 <td className="px-4 py-4">
                   {announcement.is_active ? (
@@ -116,7 +116,7 @@ export default function AnnouncementList({ announcements }) {
                       {actionLoading === announcement.id ? 'Loading...' : announcement.is_active ? 'Deactivate' : 'Activate'}
                     </button>
                     <button
-                      onClick={() => handleDelete(announcement.id, announcement.message)}
+                      onClick={() => handleDelete(announcement.id, announcement.message_en || announcement.message)}
                       disabled={actionLoading === announcement.id}
                       className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
@@ -135,7 +135,7 @@ export default function AnnouncementList({ announcements }) {
         {announcements.map((announcement) => (
           <div key={announcement.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
             <div className="mb-3">
-              <p className="text-gray-900 mb-2">{announcement.message}</p>
+              <p className="text-gray-900 mb-2">{announcement.message_en || announcement.message}</p>
               <div className="flex items-center justify-between">
                 {announcement.is_active ? (
                   <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
@@ -160,7 +160,7 @@ export default function AnnouncementList({ announcements }) {
                 {actionLoading === announcement.id ? 'Loading...' : announcement.is_active ? 'Deactivate' : 'Activate'}
               </button>
               <button
-                onClick={() => handleDelete(announcement.id, announcement.message)}
+                onClick={() => handleDelete(announcement.id, announcement.message_en || announcement.message)}
                 disabled={actionLoading === announcement.id}
                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
               >

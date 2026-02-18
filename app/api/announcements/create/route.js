@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { isAuthenticated } from '@/lib/auth'
 import { getTurso } from '@/lib/turso'
 import { revalidatePath } from 'next/cache'
+import { translateAnnouncementMessage } from '@/lib/translate'
 
 export async function POST(request) {
   try {
@@ -23,6 +24,9 @@ export async function POST(request) {
       )
     }
 
+    // Translate announcement message to Thai and Chinese
+    const translatedMessages = await translateAnnouncementMessage(message);
+
     const turso = getTurso();
     
     // If setting as active, deactivate all other announcements
@@ -31,8 +35,8 @@ export async function POST(request) {
     }
 
     await turso.execute({
-      sql: 'INSERT INTO announcements (message, is_active) VALUES (?, ?)',
-      args: [message, is_active ? 1 : 0]
+      sql: 'INSERT INTO announcements (message_en, message_th, message_zh, is_active) VALUES (?, ?, ?, ?)',
+      args: [translatedMessages.message_en, translatedMessages.message_th, translatedMessages.message_zh, is_active ? 1 : 0]
     });
 
     revalidatePath('/admin/announcements')
