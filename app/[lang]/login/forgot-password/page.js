@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
@@ -12,6 +13,10 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
+  const pathname = usePathname()
+  
+  // Extract lang from pathname
+  const lang = pathname?.split('/')[1] || 'en'
 
   const handleResetPassword = async (e) => {
     e.preventDefault()
@@ -29,7 +34,7 @@ export default function ForgotPasswordPage() {
       // Use environment variable for base URL if available, otherwise fallback to window.location.origin
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${baseUrl}/login/update-password`,
+        redirectTo: `${baseUrl}/${lang}/login/update-password`,
       })
 
       if (error) throw error
@@ -108,14 +113,14 @@ export default function ForgotPasswordPage() {
 
               {/* Back to Login */}
               <div className="mt-6 text-center">
-                <Link href="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+                <Link href={`/${lang}/login`} className="text-primary-600 hover:text-primary-700 font-medium">
                   ← Back to Login
                 </Link>
               </div>
 
               {/* Back to Home */}
               <div className="mt-4 text-center">
-                <Link href="/" className="text-gray-600 hover:text-gray-800 text-sm">
+                <Link href={`/${lang}`} className="text-gray-600 hover:text-gray-800 text-sm">
                   ← Back to Home
                 </Link>
               </div>
