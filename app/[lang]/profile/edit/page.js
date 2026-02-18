@@ -443,21 +443,56 @@ export default function ProfileEditPage() {
 
                       {/* Gender */}
                       <div>
-                        <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
                           {dict?.profileSettings?.gender || 'Gender'}
                         </label>
-                        <select
-                          id="gender"
-                          value={formData.gender}
-                          onChange={(e) => handleInputChange('gender', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-transparent bg-white"
-                          disabled={isSaving}
-                        >
-                          <option value="">{dict?.profileSettings?.genderPlaceholder || 'Select your gender'}</option>
-                          <option value="male">{dict?.profileSettings?.male || 'Male'}</option>
-                          <option value="female">{dict?.profileSettings?.female || 'Female'}</option>
-                          <option value="other">{dict?.profileSettings?.other || 'Other'}</option>
-                        </select>
+                        <div className="flex gap-4">
+                          {[
+                            { value: 'male', label: dict?.profileSettings?.male || 'Male' },
+                            { value: 'female', label: dict?.profileSettings?.female || 'Female' },
+                            { value: 'other', label: dict?.profileSettings?.other || 'Other' }
+                          ].map((option) => (
+                            <label
+                              key={option.value}
+                              className={`flex-1 relative cursor-pointer ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                              aria-disabled={isSaving}
+                            >
+                              <input
+                                type="radio"
+                                name="gender"
+                                value={option.value}
+                                checked={formData.gender === option.value}
+                                onChange={(e) => handleInputChange('gender', e.target.value)}
+                                disabled={isSaving}
+                                className="sr-only"
+                              />
+                              <div className={`
+                                flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all
+                                ${formData.gender === option.value 
+                                  ? 'border-primary-700 bg-primary-50' 
+                                  : 'border-gray-300 bg-white hover:border-gray-400'
+                                }
+                              `}>
+                                <div className={`
+                                  w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all
+                                  ${formData.gender === option.value 
+                                    ? 'border-primary-700 bg-primary-700' 
+                                    : 'border-gray-300 bg-white'
+                                  }
+                                `}>
+                                  {formData.gender === option.value && (
+                                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                    </svg>
+                                  )}
+                                </div>
+                                <span className={`text-sm font-medium ${formData.gender === option.value ? 'text-primary-700' : 'text-gray-700'}`}>
+                                  {option.label}
+                                </span>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
                       </div>
 
                       {/* Date of Birth */}
@@ -493,7 +528,7 @@ export default function ProfileEditPage() {
                       <button
                         type="submit"
                         disabled={isSaving}
-                        className="px-6 py-2 bg-primary-700 text-white rounded-lg font-medium hover:bg-primary-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        className="px-8 py-2 bg-primary-700 text-white rounded-full font-medium hover:bg-primary-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed w-auto"
                       >
                         {isSaving ? (dict?.profileSettings?.saving || 'Saving...') : (dict?.profileSettings?.save || 'Save Changes')}
                       </button>
@@ -501,7 +536,7 @@ export default function ProfileEditPage() {
                         type="button"
                         onClick={handleCancel}
                         disabled={isSaving}
-                        className="px-6 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-8 py-2 bg-white text-gray-700 border border-gray-300 rounded-full font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-auto"
                       >
                         {dict?.profileSettings?.cancel || dict?.common?.cancel || 'Cancel'}
                       </button>
