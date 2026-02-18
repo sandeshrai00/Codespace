@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
@@ -9,10 +9,19 @@ import { getUserDisplayName } from '@/lib/userUtils'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
+// Auto-close delay constants (in milliseconds)
+const AUTO_CLOSE_DELAY_SHORT = 2000  // For name and password updates
+const AUTO_CLOSE_DELAY_LONG = 3000   // For email updates (longer message to read)
+
 export default function SettingsPage() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [dict, setDict] = useState(null)
+  
+  // Edit mode states
+  const [isEditingName, setIsEditingName] = useState(false)
+  const [isEditingEmail, setIsEditingEmail] = useState(false)
+  const [isEditingPassword, setIsEditingPassword] = useState(false)
   
   // Name update states
   const [fullName, setFullName] = useState('')
@@ -31,6 +40,11 @@ export default function SettingsPage() {
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false)
   const [passwordUpdateMessage, setPasswordUpdateMessage] = useState({ type: '', text: '' })
   
+  // Refs for timeout IDs (prevents memory leaks)
+  const nameTimeoutRef = useRef(null)
+  const emailTimeoutRef = useRef(null)
+  const passwordTimeoutRef = useRef(null)
+  
   const router = useRouter()
   const params = useParams()
   const lang = params.lang || 'en'
@@ -39,6 +53,15 @@ export default function SettingsPage() {
   useEffect(() => {
     getDictionary(lang).then(setDict)
   }, [lang])
+  
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (nameTimeoutRef.current) clearTimeout(nameTimeoutRef.current)
+      if (emailTimeoutRef.current) clearTimeout(emailTimeoutRef.current)
+      if (passwordTimeoutRef.current) clearTimeout(passwordTimeoutRef.current)
+    }
+  }, [])
 
   // Fetch user session
   useEffect(() => {
@@ -137,6 +160,11 @@ export default function SettingsPage() {
         type: 'success',
         text: dict?.settings?.nameUpdateSuccess || 'Your name has been updated successfully!'
       })
+      // Exit edit mode after successful update
+      nameTimeoutRef.current = setTimeout(() => {
+        setIsEditingName(false)
+        setNameUpdateMessage({ type: '', text: '' })
+      }, AUTO_CLOSE_DELAY_SHORT)
     } catch (error) {
       console.error('Error updating name:', error)
       setNameUpdateMessage({
@@ -146,6 +174,17 @@ export default function SettingsPage() {
     } finally {
       setIsUpdatingName(false)
     }
+  }
+  
+  // Handle cancel name edit
+  const handleCancelNameEdit = () => {
+    if (nameTimeoutRef.current) {
+      clearTimeout(nameTimeoutRef.current)
+      nameTimeoutRef.current = null
+    }
+    setIsEditingName(false)
+    setFullName(user?.user_metadata?.full_name || '')
+    setNameUpdateMessage({ type: '', text: '' })
   }
 
   // Handle email update
@@ -207,9 +246,13 @@ export default function SettingsPage() {
         text: dict?.settings?.emailUpdateSuccessShort || dict?.profile?.emailUpdateSuccess || 'Confirmation links have been sent to both your old and new email addresses.'
       })
       
-      // Reset form fields
-      setNewEmail('')
-      setEmailPassword('')
+      // Reset form fields and exit edit mode after successful update (longer delay for email due to longer message)
+      emailTimeoutRef.current = setTimeout(() => {
+        setNewEmail('')
+        setEmailPassword('')
+        setIsEditingEmail(false)
+        setEmailUpdateMessage({ type: '', text: '' })
+      }, AUTO_CLOSE_DELAY_LONG)
     } catch (error) {
       console.error('Error updating email:', error)
       
@@ -229,6 +272,18 @@ export default function SettingsPage() {
     } finally {
       setIsUpdatingEmail(false)
     }
+  }
+  
+  // Handle cancel email edit
+  const handleCancelEmailEdit = () => {
+    if (emailTimeoutRef.current) {
+      clearTimeout(emailTimeoutRef.current)
+      emailTimeoutRef.current = null
+    }
+    setIsEditingEmail(false)
+    setNewEmail('')
+    setEmailPassword('')
+    setEmailUpdateMessage({ type: '', text: '' })
   }
 
   // Handle password update
@@ -266,9 +321,13 @@ export default function SettingsPage() {
         text: dict?.settings?.passwordUpdateSuccess || 'Your password has been updated successfully!'
       })
       
-      // Reset form fields
-      setNewPassword('')
-      setConfirmPassword('')
+      // Reset form fields and exit edit mode after successful update
+      passwordTimeoutRef.current = setTimeout(() => {
+        setNewPassword('')
+        setConfirmPassword('')
+        setIsEditingPassword(false)
+        setPasswordUpdateMessage({ type: '', text: '' })
+      }, AUTO_CLOSE_DELAY_SHORT)
     } catch (error) {
       console.error('Error updating password:', error)
       setPasswordUpdateMessage({
@@ -278,6 +337,18 @@ export default function SettingsPage() {
     } finally {
       setIsUpdatingPassword(false)
     }
+  }
+  
+  // Handle cancel password edit
+  const handleCancelPasswordEdit = () => {
+    if (passwordTimeoutRef.current) {
+      clearTimeout(passwordTimeoutRef.current)
+      passwordTimeoutRef.current = null
+    }
+    setIsEditingPassword(false)
+    setNewPassword('')
+    setConfirmPassword('')
+    setPasswordUpdateMessage({ type: '', text: '' })
   }
 
   if (loading) {
@@ -374,79 +445,106 @@ export default function SettingsPage() {
             </div>
 
             <div className="px-6 sm:px-8 py-8">
-              <form onSubmit={handleNameUpdate} className="space-y-6">
-                {/* Current Name Display */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Current Name
-                  </label>
-                  <div className="px-4 py-3 bg-gray-50 rounded-xl border-2 border-gray-200 text-gray-700 font-medium">
-                    {getUserDisplayName(user)}
-                  </div>
-                </div>
-
-                {/* Full Name Input */}
-                <div>
-                  <label htmlFor="fullName" className="block text-sm font-semibold text-gray-700 mb-2">
-                    {dict?.settings?.fullNameLabel || 'Full Name'}
-                  </label>
-                  <input
-                    type="text"
-                    id="fullName"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder={dict?.settings?.fullNamePlaceholder || 'Enter your full name'}
-                    className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                    disabled={isUpdatingName}
-                    required
-                  />
-                </div>
-
-                {/* Message Display */}
-                {nameUpdateMessage.text && (
-                  <div className={`p-4 rounded-xl border-2 ${
-                    nameUpdateMessage.type === 'success' 
-                      ? 'bg-green-50 border-green-300 text-green-800' 
-                      : 'bg-red-50 border-red-300 text-red-800'
-                  }`}>
-                    <div className="flex items-start gap-3">
-                      {nameUpdateMessage.type === 'success' ? (
-                        <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      ) : (
-                        <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      )}
-                      <p className="text-sm flex-1 font-medium">{nameUpdateMessage.text}</p>
+              {!isEditingName ? (
+                // Display mode - show current info with Edit button
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Current Name
+                    </label>
+                    <div className="px-4 py-3 bg-gray-50 rounded-xl border-2 border-gray-200 text-gray-900 font-medium text-lg">
+                      {getUserDisplayName(user)}
                     </div>
                   </div>
-                )}
-
-                {/* Submit Button */}
-                <div className="pt-2">
+                  
                   <button
-                    type="submit"
-                    disabled={isUpdatingName}
-                    className="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                    type="button"
+                    onClick={() => setIsEditingName(true)}
+                    className="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
                   >
-                    {isUpdatingName ? (
-                      <>
-                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                        <span>{dict?.settings?.updatingName || 'Updating name...'}</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        <span>{dict?.settings?.updateNameButton || 'Update Name'}</span>
-                      </>
-                    )}
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    <span>{dict?.settings?.editName || 'Edit Name'}</span>
                   </button>
                 </div>
-              </form>
+              ) : (
+                // Edit mode - show form
+                <form onSubmit={handleNameUpdate} className="space-y-6">
+                  {/* Full Name Input */}
+                  <div>
+                    <label htmlFor="fullName" className="block text-sm font-semibold text-gray-700 mb-2">
+                      {dict?.settings?.fullNameLabel || 'Full Name'}
+                    </label>
+                    <input
+                      type="text"
+                      id="fullName"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder={dict?.settings?.fullNamePlaceholder || 'Enter your full name'}
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                      disabled={isUpdatingName}
+                      required
+                    />
+                  </div>
+
+                  {/* Message Display */}
+                  {nameUpdateMessage.text && (
+                    <div className={`p-4 rounded-xl border-2 ${
+                      nameUpdateMessage.type === 'success' 
+                        ? 'bg-green-50 border-green-300 text-green-800' 
+                        : 'bg-red-50 border-red-300 text-red-800'
+                    }`}>
+                      <div className="flex items-start gap-3">
+                        {nameUpdateMessage.type === 'success' ? (
+                          <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                        <p className="text-sm flex-1 font-medium">{nameUpdateMessage.text}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="pt-2 flex gap-4">
+                    <button
+                      type="submit"
+                      disabled={isUpdatingName}
+                      className="flex-1 px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                    >
+                      {isUpdatingName ? (
+                        <>
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                          <span>{dict?.settings?.updatingName || 'Updating name...'}</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>{dict?.settings?.updateNameButton || 'Update Name'}</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCancelNameEdit}
+                      disabled={isUpdatingName}
+                      className="px-6 py-4 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      <span className="hidden sm:inline">{dict?.common?.cancel || 'Cancel'}</span>
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           </div>
 
@@ -484,19 +582,32 @@ export default function SettingsPage() {
                     {dict?.profile?.cannotChangeEmail || 'Email cannot be changed for OAuth accounts'}
                   </p>
                 </div>
-              ) : (
-                // Email user - show update form
-                <form onSubmit={handleEmailUpdate} className="space-y-6">
-                  {/* Current Email - Read Only */}
+              ) : !isEditingEmail ? (
+                // Display mode - show current email with Edit button
+                <div className="space-y-6">
                   <div>
-                    <label htmlFor="currentEmail" className="block text-sm font-semibold text-gray-700 mb-2">
-                      {dict?.settings?.currentEmailLabel || dict?.profile?.currentEmail || 'Current Email Address'}
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Current Email Address
                     </label>
-                    <div className="px-4 py-3 bg-gray-50 rounded-xl border-2 border-gray-200 text-gray-700 font-medium">
+                    <div className="px-4 py-3 bg-gray-50 rounded-xl border-2 border-gray-200 text-gray-900 font-medium text-lg break-all">
                       {user.email}
                     </div>
                   </div>
-
+                  
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingEmail(true)}
+                    className="w-full px-6 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl font-semibold hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    <span>{dict?.settings?.editEmail || 'Change Email'}</span>
+                  </button>
+                </div>
+              ) : (
+                // Edit mode - show update form
+                <form onSubmit={handleEmailUpdate} className="space-y-6">
                   {/* New Email Input */}
                   <div>
                     <label htmlFor="newEmail" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -559,12 +670,12 @@ export default function SettingsPage() {
                     </div>
                   )}
 
-                  {/* Submit Button */}
-                  <div className="pt-2">
+                  {/* Action Buttons */}
+                  <div className="pt-2 flex gap-4">
                     <button
                       type="submit"
                       disabled={isUpdatingEmail}
-                      className="w-full px-6 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl font-semibold hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                      className="flex-1 px-6 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl font-semibold hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                     >
                       {isUpdatingEmail ? (
                         <>
@@ -574,11 +685,22 @@ export default function SettingsPage() {
                       ) : (
                         <>
                           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
-                          <span>{dict?.settings?.updateEmailButton || dict?.profile?.updateEmail || 'Update Email Address'}</span>
+                          <span>{dict?.settings?.updateEmailButton || dict?.profile?.updateEmail || 'Update Email'}</span>
                         </>
                       )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCancelEmailEdit}
+                      disabled={isUpdatingEmail}
+                      className="px-6 py-4 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      <span className="hidden sm:inline">{dict?.common?.cancel || 'Cancel'}</span>
                     </button>
                   </div>
                 </form>
@@ -620,8 +742,31 @@ export default function SettingsPage() {
                     Password cannot be changed for OAuth accounts
                   </p>
                 </div>
+              ) : !isEditingPassword ? (
+                // Display mode - show Change Password button
+                <div className="space-y-6">
+                  <div className="text-center py-4">
+                    <div className="w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-10 h-10 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-600 mb-4">Keep your account secure by regularly updating your password</p>
+                  </div>
+                  
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingPassword(true)}
+                    className="w-full px-6 py-4 bg-gradient-to-r from-accent-600 to-accent-700 text-white rounded-xl font-semibold hover:from-accent-700 hover:to-accent-800 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    <span>{dict?.settings?.changePassword || 'Change Password'}</span>
+                  </button>
+                </div>
               ) : (
-                // Email user - show password change form
+                // Edit mode - show password change form
                 <form onSubmit={handlePasswordUpdate} className="space-y-6">
                   {/* New Password Input */}
                   <div>
@@ -681,12 +826,12 @@ export default function SettingsPage() {
                     </div>
                   )}
 
-                  {/* Submit Button */}
-                  <div className="pt-2">
+                  {/* Action Buttons */}
+                  <div className="pt-2 flex gap-4">
                     <button
                       type="submit"
                       disabled={isUpdatingPassword}
-                      className="w-full px-6 py-4 bg-gradient-to-r from-accent-600 to-accent-700 text-white rounded-xl font-semibold hover:from-accent-700 hover:to-accent-800 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                      className="flex-1 px-6 py-4 bg-gradient-to-r from-accent-600 to-accent-700 text-white rounded-xl font-semibold hover:from-accent-700 hover:to-accent-800 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                     >
                       {isUpdatingPassword ? (
                         <>
@@ -696,11 +841,22 @@ export default function SettingsPage() {
                       ) : (
                         <>
                           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
                           <span>{dict?.settings?.updatePasswordButton || 'Update Password'}</span>
                         </>
                       )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCancelPasswordEdit}
+                      disabled={isUpdatingPassword}
+                      className="px-6 py-4 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      <span className="hidden sm:inline">{dict?.common?.cancel || 'Cancel'}</span>
                     </button>
                   </div>
                 </form>
