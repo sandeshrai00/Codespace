@@ -57,7 +57,7 @@ export default async function HomePage({ params }) {
       )}
 
       {/* Hero Section - Professional Nepal-Thailand Focus */}
-      <section className="relative bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 text-white py-12 md:py-16 overflow-hidden rounded-b-[2rem] sm:rounded-b-[3rem]">
+      <section className="relative bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 text-white py-12 md:py-16 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -97,7 +97,7 @@ export default async function HomePage({ params }) {
       </section>
 
       {/* Popular Destinations Section - Nepal & Thailand Focus */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+      <section className="relative z-10 py-20 bg-gradient-to-b from-gray-50 to-white rounded-t-[2rem] sm:rounded-t-[3rem] mt-[-2rem] sm:mt-[-3rem]">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
