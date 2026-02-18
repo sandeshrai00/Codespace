@@ -470,6 +470,7 @@ export default function ProfileEditPage() {
                           id="date_of_birth"
                           value={formData.date_of_birth}
                           onChange={(e) => handleInputChange('date_of_birth', e.target.value)}
+                          placeholder={dict?.profileSettings?.dateOfBirthPlaceholder || 'Select your date of birth'}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-transparent"
                           disabled={isSaving}
                         />
