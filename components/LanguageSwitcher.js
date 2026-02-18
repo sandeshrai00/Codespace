@@ -41,7 +41,7 @@ export default function LanguageSwitcher() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
         aria-label="Select language"
         aria-expanded={isOpen}
       >
@@ -66,7 +66,7 @@ export default function LanguageSwitcher() {
           />
           
           {/* Dropdown */}
-          <div className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 z-50">
+          <div className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white border border-primary-200 z-50">
             <div className="py-1">
               {locales.map((locale) => {
                 const config = localeConfig[locale];
@@ -76,8 +76,8 @@ export default function LanguageSwitcher() {
                   <button
                     key={locale}
                     onClick={() => handleLanguageChange(locale)}
-                    className={`w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${
-                      isActive ? 'bg-gray-50 dark:bg-gray-800 font-medium' : ''
+                    className={`w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors ${
+                      isActive ? 'bg-primary-50 text-primary-600 font-medium' : ''
                     }`}
                   >
                     <span className="text-xl">{config.flag}</span>
