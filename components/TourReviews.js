@@ -121,6 +121,8 @@ export default function TourReviews({ tourId, lang = 'en', dict }) {
       const numericTourId = Number(tourId)
       if (isNaN(numericTourId)) return
 
+      // Fetch both legacy comment field and new language-specific fields
+      // for backward compatibility with existing reviews
       const { data, error } = await supabase
         .from('reviews')
         .select('id, tour_id, user_id, rating, comment, comment_en, comment_th, comment_zh, created_at, updated_at')
@@ -302,7 +304,7 @@ export default function TourReviews({ tourId, lang = 'en', dict }) {
                 <div>
                   {renderStars(Math.round(averageRating))}
                   <div className="text-sm text-gray-600 mt-1">
-                    {dict?.reviews?.basedOn || 'Based on'} {reviews.length} {reviews.length === 1 ? (dict?.reviews?.review || 'review') : (dict?.reviews?.reviews || 'reviews')}
+                    {dict?.reviews?.basedOn || 'Based on'} {reviews.length} {reviews.length === 1 ? (dict?.reviews?.reviewSingular || 'review') : (dict?.reviews?.reviewPlural || 'reviews')}
                   </div>
                 </div>
               </div>
