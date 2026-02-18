@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 import { getDictionary } from '@/lib/i18n'
 import { getUserDisplayName } from '@/lib/userUtils'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import ProfileSidebar from '@/components/ProfileSidebar'
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null)
@@ -168,12 +168,14 @@ export default function ProfilePage() {
             {/* Profile Picture Section */}
             <div className="px-6 py-8 border-b border-gray-200">
               <div className="flex flex-col items-center">
-                <div className="w-32 h-32 rounded-full bg-primary-100 flex items-center justify-center mb-4">
+                <div className="w-32 h-32 rounded-full bg-primary-100 flex items-center justify-center mb-4 overflow-hidden relative">
                   {profile?.avatar_url ? (
-                    <img 
+                    <Image 
                       src={profile.avatar_url} 
                       alt={displayName}
-                      className="w-32 h-32 rounded-full object-cover"
+                      width={128}
+                      height={128}
+                      className="w-full h-full object-cover"
                     />
                   ) : (
                     <svg className="w-16 h-16 text-primary-700" fill="currentColor" viewBox="0 0 24 24">
