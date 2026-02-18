@@ -1,14 +1,23 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import TourCard from './TourCard'
 import { getLocalizedField } from '@/lib/i18n'
 
 export default function TourSearch({ tours, lang = 'en', dict }) {
+  const searchParams = useSearchParams()
   const [searchTerm, setSearchTerm] = useState('')
   const [priceRange, setPriceRange] = useState('all')
   const [locationFilter, setLocationFilter] = useState('all')
   const [durationFilter, setDurationFilter] = useState('all')
+
+  // Set locationFilter from URL parameter
+  useEffect(() => {
+    const locationParam = searchParams.get('location')
+    // Always sync with URL parameter - set to 'all' if not present
+    setLocationFilter(locationParam || 'all')
+  }, [searchParams])
 
   // Extract unique locations from tours
   const uniqueLocations = useMemo(() => {
@@ -40,7 +49,11 @@ export default function TourSearch({ tours, lang = 'en', dict }) {
       }
 
       // Location filter
-      const matchesLocation = locationFilter === 'all' || localizedLocation === locationFilter
+      // Compare with English location for URL-based filtering, or localized for dropdown
+      const englishLocation = getLocalizedField(tour, 'location', 'en')
+      const matchesLocation = locationFilter === 'all' || 
+        localizedLocation === locationFilter || 
+        englishLocation === locationFilter
 
       // Duration filter
       let matchesDuration = true

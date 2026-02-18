@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import TourSearch from '@/components/TourSearch'
@@ -45,7 +46,9 @@ export default async function ToursPage({ params }) {
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           {tours.length > 0 ? (
-            <TourSearch tours={tours} lang={lang} dict={dict} />
+            <Suspense fallback={<div className="text-center py-20">Loading...</div>}>
+              <TourSearch tours={tours} lang={lang} dict={dict} />
+            </Suspense>
           ) : (
             <div className="text-center py-20 bg-white rounded-xl shadow-sm">
               <div className="text-6xl mb-6">🏖️</div>
