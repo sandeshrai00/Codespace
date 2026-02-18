@@ -121,5 +121,19 @@
     "perPerson": "per person",
     "days": "days",
     "nights": "nights"
+  },
+  "profile": {
+    "changeEmail": "Change Email",
+    "newEmail": "New Email Address",
+    "currentEmail": "Current Email",
+    "updateEmail": "Update Email",
+    "updating": "Updating...",
+    "emailUpdateSuccess": "Confirmation link sent to your new email. Please check your inbox.",
+    "emailUpdateError": "Failed to update email. Please try again.",
+    "accountManagedBy": "Account managed by",
+    "cannotChangeEmail": "Email cannot be changed for OAuth accounts",
+    "emailRequired": "Please enter a valid email address",
+    "emailSameAsCurrent": "New email must be different from current email",
+    "newEmailPlaceholder": "Enter new email address"
   }
 }
