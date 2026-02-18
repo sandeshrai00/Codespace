@@ -28,6 +28,8 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   last_name TEXT,
   phone_number TEXT,
   avatar_url TEXT,
+  gender TEXT,
+  date_of_birth DATE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );

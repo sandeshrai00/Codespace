@@ -75,7 +75,9 @@ export default function ProfileEditPage() {
     first_name: '',
     last_name: '',
     phone_number: '',
-    country_code: '+1'
+    country_code: '+1',
+    gender: '',
+    date_of_birth: ''
   })
   
   const [showCountryCodeDropdown, setShowCountryCodeDropdown] = useState(false)
@@ -154,7 +156,9 @@ export default function ProfileEditPage() {
             first_name: profileData?.first_name || '',
             last_name: profileData?.last_name || '',
             phone_number: extractedPhoneNumber,
-            country_code: extractedCountryCode
+            country_code: extractedCountryCode,
+            gender: profileData?.gender || '',
+            date_of_birth: profileData?.date_of_birth || ''
           })
         }
       } catch (error) {
@@ -225,6 +229,8 @@ export default function ProfileEditPage() {
           first_name: formData.first_name.trim(),
           last_name: formData.last_name.trim(),
           phone_number: fullPhoneNumber,
+          gender: formData.gender || null,
+          date_of_birth: formData.date_of_birth || null,
           updated_at: new Date().toISOString()
         })
         .eq('id', user.id)
@@ -340,7 +346,7 @@ export default function ProfileEditPage() {
                           value={formData.first_name}
                           onChange={(e) => handleInputChange('first_name', e.target.value)}
                           placeholder={dict?.profileSettings?.firstNamePlaceholder || 'Enter your first name'}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-transparent"
                           disabled={isSaving}
                           required
                         />
@@ -357,7 +363,7 @@ export default function ProfileEditPage() {
                           value={formData.last_name}
                           onChange={(e) => handleInputChange('last_name', e.target.value)}
                           placeholder={dict?.profileSettings?.lastNamePlaceholder || 'Enter your last name'}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-transparent"
                           disabled={isSaving}
                           required
                         />
@@ -378,7 +384,7 @@ export default function ProfileEditPage() {
                               aria-expanded={showCountryCodeDropdown}
                               aria-haspopup="listbox"
                               aria-label="Select country code"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent bg-white text-left disabled:opacity-50"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-transparent bg-white text-left disabled:opacity-50"
                             >
                               {formData.country_code}
                             </button>
@@ -395,7 +401,7 @@ export default function ProfileEditPage() {
                                     value={countryCodeSearch}
                                     onChange={(e) => setCountryCodeSearch(e.target.value)}
                                     placeholder="Search country..."
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-transparent text-sm"
                                   />
                                 </div>
                                 <div className="max-h-60 overflow-auto" role="list">
@@ -429,10 +435,44 @@ export default function ProfileEditPage() {
                             value={formData.phone_number}
                             onChange={(e) => handleInputChange('phone_number', e.target.value)}
                             placeholder={dict?.profileSettings?.mobileNumberPlaceholder || 'Enter your mobile number'}
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-transparent"
                             disabled={isSaving}
                           />
                         </div>
+                      </div>
+
+                      {/* Gender */}
+                      <div>
+                        <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
+                          {dict?.profileSettings?.gender || 'Gender'}
+                        </label>
+                        <select
+                          id="gender"
+                          value={formData.gender}
+                          onChange={(e) => handleInputChange('gender', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-transparent bg-white"
+                          disabled={isSaving}
+                        >
+                          <option value="">{dict?.profileSettings?.genderPlaceholder || 'Select your gender'}</option>
+                          <option value="Male">{dict?.profileSettings?.male || 'Male'}</option>
+                          <option value="Female">{dict?.profileSettings?.female || 'Female'}</option>
+                          <option value="Other">{dict?.profileSettings?.other || 'Other'}</option>
+                        </select>
+                      </div>
+
+                      {/* Date of Birth */}
+                      <div>
+                        <label htmlFor="date_of_birth" className="block text-sm font-medium text-gray-700 mb-1">
+                          {dict?.profileSettings?.dateOfBirth || 'Date of Birth'}
+                        </label>
+                        <input
+                          type="date"
+                          id="date_of_birth"
+                          value={formData.date_of_birth}
+                          onChange={(e) => handleInputChange('date_of_birth', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-transparent"
+                          disabled={isSaving}
+                        />
                       </div>
                     </div>
 
@@ -452,7 +492,7 @@ export default function ProfileEditPage() {
                       <button
                         type="submit"
                         disabled={isSaving}
-                        className="px-6 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        className="px-6 py-2 bg-primary-700 text-white rounded-lg font-medium hover:bg-primary-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                       >
                         {isSaving ? (dict?.profileSettings?.saving || 'Saving...') : (dict?.profileSettings?.save || 'Save Changes')}
                       </button>
