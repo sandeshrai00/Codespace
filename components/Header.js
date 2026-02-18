@@ -94,6 +94,13 @@ export default function Header({ lang = 'en', dict }) {
                       <div className="px-4 py-2 border-b border-gray-100">
                         <p className="text-sm text-gray-600 truncate">{user.email}</p>
                       </div>
+                      <Link
+                        href={`/${lang}/profile`}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        {dict?.nav?.profile || 'Profile'}
+                      </Link>
                       <button
                         onClick={handleSignOut}
                         className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
@@ -160,6 +167,13 @@ export default function Header({ lang = 'en', dict }) {
                     <p className="text-sm font-medium text-gray-700">{getUserDisplayName(user)}</p>
                     <p className="text-xs text-gray-500 truncate">{user.email}</p>
                   </div>
+                  <Link
+                    href={`/${lang}/profile`}
+                    className="block w-full px-3 py-2.5 text-gray-700 hover:bg-gray-50 rounded-2xl transition-all duration-200 font-medium text-left"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {dict?.nav?.profile || 'Profile'}
+                  </Link>
                   <button
                     onClick={handleSignOut}
                     className="w-full px-3 py-2.5 text-red-600 hover:bg-red-50 rounded-2xl transition-all duration-200 font-medium text-left"
