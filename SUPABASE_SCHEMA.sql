@@ -99,6 +99,12 @@ CREATE POLICY "Users can delete their own reviews"
 -- This function automatically creates a profile when a new user signs up
 -- It extracts first_name and last_name from the email if not provided
 -- (e.g., john.doe@example.com becomes First: John, Last: Doe)
+-- 
+-- Note: Email parsing limitations:
+-- - Only handles emails with dot-separated names (e.g., john.doe@example.com)
+-- - For emails with more than 2 parts, only first 2 are used (john.middle.last -> John Last)
+-- - Special characters (underscores, hyphens, numbers) in email may produce unexpected results
+-- - If email doesn't contain dots before @, only first name is extracted
 
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
@@ -111,13 +117,21 @@ BEGIN
   -- Extract username from email (part before @)
   email_username := split_part(NEW.email, '@', 1);
   
+  -- Replace common separators (underscore, hyphen) with dots for consistent parsing
+  email_username := replace(replace(email_username, '_', '.'), '-', '.');
+  
   -- Split by dot to get potential first and last name
   name_parts := string_to_array(email_username, '.');
   
   -- Extract first and last names with proper capitalization
   IF array_length(name_parts, 1) >= 2 THEN
     extracted_first_name := initcap(name_parts[1]);
-    extracted_last_name := initcap(name_parts[2]);
+    -- If more than 2 parts, concatenate remaining parts as last name
+    IF array_length(name_parts, 1) > 2 THEN
+      extracted_last_name := initcap(array_to_string(name_parts[2:array_length(name_parts, 1)], ' '));
+    ELSE
+      extracted_last_name := initcap(name_parts[2]);
+    END IF;
   ELSIF array_length(name_parts, 1) = 1 THEN
     extracted_first_name := initcap(name_parts[1]);
     extracted_last_name := '';

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { getDictionary } from '@/lib/i18n'
@@ -80,6 +80,7 @@ export default function ProfileEditPage() {
   
   const [showCountryCodeDropdown, setShowCountryCodeDropdown] = useState(false)
   const [countryCodeSearch, setCountryCodeSearch] = useState('')
+  const dropdownRef = useRef(null)
   
   const router = useRouter()
   const params = useParams()
@@ -89,6 +90,24 @@ export default function ProfileEditPage() {
   useEffect(() => {
     getDictionary(lang).then(setDict)
   }, [lang])
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowCountryCodeDropdown(false)
+        setCountryCodeSearch('')
+      }
+    }
+
+    if (showCountryCodeDropdown) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showCountryCodeDropdown])
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
@@ -192,7 +211,9 @@ export default function ProfileEditPage() {
     setMessage({ type: '', text: '' })
 
     try {
-      // Combine country code and phone number
+      // Combine country code and phone number with space delimiter
+      // Format: "+[code] [number]" (e.g., "+1 5551234567")
+      // Note: The extraction logic in loadProfile relies on this exact format
       const fullPhoneNumber = formData.phone_number 
         ? `${formData.country_code} ${formData.phone_number}`.trim()
         : ''
@@ -349,18 +370,25 @@ export default function ProfileEditPage() {
                         </label>
                         <div className="flex gap-2">
                           {/* Country Code Dropdown */}
-                          <div className="relative w-32">
+                          <div className="relative w-32" ref={dropdownRef}>
                             <button
                               type="button"
                               onClick={() => setShowCountryCodeDropdown(!showCountryCodeDropdown)}
                               disabled={isSaving}
+                              aria-expanded={showCountryCodeDropdown}
+                              aria-haspopup="listbox"
+                              aria-label="Select country code"
                               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent bg-white text-left disabled:opacity-50"
                             >
                               {formData.country_code}
                             </button>
                             
                             {showCountryCodeDropdown && (
-                              <div className="absolute z-10 w-64 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+                              <div 
+                                role="listbox"
+                                aria-label="Country codes"
+                                className="absolute z-10 w-64 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg"
+                              >
                                 <div className="p-2 border-b border-gray-200">
                                   <input
                                     type="text"
@@ -370,11 +398,13 @@ export default function ProfileEditPage() {
                                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
                                   />
                                 </div>
-                                <div className="max-h-60 overflow-auto">
+                                <div className="max-h-60 overflow-auto" role="list">
                                   {filteredCountryCodes.map((item) => (
                                     <button
                                       key={item.code}
                                       type="button"
+                                      role="option"
+                                      aria-selected={formData.country_code === item.code}
                                       onClick={() => {
                                         handleInputChange('country_code', item.code)
                                         setShowCountryCodeDropdown(false)
