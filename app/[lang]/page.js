@@ -113,7 +113,7 @@ export default async function HomePage({ params }) {
           <div className="grid grid-cols-2 gap-3 max-w-6xl mx-auto">
             {/* Nepal - Premium Featured Card */}
             <Link 
-              href={`/${lang}/tours?location=${dict.home.nepalTitle}`}
+              href={`/${lang}/tours?location=${encodeURIComponent(dict.home.nepalTitle)}`}
               className="group relative h-64 sm:h-80 md:h-[500px] rounded-3xl overflow-hidden shadow-card hover:shadow-glass-lg transition-all duration-500 hover:scale-[1.02]"
             >
               <div className="absolute inset-0">
@@ -141,7 +141,7 @@ export default async function HomePage({ params }) {
 
             {/* Thailand - Premium Featured Card */}
             <Link 
-              href={`/${lang}/tours?location=${dict.home.thailandTitle}`}
+              href={`/${lang}/tours?location=${encodeURIComponent(dict.home.thailandTitle)}`}
               className="group relative h-64 sm:h-80 md:h-[500px] rounded-3xl overflow-hidden shadow-card hover:shadow-glass-lg transition-all duration-500 hover:scale-[1.02]"
             >
               <div className="absolute inset-0">

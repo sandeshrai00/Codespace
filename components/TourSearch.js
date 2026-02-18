@@ -15,9 +15,8 @@ export default function TourSearch({ tours, lang = 'en', dict }) {
   // Set locationFilter from URL parameter
   useEffect(() => {
     const locationParam = searchParams.get('location')
-    if (locationParam) {
-      setLocationFilter(locationParam)
-    }
+    // Always sync with URL parameter - set to 'all' if not present
+    setLocationFilter(locationParam || 'all')
   }, [searchParams])
 
   // Extract unique locations from tours
