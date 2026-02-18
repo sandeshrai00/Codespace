@@ -455,6 +455,7 @@ export default function ProfileEditPage() {
                             <label
                               key={option.value}
                               className={`flex-1 relative cursor-pointer ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                              aria-disabled={isSaving}
                             >
                               <input
                                 type="radio"

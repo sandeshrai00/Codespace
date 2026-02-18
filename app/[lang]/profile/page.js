@@ -19,11 +19,13 @@ function getProfilePicture(email) {
   for (let i = 0; i < email.length; i++) {
     const char = email.charCodeAt(i)
     hash = ((hash << 5) - hash) + char
-    hash = hash & hash // Convert to 32-bit integer
   }
   
-  // Convert to positive number and get value between 1-6
+  // Convert to 32-bit integer and get absolute value
+  hash |= 0
   const positiveHash = Math.abs(hash)
+  
+  // Return value between 1-6
   return (positiveHash % 6) + 1
 }
 

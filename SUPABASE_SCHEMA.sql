@@ -152,9 +152,11 @@ BEGIN
         extracted_last_name := initcap(name_parts[2]);
       END IF;
     ELSIF array_length(name_parts, 1) = 1 THEN
+      -- Single name extracted from email
       extracted_first_name := initcap(name_parts[1]);
       extracted_last_name := '';
     ELSE
+      -- Empty or invalid array (edge case)
       extracted_first_name := '';
       extracted_last_name := '';
     END IF;
