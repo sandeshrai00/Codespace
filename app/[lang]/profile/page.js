@@ -10,6 +10,9 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
 export default function ProfilePage() {
+  // Constants
+  const EMAIL_UPDATE_SUCCESS_DELAY_MS = 5000 // Time to show success message before hiding form
+  
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [dict, setDict] = useState(null)
@@ -156,6 +159,8 @@ export default function ProfilePage() {
 
     try {
       // Verify the current password first
+      // Note: This will refresh/validate the current session rather than create a new one
+      // since we're authenticating with the same credentials already in use
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: user.email,
         password: password
@@ -188,7 +193,7 @@ export default function ProfilePage() {
       setTimeout(() => {
         setShowEmailForm(false)
         setEmailUpdateMessage({ type: '', text: '' })
-      }, 5000)
+      }, EMAIL_UPDATE_SUCCESS_DELAY_MS)
     } catch (error) {
       console.error('Error updating email:', error)
       setEmailUpdateMessage({
