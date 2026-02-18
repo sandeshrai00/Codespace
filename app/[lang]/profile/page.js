@@ -32,6 +32,16 @@ export default function ProfilePage() {
     return `/img/profile${profileNum}.jpg`
   }
 
+  // Map language codes to locale strings
+  const getLocale = (langCode) => {
+    const localeMap = {
+      'th': 'th-TH',
+      'zh': 'zh-CN',
+      'en': 'en-US'
+    }
+    return localeMap[langCode] || 'en-US'
+  }
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -71,7 +81,9 @@ export default function ProfilePage() {
         }
       })
 
-      return () => subscription.unsubscribe()
+      return () => {
+        subscription.unsubscribe()
+      }
     }
   }, [lang, router])
 
@@ -107,7 +119,7 @@ export default function ProfilePage() {
   }
 
   const profilePicture = getProfilePicture(user.email)
-  const joinedDate = new Date(user.created_at).toLocaleDateString(lang === 'th' ? 'th-TH' : lang === 'zh' ? 'zh-CN' : 'en-US', {
+  const joinedDate = new Date(user.created_at).toLocaleDateString(getLocale(lang), {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
