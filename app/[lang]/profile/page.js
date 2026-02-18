@@ -145,7 +145,7 @@ export default function ProfilePage() {
   return (
     <>
       <Header lang={lang} dict={dict} />
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 py-12 px-4 sm:px-6 lg:px-8 pt-24">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Profile Card */}
           <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
