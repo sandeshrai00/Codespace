@@ -71,9 +71,6 @@ export default function Header({ lang = 'en', dict }) {
               </Link>
             </div>
 
-            {/* Vertical Separator */}
-            <div className="h-8 w-px bg-gradient-to-b from-transparent via-gray-300 to-transparent"></div>
-
             {/* Action Items */}
             <div className="flex items-center gap-3">
               <CurrencySwitcher />
@@ -135,7 +132,7 @@ export default function Header({ lang = 'en', dict }) {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden pb-4 animate-slide-down bg-white/95 backdrop-blur-md rounded-b-2xl border-t border-gray-100 shadow-lg">
+          <div className="md:hidden pb-4 animate-slide-down bg-white/95 backdrop-blur-md absolute right-4 top-16 w-64 shadow-xl border border-gray-100 rounded-2xl">
             {/* Navigation Links Section */}
             <div className="px-2 py-3 space-y-1">
               <Link 
