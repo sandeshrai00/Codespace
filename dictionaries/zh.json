@@ -140,5 +140,20 @@
     "passwordPlaceholder": "输入您的当前密码",
     "passwordHint": "安全验证所需",
     "incorrectPassword": "密码不正确。请重试。"
+  },
+  "settings": {
+    "title": "帐户设置",
+    "accountSettings": "帐户设置",
+    "backToProfile": "返回个人资料",
+    "emailSettings": "电子邮件设置",
+    "updateYourEmail": "更新您的电子邮件地址",
+    "emailDescription": "更改与您的帐户关联的电子邮件地址。您需要验证旧电子邮件和新电子邮件地址。",
+    "currentEmailLabel": "当前电子邮件地址",
+    "newEmailLabel": "新电子邮件地址",
+    "passwordLabel": "当前密码",
+    "passwordHelp": "输入您的当前密码以验证此更改",
+    "updateEmailButton": "更新电子邮件地址",
+    "canceling": "取消中...",
+    "emailUpdateSuccessShort": "确认链接已发送到您的旧电子邮件和新电子邮件地址。"
   }
 }

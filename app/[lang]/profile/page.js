@@ -10,17 +10,9 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
 export default function ProfilePage() {
-  // Constants
-  const EMAIL_UPDATE_SUCCESS_DELAY_MS = 5000 // Time to show success message before hiding form
-  
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [dict, setDict] = useState(null)
-  const [newEmail, setNewEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showEmailForm, setShowEmailForm] = useState(false)
-  const [isUpdatingEmail, setIsUpdatingEmail] = useState(false)
-  const [emailUpdateMessage, setEmailUpdateMessage] = useState({ type: '', text: '' })
   const router = useRouter()
   const params = useParams()
   const lang = params.lang || 'en'
@@ -105,123 +97,6 @@ export default function ProfilePage() {
   }
 
   // Detect auth provider
-  const getAuthProvider = (user) => {
-    // Check if user has app_metadata.provider
-    if (user.app_metadata?.provider) {
-      return user.app_metadata.provider
-    }
-    
-    // Check identities array
-    if (user.identities && user.identities.length > 0) {
-      return user.identities[0].provider
-    }
-    
-    // Default to email if no provider found
-    return 'email'
-  }
-
-  // Check if user is using OAuth
-  const isOAuthUser = (user) => {
-    const provider = getAuthProvider(user)
-    return provider !== 'email'
-  }
-
-  // Handle email update
-  const handleEmailUpdate = async (e) => {
-    e.preventDefault()
-    
-    if (!newEmail || !newEmail.trim()) {
-      setEmailUpdateMessage({
-        type: 'error',
-        text: dict?.profile?.emailRequired || 'Please enter a valid email address'
-      })
-      return
-    }
-
-    if (newEmail === user.email) {
-      setEmailUpdateMessage({
-        type: 'error',
-        text: dict?.profile?.emailSameAsCurrent || 'New email must be different from current email'
-      })
-      return
-    }
-
-    if (!password || !password.trim()) {
-      setEmailUpdateMessage({
-        type: 'error',
-        text: dict?.profile?.passwordRequired || 'Please enter your current password for verification'
-      })
-      return
-    }
-
-    setIsUpdatingEmail(true)
-    setEmailUpdateMessage({ type: '', text: '' })
-
-    try {
-      // Verify the current password first
-      // Note: This will refresh/validate the current session rather than create a new one
-      // since we're authenticating with the same credentials already in use
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: user.email,
-        password: password
-      })
-
-      if (signInError) {
-        setEmailUpdateMessage({
-          type: 'error',
-          text: dict?.profile?.incorrectPassword || 'Incorrect password. Please try again.'
-        })
-        setIsUpdatingEmail(false)
-        return
-      }
-
-      // If password is correct, proceed with email update
-      const { error } = await supabase.auth.updateUser({
-        email: newEmail
-      })
-
-      if (error) throw error
-
-      setEmailUpdateMessage({
-        type: 'success',
-        text: dict?.profile?.emailUpdateSuccess || 'Email update initiated! IMPORTANT: Confirmation links have been sent to BOTH your current email and your new email address. You must click the confirmation links in BOTH emails to complete the change.'
-      })
-      
-      // Reset form and hide it after successful submission
-      setNewEmail('')
-      setPassword('')
-      setTimeout(() => {
-        setShowEmailForm(false)
-        setEmailUpdateMessage({ type: '', text: '' })
-      }, EMAIL_UPDATE_SUCCESS_DELAY_MS)
-    } catch (error) {
-      console.error('Error updating email:', error)
-      
-      // Check if it's a rate limit error
-      const errorMessage = error?.message || error?.toString() || ''
-      if (errorMessage.toLowerCase().includes('rate limit')) {
-        setEmailUpdateMessage({
-          type: 'error',
-          text: 'Email rate limit exceeded. Please wait a while before trying again or check your Supabase dashboard settings (Authentication > Settings > Rate Limits).'
-        })
-      } else {
-        setEmailUpdateMessage({
-          type: 'error',
-          text: dict?.profile?.emailUpdateError || 'Failed to update email. Please try again.'
-        })
-      }
-    } finally {
-      setIsUpdatingEmail(false)
-    }
-  }
-
-  // Handle cancel button
-  const handleCancelEmailChange = () => {
-    setShowEmailForm(false)
-    setNewEmail('')
-    setPassword('')
-    setEmailUpdateMessage({ type: '', text: '' })
-  }
 
   if (loading) {
     return (
@@ -304,6 +179,20 @@ export default function ProfilePage() {
                   </h1>
                   <p className="text-gray-600 text-lg">{user.email}</p>
                 </div>
+
+                {/* Settings Button */}
+                <div className="mt-4 sm:mt-0 sm:ml-auto">
+                  <button
+                    onClick={() => router.push(`/${lang}/profile/settings`)}
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl font-medium hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>{dict?.settings?.accountSettings || 'Account Settings'}</span>
+                  </button>
+                </div>
               </div>
 
               {/* Profile Information Grid */}
@@ -370,155 +259,6 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Change Email Section */}
-              <div className="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
-                <div className="flex items-center gap-3 mb-4">
-                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  <h3 className="text-lg font-bold text-gray-900">
-                    {dict?.profile?.changeEmail || 'Change Email'}
-                  </h3>
-                </div>
-
-                {isOAuthUser(user) ? (
-                  // OAuth user - show badge
-                  <div className="bg-white rounded-xl p-4 border border-gray-200">
-                    <div className="flex items-center gap-3">
-                      <div className="flex-shrink-0">
-                        <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-                            {dict?.profile?.accountManagedBy || 'Account managed by'} {getAuthProvider(user).charAt(0).toUpperCase() + getAuthProvider(user).slice(1)}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-600">
-                          {dict?.profile?.cannotChangeEmail || 'Email cannot be changed for OAuth accounts'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ) : !showEmailForm ? (
-                  // Email user - show "Change Email" button when form is hidden
-                  <div className="text-center">
-                    <button
-                      onClick={() => setShowEmailForm(true)}
-                      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 mx-auto"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                      </svg>
-                      <span>{dict?.profile?.changeEmail || 'Change Email'}</span>
-                    </button>
-                  </div>
-                ) : (
-                  // Email user - show update form when button is clicked
-                  <form onSubmit={handleEmailUpdate} className="space-y-4">
-                    <div>
-                      <label htmlFor="currentEmail" className="block text-sm font-medium text-gray-700 mb-2">
-                        {dict?.profile?.currentEmail || 'Current Email'}
-                      </label>
-                      <div className="px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 text-gray-700">
-                        {user.email}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="newEmail" className="block text-sm font-medium text-gray-700 mb-2">
-                        {dict?.profile?.newEmail || 'New Email Address'}
-                      </label>
-                      <input
-                        type="email"
-                        id="newEmail"
-                        value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
-                        placeholder={dict?.profile?.newEmailPlaceholder || 'Enter new email address'}
-                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                        disabled={isUpdatingEmail}
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                        {dict?.profile?.currentPassword || 'Current Password'}
-                      </label>
-                      <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder={dict?.profile?.passwordPlaceholder || 'Enter your current password'}
-                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                        disabled={isUpdatingEmail}
-                        required
-                      />
-                      <p className="mt-2 text-sm text-gray-500">
-                        {dict?.profile?.passwordHint || 'Required for security verification'}
-                      </p>
-                    </div>
-
-                    {emailUpdateMessage.text && (
-                      <div className={`p-4 rounded-lg ${
-                        emailUpdateMessage.type === 'success' 
-                          ? 'bg-green-50 border border-green-200 text-green-800' 
-                          : 'bg-red-50 border border-red-200 text-red-800'
-                      }`}>
-                        <div className="flex items-start gap-3">
-                          {emailUpdateMessage.type === 'success' ? (
-                            <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          ) : (
-                            <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                          )}
-                          <p className="text-sm flex-1">{emailUpdateMessage.text}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="flex gap-3">
-                      <button
-                        type="submit"
-                        disabled={isUpdatingEmail}
-                        className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                      >
-                        {isUpdatingEmail ? (
-                          <>
-                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                            <span>{dict?.profile?.updating || 'Updating...'}</span>
-                          </>
-                        ) : (
-                          <>
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                            </svg>
-                            <span>{dict?.profile?.updateEmail || 'Update Email'}</span>
-                          </>
-                        )}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleCancelEmailChange}
-                        disabled={isUpdatingEmail}
-                        className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        <span>{dict?.common?.cancel || 'Cancel'}</span>
-                      </button>
-                    </div>
-                  </form>
-                )}
               </div>
 
               {/* Sign Out Button */}
