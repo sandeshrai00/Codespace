@@ -68,9 +68,10 @@ export default async function HomePage({ params }) {
         
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 leading-tight animate-fade-in">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 leading-tight animate-fade-in">
               {dict.home.heroTitle} <span className="text-accent-400">{dict.home.heroTitleHighlight}</span>
             </h1>
+            <p className="text-base sm:text-lg md:text-xl text-blue-100/90 mb-10 max-w-2xl mx-auto animate-fade-in delay-100">{dict.home.heroDescription}</p>
             
             {/* Search Bar Card */}
             <div className="backdrop-blur-xl bg-white/10 rounded-3xl shadow-2xl p-3 sm:p-4 max-w-4xl mx-auto border border-white/20">
