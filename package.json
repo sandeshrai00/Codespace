@@ -10,7 +10,8 @@
     "lint": "next lint",
     "init-db": "node lib/init-db.js",
     "migrate-currency": "node lib/migrate-currency.js",
-    "migrate-multilingual": "node lib/migrate-multilingual.js"
+    "migrate-multilingual": "node lib/migrate-multilingual.js",
+    "migrate-announcements-popup": "node lib/migrate-announcements-popup.js"
   },
   "repository": {
     "type": "git",
