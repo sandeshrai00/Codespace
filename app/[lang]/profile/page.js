@@ -145,7 +145,7 @@ export default function ProfilePage() {
     setEmailUpdateMessage({ type: '', text: '' })
 
     try {
-      const { data, error } = await supabase.auth.updateUser({
+      const { error } = await supabase.auth.updateUser({
         email: newEmail
       })
 
