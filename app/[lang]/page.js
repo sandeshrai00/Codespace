@@ -68,7 +68,7 @@ export default async function HomePage({ params }) {
         
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 leading-tight animate-fade-in">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 leading-tight animate-fade-in">
               {dict.home.heroTitle} <span className="text-accent-400">{dict.home.heroTitleHighlight}</span>
             </h1>
             
@@ -85,7 +85,7 @@ export default async function HomePage({ params }) {
                 </div>
                 <Link 
                   href={`/${lang}/tours`}
-                  className="w-full md:w-auto px-6 sm:px-8 py-2 sm:py-2.5 bg-gradient-to-r from-accent-600 to-accent-700 text-white rounded-2xl font-bold text-base sm:text-lg hover:from-accent-700 hover:to-accent-800 transition-all shadow-lg hover:shadow-xl text-center whitespace-nowrap hover:scale-105 transform"
+                  className="w-auto px-6 sm:px-8 py-2 sm:py-2.5 bg-gradient-to-r from-accent-600 to-accent-700 text-white rounded-2xl font-bold text-base sm:text-lg hover:from-accent-700 hover:to-accent-800 transition-all shadow-lg hover:shadow-xl text-center whitespace-nowrap hover:scale-105 transform"
                 >
                   {dict.home.exploreTours}
                 </Link>
