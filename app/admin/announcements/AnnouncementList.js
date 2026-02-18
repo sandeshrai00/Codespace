@@ -74,6 +74,9 @@ export default function AnnouncementList({ announcements }) {
                 Message
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                Type
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Status
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
@@ -89,6 +92,15 @@ export default function AnnouncementList({ announcements }) {
               <tr key={announcement.id} className="hover:bg-gray-50">
                 <td className="px-4 py-4">
                   <div className="text-gray-900">{announcement.message_en || announcement.message}</div>
+                </td>
+                <td className="px-4 py-4">
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    announcement.type === 'popup' 
+                      ? 'bg-purple-100 text-purple-800' 
+                      : 'bg-blue-100 text-blue-800'
+                  }`}>
+                    {announcement.type === 'popup' ? '🔔 Pop-up' : '📢 Banner'}
+                  </span>
                 </td>
                 <td className="px-4 py-4">
                   {announcement.is_active ? (
@@ -136,16 +148,25 @@ export default function AnnouncementList({ announcements }) {
           <div key={announcement.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
             <div className="mb-3">
               <p className="text-gray-900 mb-2">{announcement.message_en || announcement.message}</p>
-              <div className="flex items-center justify-between">
-                {announcement.is_active ? (
-                  <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                    Active
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex gap-2">
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    announcement.type === 'popup' 
+                      ? 'bg-purple-100 text-purple-800' 
+                      : 'bg-blue-100 text-blue-800'
+                  }`}>
+                    {announcement.type === 'popup' ? '🔔 Pop-up' : '📢 Banner'}
                   </span>
-                ) : (
-                  <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
-                    Inactive
-                  </span>
-                )}
+                  {announcement.is_active ? (
+                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                      Active
+                    </span>
+                  ) : (
+                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                      Inactive
+                    </span>
+                  )}
+                </div>
                 <div className="text-sm text-gray-600">
                   {new Date(announcement.created_at).toLocaleDateString()}
                 </div>

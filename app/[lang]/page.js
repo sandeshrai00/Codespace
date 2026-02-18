@@ -2,6 +2,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import TourCard from '@/components/TourCard'
 import AnnouncementBanner from '@/components/AnnouncementBanner'
+import AnnouncementPopup from '@/components/AnnouncementPopup'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getTurso } from '@/lib/turso'
@@ -48,10 +49,19 @@ export default async function HomePage({ params }) {
     <div className="min-h-screen">
       <Header lang={lang} dict={dict} />
       
-      {/* Announcement Banner */}
-      {announcement && (
+      {/* Announcement - Conditional Rendering */}
+      {announcement && announcement.type === 'banner' && (
         <AnnouncementBanner 
           message={getLocalizedField(announcement, 'message', lang)}
+        />
+      )}
+      
+      {announcement && announcement.type === 'popup' && (
+        <AnnouncementPopup 
+          announcement={{
+            ...announcement,
+            message: getLocalizedField(announcement, 'message', lang)
+          }}
         />
       )}
 

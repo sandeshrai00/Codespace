@@ -15,7 +15,7 @@ export async function POST(request) {
       )
     }
 
-    const { message, is_active } = await request.json()
+    const { message, is_active, type, image_url } = await request.json()
 
     if (!message) {
       return NextResponse.json(
@@ -34,16 +34,17 @@ export async function POST(request) {
       await turso.execute('UPDATE announcements SET is_active = 0');
     }
 
-    // We populate both the localized columns and the base 'message' column 
-    // to satisfy NOT NULL constraints and maintain backward compatibility.
+    // Insert announcement with type and image_url fields
     await turso.execute({
-      sql: 'INSERT INTO announcements (message, message_en, message_th, message_zh, is_active) VALUES (?, ?, ?, ?, ?)',
+      sql: 'INSERT INTO announcements (message, message_en, message_th, message_zh, is_active, type, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)',
       args: [
         translatedMessages.message_en, 
         translatedMessages.message_en, 
         translatedMessages.message_th, 
         translatedMessages.message_zh, 
-        is_active ? 1 : 0
+        is_active ? 1 : 0,
+        type || 'banner',
+        image_url || null
       ]
     });
 
