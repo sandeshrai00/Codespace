@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { locales, localeConfig, replaceLocaleInPath } from '@/lib/i18n';
 
 export default function LanguageSwitcher() {
@@ -46,7 +47,14 @@ export default function LanguageSwitcher() {
         aria-label={`Select language - Current: ${currentConfig.name}`}
         aria-expanded={isOpen}
       >
-        <span className="text-2xl">{currentConfig.flag}</span>
+        <Image 
+          src={currentConfig.flag} 
+          alt={currentConfig.name}
+          width={32}
+          height={32}
+          className="w-8 h-8 object-contain"
+          priority
+        />
         <svg 
           className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
           fill="none" 
@@ -60,11 +68,18 @@ export default function LanguageSwitcher() {
       {/* Mobile Circular Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden rounded-full w-10 h-10 flex items-center justify-center text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-all duration-200 border border-transparent hover:border-primary-200"
+        className="md:hidden rounded-full w-14 h-14 flex items-center justify-center text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-all duration-200 border border-transparent hover:border-primary-200"
         aria-label={`Select language - Current: ${currentConfig.name}`}
         aria-expanded={isOpen}
       >
-        <span className="text-2xl">{currentConfig.flag}</span>
+        <Image 
+          src={currentConfig.flag} 
+          alt={currentConfig.name}
+          width={40}
+          height={40}
+          className="w-10 h-10 object-contain"
+          priority
+        />
       </button>
 
       {isOpen && (
@@ -90,7 +105,13 @@ export default function LanguageSwitcher() {
                       isActive ? 'bg-primary-50 text-primary-600 font-medium' : ''
                     }`}
                   >
-                    <span className="text-xl">{config.flag}</span>
+                    <Image 
+                      src={config.flag} 
+                      alt={config.name}
+                      width={24}
+                      height={24}
+                      className="w-6 h-6 object-contain"
+                    />
                     <span className="flex-1 text-left">{config.name}</span>
                     {isActive && (
                       <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
