@@ -110,11 +110,11 @@ export default async function HomePage({ params }) {
           </div>
 
           {/* Two Equal Cards - Side by Side */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 gap-4 sm:gap-8 max-w-6xl mx-auto">
             {/* Nepal - Premium Featured Card */}
             <Link 
               href={`/${lang}/tours`}
-              className="group relative h-96 md:h-[500px] rounded-3xl overflow-hidden shadow-card hover:shadow-glass-lg transition-all duration-500 hover:scale-[1.02]"
+              className="group relative h-64 sm:h-80 md:h-[500px] rounded-3xl overflow-hidden shadow-card hover:shadow-glass-lg transition-all duration-500 hover:scale-[1.02]"
             >
               <div className="absolute inset-0">
                 <Image 
@@ -129,10 +129,10 @@ export default async function HomePage({ params }) {
               {/* Gradient Overlay for Readability */}
               <div className="absolute inset-0 bg-gradient-to-t from-primary-900/90 via-primary-900/50 to-transparent group-hover:from-primary-800/95 transition-all duration-300"></div>
               {/* Content */}
-              <div className="absolute inset-0 flex flex-col justify-end p-8 text-white">
+              <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-8 text-white">
                 <div className="transform translate-y-0 group-hover:-translate-y-2 transition-transform duration-300">
-                  <h3 className="text-4xl md:text-5xl font-bold mb-3">{dict.home.nepalTitle}</h3>
-                  <p className="text-base md:text-lg text-blue-100 mb-4">
+                  <h3 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-3">{dict.home.nepalTitle}</h3>
+                  <p className="text-sm sm:text-base md:text-lg text-blue-100 mb-2 sm:mb-4">
                     {dict.home.nepalSubtitle}
                   </p>
                   <p className="text-sm text-blue-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -151,7 +151,7 @@ export default async function HomePage({ params }) {
             {/* Thailand - Premium Featured Card */}
             <Link 
               href={`/${lang}/tours`}
-              className="group relative h-96 md:h-[500px] rounded-3xl overflow-hidden shadow-card hover:shadow-glass-lg transition-all duration-500 hover:scale-[1.02]"
+              className="group relative h-64 sm:h-80 md:h-[500px] rounded-3xl overflow-hidden shadow-card hover:shadow-glass-lg transition-all duration-500 hover:scale-[1.02]"
             >
               <div className="absolute inset-0">
                 <Image 
@@ -163,10 +163,10 @@ export default async function HomePage({ params }) {
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-primary-900/90 via-primary-900/50 to-transparent group-hover:from-primary-800/95 transition-all duration-300"></div>
-              <div className="absolute inset-0 flex flex-col justify-end p-8 text-white">
+              <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-8 text-white">
                 <div className="transform translate-y-0 group-hover:-translate-y-2 transition-transform duration-300">
-                  <h3 className="text-4xl md:text-5xl font-bold mb-3">{dict.home.thailandTitle}</h3>
-                  <p className="text-base md:text-lg text-blue-100 mb-4">
+                  <h3 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-3">{dict.home.thailandTitle}</h3>
+                  <p className="text-sm sm:text-base md:text-lg text-blue-100 mb-2 sm:mb-4">
                     {dict.home.thailandSubtitle}
                   </p>
                   <p className="text-sm text-blue-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
