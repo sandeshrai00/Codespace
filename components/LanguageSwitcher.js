@@ -41,12 +41,11 @@ export default function LanguageSwitcher() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-all duration-200 border border-transparent hover:border-primary-200"
+        className="flex items-center gap-2 px-3 py-2 rounded-2xl text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-all duration-200 border border-transparent hover:border-primary-200"
         aria-label="Select language"
         aria-expanded={isOpen}
       >
-        <span className="text-xl">{currentConfig.flag}</span>
-        <span className="hidden sm:inline text-sm font-medium">{currentConfig.name}</span>
+        <span className="text-2xl">{currentConfig.flag}</span>
         <svg 
           className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
           fill="none" 
@@ -66,7 +65,7 @@ export default function LanguageSwitcher() {
           />
           
           {/* Dropdown */}
-          <div className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white border border-primary-200 z-50 animate-slide-down">
+          <div className="absolute right-0 mt-2 w-48 rounded-2xl shadow-lg bg-white border border-primary-200 z-50 animate-slide-down">
             <div className="py-1">
               {locales.map((locale) => {
                 const config = localeConfig[locale];
