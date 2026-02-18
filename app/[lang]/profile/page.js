@@ -28,6 +28,13 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        // Check if supabase client is available
+        if (!supabase) {
+          console.error('Supabase client not initialized')
+          setLoading(false)
+          return
+        }
+
         const { data: { session } } = await supabase.auth.getSession()
         
         if (!session?.user) {
@@ -48,15 +55,17 @@ export default function ProfilePage() {
     fetchUser()
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session?.user) {
-        router.push(`/${lang}/login`)
-      } else {
-        setUser(session.user)
-      }
-    })
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (!session?.user) {
+          router.push(`/${lang}/login`)
+        } else {
+          setUser(session.user)
+        }
+      })
 
-    return () => subscription.unsubscribe()
+      return () => subscription.unsubscribe()
+    }
   }, [lang, router])
 
   if (loading) {
