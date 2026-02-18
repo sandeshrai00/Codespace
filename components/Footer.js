@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 
-export default function Footer() {
+export default function Footer({ lang = 'en', dict }) {
   return (
     <footer className="bg-secondary-950 text-gray-300">
       {/* Main Footer Content */}
@@ -19,14 +19,14 @@ export default function Footer() {
 
         {/* Essential Links - Single Row */}
         <nav className="flex flex-wrap items-center justify-center gap-6 mb-6">
-          <Link href="/" className="text-gray-400 hover:text-accent-500 transition-colors text-sm">
-            Home
+          <Link href={`/${lang}`} className="text-gray-400 hover:text-accent-500 transition-colors text-sm">
+            {dict?.footer?.home || 'Home'}
           </Link>
-          <Link href="/tours" className="text-gray-400 hover:text-accent-500 transition-colors text-sm">
-            Tours
+          <Link href={`/${lang}/tours`} className="text-gray-400 hover:text-accent-500 transition-colors text-sm">
+            {dict?.footer?.tours || 'Tours'}
           </Link>
-          <Link href="/tours" className="text-gray-400 hover:text-accent-500 transition-colors text-sm">
-            Contact
+          <Link href={`/${lang}/tours`} className="text-gray-400 hover:text-accent-500 transition-colors text-sm">
+            {dict?.footer?.contact || 'Contact'}
           </Link>
         </nav>
 
@@ -54,7 +54,7 @@ export default function Footer() {
       <div className="border-t border-secondary-900">
         <div className="container mx-auto px-4 sm:px-6 py-3">
           <p className="text-center text-xs text-gray-400">
-            © {new Date().getFullYear()} GoHoliday. All rights reserved.
+            {dict?.footer?.copyright || `© ${new Date().getFullYear()} GoHoliday. All rights reserved.`}
           </p>
         </div>
       </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
@@ -15,6 +15,10 @@ export default function UpdatePasswordPage() {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const router = useRouter()
+  const pathname = usePathname()
+  
+  // Extract lang from pathname
+  const lang = pathname?.split('/')[1] || 'en'
 
   useEffect(() => {
     // Check if user has a valid session from the reset link
@@ -67,8 +71,8 @@ export default function UpdatePasswordPage() {
       setNewPassword('')
       setConfirmPassword('')
       
-      // Redirect to login immediately
-      router.push('/login')
+      // Redirect to login with lang
+      router.push(`/${lang}/login`)
     } catch (error) {
       setError(error.message)
     } finally {
@@ -158,14 +162,14 @@ export default function UpdatePasswordPage() {
 
               {/* Back to Login */}
               <div className="mt-6 text-center">
-                <Link href="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+                <Link href={`/${lang}/login`} className="text-primary-600 hover:text-primary-700 font-medium">
                   ← Back to Login
                 </Link>
               </div>
 
               {/* Back to Home */}
               <div className="mt-4 text-center">
-                <Link href="/" className="text-gray-600 hover:text-gray-800 text-sm">
+                <Link href={`/${lang}`} className="text-gray-600 hover:text-gray-800 text-sm">
                   ← Back to Home
                 </Link>
               </div>

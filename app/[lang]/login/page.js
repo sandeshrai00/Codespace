@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
@@ -17,6 +17,10 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const router = useRouter()
+  const pathname = usePathname()
+  
+  // Extract lang from pathname
+  const lang = pathname?.split('/')[1] || 'en'
 
   const handleAuth = async (e) => {
     e.preventDefault()
@@ -41,7 +45,7 @@ export default function LoginPage() {
         if (error) throw error
 
         setMessage('Login successful!')
-        setTimeout(() => router.push('/'), 1000)
+        setTimeout(() => router.push(`/${lang}`), 1000)
       } else {
         // Sign up
         const { error } = await supabase.auth.signUp({
@@ -234,7 +238,7 @@ export default function LoginPage() {
 
               {/* Back to Home */}
               <div className="mt-4 text-center">
-                <Link href="/" className="text-gray-600 hover:text-gray-800 text-sm">
+                <Link href={`/${lang}`} className="text-gray-600 hover:text-gray-800 text-sm">
                   ← Back to Home
                 </Link>
               </div>

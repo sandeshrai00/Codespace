@@ -2,8 +2,9 @@
 
 import { useState, useMemo } from 'react'
 import TourCard from './TourCard'
+import { getLocalizedField } from '@/lib/i18n'
 
-export default function TourSearch({ tours }) {
+export default function TourSearch({ tours, lang = 'en', dict }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [priceRange, setPriceRange] = useState('all')
   const [locationFilter, setLocationFilter] = useState('all')
@@ -11,17 +12,20 @@ export default function TourSearch({ tours }) {
 
   // Extract unique locations from tours
   const uniqueLocations = useMemo(() => {
-    const locations = tours.map(tour => tour.location)
+    const locations = tours.map(tour => getLocalizedField(tour, 'location', lang))
     return [...new Set(locations)].sort()
-  }, [tours])
+  }, [tours, lang])
 
   // Filter tours based on all criteria
   const filteredTours = useMemo(() => {
     return tours.filter(tour => {
+      const localizedTitle = getLocalizedField(tour, 'title', lang)
+      const localizedLocation = getLocalizedField(tour, 'location', lang)
+      
       // Search term filter (title or location)
       const matchesSearch = searchTerm === '' || 
-        tour.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tour.location.toLowerCase().includes(searchTerm.toLowerCase())
+        localizedTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        localizedLocation.toLowerCase().includes(searchTerm.toLowerCase())
 
       // Price range filter
       let matchesPrice = true
@@ -36,7 +40,7 @@ export default function TourSearch({ tours }) {
       }
 
       // Location filter
-      const matchesLocation = locationFilter === 'all' || tour.location === locationFilter
+      const matchesLocation = locationFilter === 'all' || localizedLocation === locationFilter
 
       // Duration filter
       let matchesDuration = true
@@ -55,7 +59,7 @@ export default function TourSearch({ tours }) {
 
       return matchesSearch && matchesPrice && matchesLocation && matchesDuration
     })
-  }, [tours, searchTerm, priceRange, locationFilter, durationFilter])
+  }, [tours, searchTerm, priceRange, locationFilter, durationFilter, lang])
 
   const handleClearFilters = () => {
     setSearchTerm('')
@@ -79,7 +83,7 @@ export default function TourSearch({ tours }) {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search tours or destinations..."
+                placeholder={dict?.tours?.searchPlaceholder || 'Search tours...'}
                 className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
               />
               <svg 
@@ -163,7 +167,7 @@ export default function TourSearch({ tours }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {filteredTours.map((tour) => (
               <div key={tour.id} className="animate-fade-in">
-                <TourCard tour={tour} />
+                <TourCard tour={tour} lang={lang} />
               </div>
             ))}
           </div>
