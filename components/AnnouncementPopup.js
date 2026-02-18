@@ -145,7 +145,7 @@ export default function AnnouncementPopup({ announcement }) {
 
           {/* Small text */}
           <p className="text-xs text-gray-500 text-center mt-3">
-            This message won't show again for 24 hours
+            This message won&apos;t show again for 24 hours
           </p>
         </div>
       </div>
