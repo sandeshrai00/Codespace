@@ -12,7 +12,6 @@ export default function Header({ lang = 'en', dict }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [user, setUser] = useState(null)
-  const [isProfileOpen, setIsProfileOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,13 +36,6 @@ export default function Header({ lang = 'en', dict }) {
       return () => subscription.unsubscribe()
     }
   }, [])
-
-  const handleSignOut = async () => {
-    if (supabase) {
-      await supabase.auth.signOut()
-      setIsProfileOpen(false)
-    }
-  }
 
   return (
     <header className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'glass-morphism shadow-glass' : 'bg-white/95 backdrop-blur-md border-b border-gray-100'}`}>
@@ -78,38 +70,15 @@ export default function Header({ lang = 'en', dict }) {
               
               {/* Auth Section */}
               {user ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 text-primary-700 hover:bg-primary-100 transition-all duration-200"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <span className="font-medium">{getUserDisplayName(user)}</span>
-                  </button>
-                  
-                  {isProfileOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-lg py-2 z-50 border border-primary-200 animate-slide-down">
-                      <div className="px-4 py-2 border-b border-gray-100">
-                        <p className="text-sm text-gray-600 truncate">{user.email}</p>
-                      </div>
-                      <Link
-                        href={`/${lang}/profile`}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                        onClick={() => setIsProfileOpen(false)}
-                      >
-                        {dict?.nav?.profile || 'Profile'}
-                      </Link>
-                      <button
-                        onClick={handleSignOut}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                      >
-                        {dict?.nav?.signOut || 'Sign Out'}
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <Link 
+                  href={`/${lang}/profile`}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 text-primary-700 hover:bg-primary-100 transition-all duration-200"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span className="font-medium">{getUserDisplayName(user)}</span>
+                </Link>
               ) : (
                 <Link 
                   href={`/${lang}/login`}
@@ -174,12 +143,6 @@ export default function Header({ lang = 'en', dict }) {
                   >
                     {dict?.nav?.profile || 'Profile'}
                   </Link>
-                  <button
-                    onClick={handleSignOut}
-                    className="w-full px-3 py-2.5 text-red-600 hover:bg-red-50 rounded-2xl transition-all duration-200 font-medium text-left"
-                  >
-                    {dict?.nav?.signOut || 'Sign Out'}
-                  </button>
                 </div>
               ) : (
                 <Link 
