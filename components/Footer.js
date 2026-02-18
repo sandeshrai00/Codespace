@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 export default function Footer({ lang = 'en', dict }) {
   return (
-    <footer className="bg-secondary-950 text-gray-300">
+    <footer className="bg-secondary-950 text-gray-300 rounded-t-[2rem] sm:rounded-t-[3rem]">
       {/* Main Footer Content */}
       <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Logo */}

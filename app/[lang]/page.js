@@ -57,7 +57,7 @@ export default async function HomePage({ params }) {
       )}
 
       {/* Hero Section - Professional Nepal-Thailand Focus */}
-      <section className="relative bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 text-white py-12 md:py-16 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 text-white py-12 md:py-16 overflow-hidden rounded-b-[2rem] sm:rounded-b-[3rem]">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
