@@ -54,9 +54,9 @@ export default function Header({ lang = 'en', dict }) {
             <Image 
               src="/img/logo.png" 
               alt="GoHoliday Logo" 
-              width={140}
-              height={40}
-              className="h-10 w-auto"
+              width={160}
+              height={46}
+              className="h-[46px] w-auto"
               priority
             />
           </Link>
@@ -65,16 +65,8 @@ export default function Header({ lang = 'en', dict }) {
           <nav className="hidden md:flex items-center gap-8">
             {/* Main Navigation Links */}
             <div className="flex items-center gap-6">
-              <Link href={`/${lang}`} className="relative text-gray-700 hover:text-primary-600 transition-colors font-medium group">
-                {dict?.nav?.home || 'Home'}
-                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-              <Link href={`/${lang}/tours`} className="relative text-gray-700 hover:text-primary-600 transition-colors font-medium group">
+              <Link href={`/${lang}/tours`} className="relative text-gray-700 hover:text-primary-600 transition-colors font-bold group">
                 {dict?.nav?.tours || 'Tours'}
-                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-              <Link href={`/${lang}#destinations`} className="relative text-gray-700 hover:text-primary-600 transition-colors font-medium group">
-                {dict?.nav?.destinations || 'Destinations'}
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
               </Link>
             </div>
@@ -92,7 +84,7 @@ export default function Header({ lang = 'en', dict }) {
                 <div className="relative">
                   <button
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-50 text-primary-700 hover:bg-primary-100 transition-all duration-200"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 text-primary-700 hover:bg-primary-100 transition-all duration-200"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -101,7 +93,7 @@ export default function Header({ lang = 'en', dict }) {
                   </button>
                   
                   {isProfileOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border border-primary-200 animate-slide-down">
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-lg py-2 z-50 border border-primary-200 animate-slide-down">
                       <div className="px-4 py-2 border-b border-gray-100">
                         <p className="text-sm text-gray-600 truncate">{user.email}</p>
                       </div>
@@ -117,7 +109,7 @@ export default function Header({ lang = 'en', dict }) {
               ) : (
                 <Link 
                   href={`/${lang}/login`}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="px-4 py-2 bg-primary-600 text-white rounded-full font-medium hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   {dict?.nav?.login || 'Login'}
                 </Link>
@@ -143,29 +135,15 @@ export default function Header({ lang = 'en', dict }) {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden pb-4 animate-slide-down bg-white/95 backdrop-blur-md rounded-b-xl border-t border-gray-100 shadow-lg">
+          <div className="md:hidden pb-4 animate-slide-down bg-white/95 backdrop-blur-md rounded-b-2xl border-t border-gray-100 shadow-lg">
             {/* Navigation Links Section */}
             <div className="px-2 py-3 space-y-1">
               <Link 
-                href={`/${lang}`}
-                className="block px-3 py-2.5 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {dict?.nav?.home || 'Home'}
-              </Link>
-              <Link 
                 href={`/${lang}/tours`}
-                className="block px-3 py-2.5 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-200 font-medium"
+                className="block px-3 py-2.5 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-2xl transition-all duration-200 font-bold"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {dict?.nav?.tours || 'Tours'}
-              </Link>
-              <Link 
-                href={`/${lang}#destinations`}
-                className="block px-3 py-2.5 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {dict?.nav?.destinations || 'Destinations'}
               </Link>
             </div>
 
@@ -186,13 +164,13 @@ export default function Header({ lang = 'en', dict }) {
             <div className="px-2 py-3 border-t border-gray-100">
               {user ? (
                 <div className="space-y-2">
-                  <div className="px-3 py-2 bg-gray-50 rounded-lg">
+                  <div className="px-3 py-2 bg-gray-50 rounded-2xl">
                     <p className="text-sm font-medium text-gray-700">{getUserDisplayName(user)}</p>
                     <p className="text-xs text-gray-500 truncate">{user.email}</p>
                   </div>
                   <button
                     onClick={handleSignOut}
-                    className="w-full px-3 py-2.5 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 font-medium text-left"
+                    className="w-full px-3 py-2.5 text-red-600 hover:bg-red-50 rounded-2xl transition-all duration-200 font-medium text-left"
                   >
                     {dict?.nav?.signOut || 'Sign Out'}
                   </button>
@@ -200,7 +178,7 @@ export default function Header({ lang = 'en', dict }) {
               ) : (
                 <Link 
                   href={`/${lang}/login`}
-                  className="block px-4 py-2.5 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-all duration-200 text-center shadow-sm"
+                  className="block px-4 py-2.5 bg-primary-600 text-white rounded-full font-medium hover:bg-primary-700 transition-all duration-200 text-center shadow-sm"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {dict?.nav?.login || 'Login'}
