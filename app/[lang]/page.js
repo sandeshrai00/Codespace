@@ -1,6 +1,7 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import TourCard from '@/components/TourCard'
+import AnnouncementBanner from '@/components/AnnouncementBanner'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getTurso } from '@/lib/turso'
@@ -49,11 +50,9 @@ export default async function HomePage({ params }) {
       
       {/* Announcement Banner */}
       {announcement && (
-        <div className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 px-4 shadow-md">
-          <div className="container mx-auto px-4 sm:px-6 text-center">
-            <p className="text-sm md:text-base font-medium">📢 {getLocalizedField(announcement, 'message', lang)}</p>
-          </div>
-        </div>
+        <AnnouncementBanner 
+          message={getLocalizedField(announcement, 'message', lang)}
+        />
       )}
 
       {/* Hero Section - Professional Nepal-Thailand Focus */}
