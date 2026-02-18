@@ -66,7 +66,7 @@ export default function LanguageSwitcher() {
           />
           
           {/* Dropdown */}
-          <div className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white border border-gray-200 z-50 animate-slide-down">
+          <div className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white border border-primary-200 z-50 animate-slide-down">
             <div className="py-1">
               {locales.map((locale) => {
                 const config = localeConfig[locale];

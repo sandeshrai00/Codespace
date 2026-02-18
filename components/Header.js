@@ -48,7 +48,7 @@ export default function Header({ lang = 'en', dict }) {
   return (
     <header className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'glass-morphism shadow-glass' : 'bg-white/95 backdrop-blur-md border-b border-gray-100'}`}>
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16 sm:h-18">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href={`/${lang}`} className="flex items-center gap-2 hover:opacity-90 transition-all duration-300 group">
             <Image 
@@ -101,7 +101,7 @@ export default function Header({ lang = 'en', dict }) {
                   </button>
                   
                   {isProfileOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-100">
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border border-primary-200 animate-slide-down">
                       <div className="px-4 py-2 border-b border-gray-100">
                         <p className="text-sm text-gray-600 truncate">{user.email}</p>
                       </div>
