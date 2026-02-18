@@ -49,7 +49,11 @@ export default function TourSearch({ tours, lang = 'en', dict }) {
       }
 
       // Location filter
-      const matchesLocation = locationFilter === 'all' || localizedLocation === locationFilter
+      // Compare with English location for URL-based filtering, or localized for dropdown
+      const englishLocation = getLocalizedField(tour, 'location', 'en')
+      const matchesLocation = locationFilter === 'all' || 
+        localizedLocation === locationFilter || 
+        englishLocation === locationFilter
 
       // Duration filter
       let matchesDuration = true
