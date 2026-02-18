@@ -37,12 +37,6 @@ export default function Header({ lang = 'en', dict }) {
     }
   }, [])
 
-  const handleSignOut = async () => {
-    if (supabase) {
-      await supabase.auth.signOut()
-    }
-  }
-
   return (
     <header className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'glass-morphism shadow-glass' : 'bg-white/95 backdrop-blur-md border-b border-gray-100'}`}>
       <div className="container mx-auto px-4 sm:px-6">
