@@ -153,6 +153,27 @@
     "passwordLabel": "Current Password",
     "passwordHelp": "Enter your current password to verify this change",
     "updateEmailButton": "Update Email Address",
-    "emailUpdateSuccessShort": "Confirmation links have been sent to both your old and new email addresses."
+    "emailUpdateSuccessShort": "Confirmation links have been sent to both your old and new email addresses.",
+    "nameSettings": "Name Settings",
+    "nameDescription": "Update your display name",
+    "fullNameLabel": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "updateNameButton": "Update Name",
+    "nameUpdateSuccess": "Your name has been updated successfully!",
+    "nameUpdateError": "Failed to update name. Please try again.",
+    "nameRequired": "Please enter your full name",
+    "passwordSettings": "Password Settings",
+    "passwordDescription": "Change your account password",
+    "newPasswordLabel": "New Password",
+    "newPasswordPlaceholder": "Enter new password (min 6 characters)",
+    "confirmPasswordLabel": "Confirm New Password",
+    "confirmPasswordPlaceholder": "Re-enter new password",
+    "updatePasswordButton": "Update Password",
+    "passwordUpdateSuccess": "Your password has been updated successfully!",
+    "passwordUpdateError": "Failed to update password. Please try again.",
+    "passwordTooShort": "Password must be at least 6 characters long",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "updatingName": "Updating name...",
+    "updatingPassword": "Updating password..."
   }
 }
