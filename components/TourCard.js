@@ -69,7 +69,7 @@ export default function TourCard({ tour, lang = 'en', dict }) {
           {/* Price and CTA */}
           <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-3 mt-auto pt-4 border-t border-gray-100">
             <div>
-              <div className="text-[10px] sm:text-xs text-gray-500 mb-1">From</div>
+              <div className="text-xs sm:text-xs text-gray-500 mb-1">From</div>
               <div className="text-xs sm:text-lg font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
                 {convertPrice(tour.price, tour.currency || 'USD')}
               </div>

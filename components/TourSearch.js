@@ -177,7 +177,7 @@ export default function TourSearch({ tours, lang = 'en', dict }) {
       {/* Results Grid */}
       <div className="transition-all duration-300">
         {filteredTours.length > 0 ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 md:gap-6 lg:gap-8">
             {filteredTours.map((tour) => (
               <div key={tour.id} className="animate-fade-in">
                 <TourCard tour={tour} lang={lang} dict={dict} />
