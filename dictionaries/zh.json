@@ -134,8 +134,6 @@
     "email": "电子邮件",
     "userId": "用户ID",
     "memberSince": "加入日期",
-    "gender": "性别",
-    "dateOfBirth": "出生日期",
     "changeEmail": "更改电子邮件",
     "newEmail": "新电子邮件地址",
     "currentEmail": "当前电子邮件",

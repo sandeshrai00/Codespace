@@ -454,9 +454,9 @@ export default function ProfileEditPage() {
                           disabled={isSaving}
                         >
                           <option value="">{dict?.profileSettings?.genderPlaceholder || 'Select your gender'}</option>
-                          <option value="Male">{dict?.profileSettings?.male || 'Male'}</option>
-                          <option value="Female">{dict?.profileSettings?.female || 'Female'}</option>
-                          <option value="Other">{dict?.profileSettings?.other || 'Other'}</option>
+                          <option value="male">{dict?.profileSettings?.male || 'Male'}</option>
+                          <option value="female">{dict?.profileSettings?.female || 'Female'}</option>
+                          <option value="other">{dict?.profileSettings?.other || 'Other'}</option>
                         </select>
                       </div>
 

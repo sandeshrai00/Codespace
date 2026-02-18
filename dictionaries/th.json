@@ -134,8 +134,6 @@
     "email": "อีเมล",
     "userId": "รหัสผู้ใช้",
     "memberSince": "สมาชิกตั้งแต่",
-    "gender": "เพศ",
-    "dateOfBirth": "วันเกิด",
     "changeEmail": "เปลี่ยนอีเมล",
     "newEmail": "ที่อยู่อีเมลใหม่",
     "currentEmail": "อีเมลปัจจุบัน",

@@ -134,8 +134,6 @@
     "email": "Email",
     "userId": "User ID",
     "memberSince": "Member Since",
-    "gender": "Gender",
-    "dateOfBirth": "Date of Birth",
     "changeEmail": "Change Email",
     "newEmail": "New Email Address",
     "currentEmail": "Current Email",

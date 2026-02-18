@@ -206,15 +206,20 @@ export default function ProfilePage() {
                 {profile?.gender && (
                   <div>
                     <label className="block text-sm font-medium text-gray-500 mb-1">
-                      {dict?.profile?.gender || 'Gender'}
+                      {dict?.profileSettings?.gender || 'Gender'}
                     </label>
-                    <p className="text-base text-gray-900">{profile.gender}</p>
+                    <p className="text-base text-gray-900">
+                      {profile.gender === 'male' ? (dict?.profileSettings?.male || 'Male') : 
+                       profile.gender === 'female' ? (dict?.profileSettings?.female || 'Female') : 
+                       profile.gender === 'other' ? (dict?.profileSettings?.other || 'Other') : 
+                       profile.gender}
+                    </p>
                   </div>
                 )}
                 {profile?.date_of_birth && (
                   <div>
                     <label className="block text-sm font-medium text-gray-500 mb-1">
-                      {dict?.profile?.dateOfBirth || 'Date of Birth'}
+                      {dict?.profileSettings?.dateOfBirth || 'Date of Birth'}
                     </label>
                     <p className="text-base text-gray-900">
                       {new Date(profile.date_of_birth).toLocaleDateString(getLocale(lang), {
