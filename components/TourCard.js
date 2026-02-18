@@ -19,26 +19,28 @@ export default function TourCard({ tour, lang = 'en', dict }) {
 
   return (
     <Link href={`/${lang}/tours/${tour.id}`} className="block group">
-      <div className="bg-white rounded-2xl shadow-card hover:shadow-glass-lg transition-all duration-500 h-full flex flex-col overflow-hidden border border-gray-100 group-hover:scale-[1.02] group-hover:border-primary-200">
+      <div className="bg-white rounded-2xl shadow-md hover:shadow-glass-lg transition-all duration-500 h-full flex flex-col overflow-hidden border border-gray-100 group-hover:scale-[1.02] group-hover:border-primary-200">
         {/* Banner Image with hover zoom and floating price badge */}
-        <div className="relative h-32 sm:h-48 w-full overflow-hidden hover-zoom">
-          {tour.banner_image ? (
-            <Image
-              src={tour.banner_image}
-              alt={localizedTitle}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-              <span className="text-white text-4xl">🏖️</span>
-            </div>
-          )}
-          
-          {/* Floating Price Badge - Glass-morphism */}
-          <div className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm rounded-lg px-2 py-1 shadow-lg">
-            <div className="text-xs sm:text-sm font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
-              {convertPrice(tour.price, tour.currency || 'USD')}
+        <div className="p-2">
+          <div className="relative h-32 sm:h-48 w-full overflow-hidden rounded-xl hover-zoom">
+            {tour.banner_image ? (
+              <Image
+                src={tour.banner_image}
+                alt={localizedTitle}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                <span className="text-white text-4xl">🏖️</span>
+              </div>
+            )}
+            
+            {/* Floating Price Badge - Glass-morphism */}
+            <div className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm rounded-lg px-2 py-1 shadow-lg">
+              <div className="text-xs sm:text-sm font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
+                {convertPrice(tour.price, tour.currency || 'USD')}
+              </div>
             </div>
           </div>
         </div>
