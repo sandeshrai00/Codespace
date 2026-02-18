@@ -53,6 +53,7 @@ export default function LanguageSwitcher() {
           width={32}
           height={32}
           className="w-8 h-8 object-contain"
+          priority
         />
         <svg 
           className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
@@ -77,6 +78,7 @@ export default function LanguageSwitcher() {
           width={40}
           height={40}
           className="w-10 h-10 object-contain"
+          priority
         />
       </button>
 
