@@ -140,5 +140,19 @@
     "passwordPlaceholder": "Enter your current password",
     "passwordHint": "Required for security verification",
     "incorrectPassword": "Incorrect password. Please try again."
+  },
+  "settings": {
+    "title": "Account Settings",
+    "accountSettings": "Account Settings",
+    "backToProfile": "Back to Profile",
+    "emailSettings": "Email Settings",
+    "updateYourEmail": "Update Your Email Address",
+    "emailDescription": "Change the email address associated with your account. You'll need to verify both your old and new email addresses.",
+    "currentEmailLabel": "Current Email Address",
+    "newEmailLabel": "New Email Address",
+    "passwordLabel": "Current Password",
+    "passwordHelp": "Enter your current password to verify this change",
+    "updateEmailButton": "Update Email Address",
+    "emailUpdateSuccessShort": "Confirmation links have been sent to both your old and new email addresses."
   }
 }
