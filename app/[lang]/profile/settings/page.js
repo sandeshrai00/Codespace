@@ -105,6 +105,12 @@ export default function SettingsPage() {
     return provider !== 'email'
   }
 
+  // Format auth provider name for display
+  const getFormattedAuthProvider = (user) => {
+    const provider = getAuthProvider(user)
+    return provider.charAt(0).toUpperCase() + provider.slice(1)
+  }
+
   // Handle name update
   const handleNameUpdate = async (e) => {
     e.preventDefault()
@@ -472,7 +478,7 @@ export default function SettingsPage() {
                     </svg>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    {dict?.profile?.accountManagedBy || 'Account managed by'} {getAuthProvider(user).charAt(0).toUpperCase() + getAuthProvider(user).slice(1)}
+                    {dict?.profile?.accountManagedBy || 'Account managed by'} {getFormattedAuthProvider(user)}
                   </h3>
                   <p className="text-gray-700">
                     {dict?.profile?.cannotChangeEmail || 'Email cannot be changed for OAuth accounts'}
@@ -527,7 +533,7 @@ export default function SettingsPage() {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      {dict?.settings?.passwordHelp || dict?.profile?.passwordHint || 'Required for security verification. Confirmation needed for both old and new emails.'}
+                      {dict?.settings?.passwordHelp || dict?.profile?.passwordHint || 'Required for security verification'}
                     </p>
                   </div>
 
@@ -608,7 +614,7 @@ export default function SettingsPage() {
                     </svg>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    {dict?.profile?.accountManagedBy || 'Account managed by'} {getAuthProvider(user).charAt(0).toUpperCase() + getAuthProvider(user).slice(1)}
+                    {dict?.profile?.accountManagedBy || 'Account managed by'} {getFormattedAuthProvider(user)}
                   </h3>
                   <p className="text-gray-700">
                     Password cannot be changed for OAuth accounts
