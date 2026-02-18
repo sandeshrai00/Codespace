@@ -132,7 +132,7 @@ export default function Header({ lang = 'en', dict }) {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden pb-4 animate-slide-down bg-white/95 backdrop-blur-md absolute right-4 top-16 w-48 shadow-xl border border-gray-100 rounded-2xl">
+          <div className="md:hidden pb-4 animate-slide-down bg-white/95 backdrop-blur-md absolute right-4 top-16 w-72 shadow-xl border border-gray-100 rounded-2xl">
             {/* Navigation Links Section */}
             <div className="px-2 py-3 space-y-1">
               <Link 
@@ -146,9 +146,9 @@ export default function Header({ lang = 'en', dict }) {
 
             {/* Switchers Section */}
             <div className="px-2 py-3 border-t border-gray-100">
-              <div className="flex flex-col items-center gap-3">
-                <CurrencySwitcher />
-                <LanguageSwitcher />
+              <div className="flex flex-col gap-2">
+                <CurrencySwitcher mobile />
+                <LanguageSwitcher mobile />
               </div>
             </div>
             
