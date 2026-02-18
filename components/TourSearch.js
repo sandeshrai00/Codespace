@@ -1,14 +1,24 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import TourCard from './TourCard'
 import { getLocalizedField } from '@/lib/i18n'
 
 export default function TourSearch({ tours, lang = 'en', dict }) {
+  const searchParams = useSearchParams()
   const [searchTerm, setSearchTerm] = useState('')
   const [priceRange, setPriceRange] = useState('all')
   const [locationFilter, setLocationFilter] = useState('all')
   const [durationFilter, setDurationFilter] = useState('all')
+
+  // Set locationFilter from URL parameter
+  useEffect(() => {
+    const locationParam = searchParams.get('location')
+    if (locationParam) {
+      setLocationFilter(locationParam)
+    }
+  }, [searchParams])
 
   // Extract unique locations from tours
   const uniqueLocations = useMemo(() => {
