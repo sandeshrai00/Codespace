@@ -380,6 +380,8 @@ export default function ProfilePage() {
                         onChange={(e) => handleInputChange('mobile_number', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                         placeholder="Enter mobile number"
+                        pattern="[\d\s\+\-\(\)]*"
+                        aria-label="Mobile number"
                       />
                     </div>
                   </div>
@@ -391,6 +393,8 @@ export default function ProfilePage() {
                         value={profileForm.birth_date}
                         onChange={(e) => handleInputChange('birth_date', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                        max={new Date().toISOString().split('T')[0]}
+                        aria-label="Birth date"
                       />
                     </div>
                     <div>
