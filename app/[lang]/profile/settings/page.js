@@ -36,6 +36,11 @@ export default function SettingsPage() {
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false)
   const [passwordUpdateMessage, setPasswordUpdateMessage] = useState({ type: '', text: '' })
   
+  // Timeout IDs for cleanup
+  const [nameTimeoutId, setNameTimeoutId] = useState(null)
+  const [emailTimeoutId, setEmailTimeoutId] = useState(null)
+  const [passwordTimeoutId, setPasswordTimeoutId] = useState(null)
+  
   const router = useRouter()
   const params = useParams()
   const lang = params.lang || 'en'
@@ -44,6 +49,15 @@ export default function SettingsPage() {
   useEffect(() => {
     getDictionary(lang).then(setDict)
   }, [lang])
+  
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (nameTimeoutId) clearTimeout(nameTimeoutId)
+      if (emailTimeoutId) clearTimeout(emailTimeoutId)
+      if (passwordTimeoutId) clearTimeout(passwordTimeoutId)
+    }
+  }, [nameTimeoutId, emailTimeoutId, passwordTimeoutId])
 
   // Fetch user session
   useEffect(() => {
@@ -143,10 +157,11 @@ export default function SettingsPage() {
         text: dict?.settings?.nameUpdateSuccess || 'Your name has been updated successfully!'
       })
       // Exit edit mode after successful update
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setIsEditingName(false)
         setNameUpdateMessage({ type: '', text: '' })
       }, 2000)
+      setNameTimeoutId(timeoutId)
     } catch (error) {
       console.error('Error updating name:', error)
       setNameUpdateMessage({
@@ -160,6 +175,10 @@ export default function SettingsPage() {
   
   // Handle cancel name edit
   const handleCancelNameEdit = () => {
+    if (nameTimeoutId) {
+      clearTimeout(nameTimeoutId)
+      setNameTimeoutId(null)
+    }
     setIsEditingName(false)
     setFullName(user?.user_metadata?.full_name || '')
     setNameUpdateMessage({ type: '', text: '' })
@@ -225,12 +244,13 @@ export default function SettingsPage() {
       })
       
       // Reset form fields and exit edit mode after successful update
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setNewEmail('')
         setEmailPassword('')
         setIsEditingEmail(false)
         setEmailUpdateMessage({ type: '', text: '' })
       }, 3000)
+      setEmailTimeoutId(timeoutId)
     } catch (error) {
       console.error('Error updating email:', error)
       
@@ -254,6 +274,10 @@ export default function SettingsPage() {
   
   // Handle cancel email edit
   const handleCancelEmailEdit = () => {
+    if (emailTimeoutId) {
+      clearTimeout(emailTimeoutId)
+      setEmailTimeoutId(null)
+    }
     setIsEditingEmail(false)
     setNewEmail('')
     setEmailPassword('')
@@ -296,12 +320,13 @@ export default function SettingsPage() {
       })
       
       // Reset form fields and exit edit mode after successful update
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setNewPassword('')
         setConfirmPassword('')
         setIsEditingPassword(false)
         setPasswordUpdateMessage({ type: '', text: '' })
       }, 2000)
+      setPasswordTimeoutId(timeoutId)
     } catch (error) {
       console.error('Error updating password:', error)
       setPasswordUpdateMessage({
@@ -315,6 +340,10 @@ export default function SettingsPage() {
   
   // Handle cancel password edit
   const handleCancelPasswordEdit = () => {
+    if (passwordTimeoutId) {
+      clearTimeout(passwordTimeoutId)
+      setPasswordTimeoutId(null)
+    }
     setIsEditingPassword(false)
     setNewPassword('')
     setConfirmPassword('')
