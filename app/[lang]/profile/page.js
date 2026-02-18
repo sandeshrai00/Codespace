@@ -10,6 +10,23 @@ import { getUserDisplayName } from '@/lib/userUtils'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
+// Generate a consistent profile picture number (1-6) based on email hash
+function getProfilePicture(email) {
+  if (!email) return 1
+  
+  // Create a simple hash from the email
+  let hash = 0
+  for (let i = 0; i < email.length; i++) {
+    const char = email.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32-bit integer
+  }
+  
+  // Convert to positive number and get value between 1-6
+  const positiveHash = Math.abs(hash)
+  return (positiveHash % 6) + 1
+}
+
 export default function ProfilePage() {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
@@ -178,9 +195,13 @@ export default function ProfilePage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <svg className="w-16 h-16 text-primary-700" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
+                    <Image 
+                      src={`/img/profile${getProfilePicture(user.email)}.jpg`}
+                      alt={displayName}
+                      width={128}
+                      height={128}
+                      className="w-full h-full object-cover"
+                    />
                   )}
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900">{displayName}</h2>
@@ -299,16 +320,16 @@ export default function ProfilePage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-wrap gap-3">
             <button
               onClick={() => router.push(`/${lang}`)}
-              className="px-6 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              className="px-8 py-2 bg-white text-gray-700 border border-gray-300 rounded-full font-medium hover:bg-gray-50 transition-colors w-auto"
             >
               {dict?.nav?.home || 'Home'}
             </button>
             <button
               onClick={handleSignOut}
-              className="px-6 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
+              className="px-8 py-2 bg-red-600 text-white rounded-full font-medium hover:bg-red-700 transition-colors w-auto"
             >
               {dict?.nav?.signOut || 'Sign Out'}
             </button>

@@ -99,14 +99,9 @@ CREATE POLICY "Users can delete their own reviews"
 -- Create function to handle new user signup
 -- ============================================
 -- This function automatically creates a profile when a new user signs up
--- It extracts first_name and last_name from the email if not provided
--- (e.g., john.doe@example.com becomes First: John, Last: Doe)
--- 
--- Note: Email parsing limitations:
--- - Only handles emails with dot-separated names (e.g., john.doe@example.com)
--- - For emails with more than 2 parts, only first 2 are used (john.middle.last -> John Last)
--- - Special characters (underscores, hyphens, numbers) in email may produce unexpected results
--- - If email doesn't contain dots before @, only first name is extracted
+-- It handles Google OAuth full_name splitting and enhanced email parsing
+-- For Google sign-up: Splits full_name into first_name (first word) and last_name (remaining words)
+-- For email parsing: Extracts names from email username using dots, underscores, and hyphens as separators
 
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
@@ -115,38 +110,61 @@ DECLARE
   name_parts TEXT[];
   extracted_first_name TEXT;
   extracted_last_name TEXT;
+  google_full_name TEXT;
+  google_name_parts TEXT[];
 BEGIN
-  -- Extract username from email (part before @)
-  email_username := split_part(NEW.email, '@', 1);
+  -- Check if user signed up with Google and has a full_name
+  google_full_name := NEW.raw_user_meta_data->>'full_name';
   
-  -- Replace common separators (underscore, hyphen) with dots for consistent parsing
-  email_username := replace(replace(email_username, '_', '.'), '-', '.');
-  
-  -- Split by dot to get potential first and last name
-  name_parts := string_to_array(email_username, '.');
-  
-  -- Extract first and last names with proper capitalization
-  IF array_length(name_parts, 1) >= 2 THEN
-    extracted_first_name := initcap(name_parts[1]);
-    -- If more than 2 parts, concatenate remaining parts as last name
-    IF array_length(name_parts, 1) > 2 THEN
-      extracted_last_name := initcap(array_to_string(name_parts[2:array_length(name_parts, 1)], ' '));
+  IF google_full_name IS NOT NULL AND google_full_name != '' THEN
+    -- Split full_name by spaces
+    google_name_parts := string_to_array(trim(google_full_name), ' ');
+    
+    IF array_length(google_name_parts, 1) >= 2 THEN
+      -- First part is first_name, rest is last_name
+      extracted_first_name := google_name_parts[1];
+      extracted_last_name := array_to_string(google_name_parts[2:array_length(google_name_parts, 1)], ' ');
+    ELSIF array_length(google_name_parts, 1) = 1 THEN
+      -- Only one name provided
+      extracted_first_name := google_name_parts[1];
+      extracted_last_name := '';
     ELSE
-      extracted_last_name := initcap(name_parts[2]);
+      extracted_first_name := google_full_name;
+      extracted_last_name := '';
     END IF;
-  ELSIF array_length(name_parts, 1) = 1 THEN
-    extracted_first_name := initcap(name_parts[1]);
-    extracted_last_name := '';
   ELSE
-    extracted_first_name := '';
-    extracted_last_name := '';
+    -- No full_name from Google, extract from email
+    email_username := split_part(NEW.email, '@', 1);
+    
+    -- Replace common separators (underscore, hyphen) with dots for consistent parsing
+    email_username := replace(replace(email_username, '_', '.'), '-', '.');
+    
+    -- Split by dot to get potential first and last name
+    name_parts := string_to_array(email_username, '.');
+    
+    -- Extract first and last names with proper capitalization
+    IF array_length(name_parts, 1) >= 2 THEN
+      extracted_first_name := initcap(name_parts[1]);
+      -- If more than 2 parts, concatenate remaining parts as last name
+      IF array_length(name_parts, 1) > 2 THEN
+        extracted_last_name := initcap(array_to_string(name_parts[2:array_length(name_parts, 1)], ' '));
+      ELSE
+        extracted_last_name := initcap(name_parts[2]);
+      END IF;
+    ELSIF array_length(name_parts, 1) = 1 THEN
+      extracted_first_name := initcap(name_parts[1]);
+      extracted_last_name := '';
+    ELSE
+      extracted_first_name := '';
+      extracted_last_name := '';
+    END IF;
   END IF;
 
   INSERT INTO public.profiles (id, email, full_name, first_name, last_name, phone_number)
   VALUES (
     NEW.id,
     NEW.email,
-    COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
+    COALESCE(google_full_name, ''),
     COALESCE(NEW.raw_user_meta_data->>'first_name', extracted_first_name),
     COALESCE(NEW.raw_user_meta_data->>'last_name', extracted_last_name),
     COALESCE(NEW.raw_user_meta_data->>'phone_number', '')
