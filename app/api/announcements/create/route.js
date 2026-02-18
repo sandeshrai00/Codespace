@@ -34,9 +34,17 @@ export async function POST(request) {
       await turso.execute('UPDATE announcements SET is_active = 0');
     }
 
+    // We populate both the localized columns and the base 'message' column 
+    // to satisfy NOT NULL constraints and maintain backward compatibility.
     await turso.execute({
-      sql: 'INSERT INTO announcements (message_en, message_th, message_zh, is_active) VALUES (?, ?, ?, ?)',
-      args: [translatedMessages.message_en, translatedMessages.message_th, translatedMessages.message_zh, is_active ? 1 : 0]
+      sql: 'INSERT INTO announcements (message, message_en, message_th, message_zh, is_active) VALUES (?, ?, ?, ?, ?)',
+      args: [
+        translatedMessages.message_en, 
+        translatedMessages.message_en, 
+        translatedMessages.message_th, 
+        translatedMessages.message_zh, 
+        is_active ? 1 : 0
+      ]
     });
 
     revalidatePath('/admin/announcements')
