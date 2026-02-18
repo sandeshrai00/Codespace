@@ -141,7 +141,7 @@ export default async function AdminDashboardPage() {
                           </div>
                         </td>
                         <td className="px-4 py-4">
-                          <div className="font-medium text-gray-900">{tour.title}</div>
+                          <div className="font-medium text-gray-900">{tour.title_en || tour.title}</div>
                         </td>
                         <td className="px-4 py-4">
                           <TourPriceDisplay price={tour.price} currency={tour.currency} />
@@ -150,7 +150,7 @@ export default async function AdminDashboardPage() {
                           <div className="text-gray-700">{tour.duration}</div>
                         </td>
                         <td className="px-4 py-4">
-                          <div className="text-gray-700">{tour.location}</div>
+                          <div className="text-gray-700">{tour.location_en || tour.location}</div>
                         </td>
                         <td className="px-4 py-4">
                           <div className="flex gap-2">
@@ -160,7 +160,7 @@ export default async function AdminDashboardPage() {
                             >
                               Edit
                             </Link>
-                            <DeleteTourButton tourId={tour.id} tourTitle={tour.title} />
+                            <DeleteTourButton tourId={tour.id} tourTitle={tour.title_en || tour.title} />
                           </div>
                         </td>
                       </tr>

@@ -22,13 +22,13 @@ export default function EditTourForm({ tour }) {
   }
   
   const [formData, setFormData] = useState({
-    title: tour.title || '',
-    description: tour.description || '',
+    title: tour.title_en || tour.title || '',
+    description: tour.description_en || tour.description || '',
     price: tour.price || '',
     currency: tour.currency || 'USD',
     duration: tour.duration || '',
     dates: tour.dates || '',
-    location: tour.location || '',
+    location: tour.location_en || tour.location || '',
   })
   
   const [bannerImage, setBannerImage] = useState(tour.banner_image || '')

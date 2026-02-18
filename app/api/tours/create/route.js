@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { isAuthenticated } from '@/lib/auth'
 import { getTurso } from '@/lib/turso'
 import { revalidatePath } from 'next/cache'
+import { translateTourFields } from '@/lib/translate'
 
 export async function POST(request) {
   try {
@@ -25,11 +26,32 @@ export async function POST(request) {
       )
     }
 
+    // Translate tour fields to Thai and Chinese
+    const translatedFields = await translateTourFields({ title, description, location });
+
     const turso = getTurso();
     await turso.execute({
-      sql: `INSERT INTO tours (title, description, price, currency, duration, dates, location, banner_image, image_urls) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      args: [title, description, price, currency || 'USD', duration, dates, location, banner_image || null, image_urls || '[]']
+      sql: `INSERT INTO tours (title_en, title_th, title_zh, description_en, description_th, description_zh, 
+                               location_en, location_th, location_zh, price, currency, duration, dates, 
+                               banner_image, image_urls) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [
+        translatedFields.title_en,
+        translatedFields.title_th,
+        translatedFields.title_zh,
+        translatedFields.description_en,
+        translatedFields.description_th,
+        translatedFields.description_zh,
+        translatedFields.location_en,
+        translatedFields.location_th,
+        translatedFields.location_zh,
+        price,
+        currency || 'USD',
+        duration,
+        dates,
+        banner_image || null,
+        image_urls || '[]'
+      ]
     });
 
     revalidatePath('/admin/dashboard')
