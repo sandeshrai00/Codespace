@@ -11,7 +11,6 @@ export default function Loading() {
             alt="Loading"
             fill
             className="object-contain"
-            priority
           />
         </div>
         

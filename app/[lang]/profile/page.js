@@ -184,7 +184,7 @@ export default function ProfilePage() {
 
       setEmailUpdateMessage({
         type: 'success',
-        text: dict?.profile?.emailUpdateSuccess || 'Confirmation links have been sent to both your current email and your new email address. Please check both inboxes and click the confirmation links to complete the change.'
+        text: dict?.profile?.emailUpdateSuccess || 'Email update initiated! IMPORTANT: Confirmation links have been sent to BOTH your current email and your new email address. You must click the confirmation links in BOTH emails to complete the change.'
       })
       
       // Reset form and hide it after successful submission
@@ -196,10 +196,20 @@ export default function ProfilePage() {
       }, EMAIL_UPDATE_SUCCESS_DELAY_MS)
     } catch (error) {
       console.error('Error updating email:', error)
-      setEmailUpdateMessage({
-        type: 'error',
-        text: dict?.profile?.emailUpdateError || 'Failed to update email. Please try again.'
-      })
+      
+      // Check if it's a rate limit error
+      const errorMessage = error?.message || error?.toString() || ''
+      if (errorMessage.toLowerCase().includes('rate limit')) {
+        setEmailUpdateMessage({
+          type: 'error',
+          text: 'Email rate limit exceeded. Please wait a while before trying again or check your Supabase dashboard settings (Authentication > Settings > Rate Limits).'
+        })
+      } else {
+        setEmailUpdateMessage({
+          type: 'error',
+          text: dict?.profile?.emailUpdateError || 'Failed to update email. Please try again.'
+        })
+      }
     } finally {
       setIsUpdatingEmail(false)
     }
