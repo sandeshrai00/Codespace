@@ -56,7 +56,7 @@ export default function Header({ lang = 'en', dict }) {
               alt="GoHoliday Logo" 
               width={160}
               height={46}
-              className="h-10 w-auto"
+              className="h-[46px] w-auto"
               priority
             />
           </Link>
