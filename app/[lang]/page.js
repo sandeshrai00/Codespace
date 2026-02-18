@@ -132,7 +132,7 @@ export default async function HomePage({ params }) {
               <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-8 text-white">
                 <div className="transform translate-y-0 group-hover:-translate-y-2 transition-transform duration-300">
                   <h3 className="text-xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-3">{dict.home.nepalTitle}</h3>
-                  <p className="text-xs sm:text-base md:text-lg text-blue-100 mb-2 sm:mb-4">
+                  <p className="text-sm sm:text-base md:text-lg text-blue-100 mb-2 sm:mb-4">
                     {dict.home.nepalSubtitle}
                   </p>
                   <p className="text-sm text-blue-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -166,7 +166,7 @@ export default async function HomePage({ params }) {
               <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-8 text-white">
                 <div className="transform translate-y-0 group-hover:-translate-y-2 transition-transform duration-300">
                   <h3 className="text-xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-3">{dict.home.thailandTitle}</h3>
-                  <p className="text-xs sm:text-base md:text-lg text-blue-100 mb-2 sm:mb-4">
+                  <p className="text-sm sm:text-base md:text-lg text-blue-100 mb-2 sm:mb-4">
                     {dict.home.thailandSubtitle}
                   </p>
                   <p className="text-sm text-blue-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
