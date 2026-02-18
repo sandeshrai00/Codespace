@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase'
 import { getDictionary } from '@/lib/i18n'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ProfileSidebar from '@/components/ProfileSidebar'
 
 // Comprehensive list of countries
 const COUNTRIES = [
@@ -255,22 +256,34 @@ export default function ProfilePage() {
   return (
     <>
       <Header lang={lang} dict={dict} />
-      <div className="min-h-screen bg-white pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Profile Setting Section */}
-          <div className="bg-white border border-gray-200 rounded-lg mb-6">
-            {/* Section Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900">Profile Setting</h2>
-              {!isEditingProfile && (
-                <button
-                  onClick={handleEditClick}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Edit
-                </button>
-              )}
-            </div>
+      <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Sidebar */}
+            <ProfileSidebar lang={lang} dict={dict} />
+            
+            {/* Main Content */}
+            <div className="flex-1">
+              {/* Page Header */}
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-900">{dict?.profile?.title || 'Profile'}</h1>
+                <p className="text-gray-600 mt-1">{dict?.profile?.subtitle || 'Manage your profile information'}</p>
+              </div>
+
+              {/* Profile Information Card */}
+              <div className="bg-white border border-gray-200 rounded-lg mb-6">
+                {/* Section Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                  <h2 className="text-lg font-semibold text-gray-900">Profile Information</h2>
+                  {!isEditingProfile && (
+                    <button
+                      onClick={handleEditClick}
+                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      Edit
+                    </button>
+                  )}
+                </div>
 
             {/* Section Content */}
             <div className="px-6 py-6">
@@ -439,11 +452,11 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Account Information Section */}
-          <div className="bg-white border border-gray-200 rounded-lg">
+          {/* Account Information Card */}
+          <div className="bg-white border border-gray-200 rounded-lg mb-6">
             {/* Section Header */}
             <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900">Account Information</h2>
+              <h2 className="text-lg font-semibold text-gray-900">Account Information</h2>
             </div>
 
             {/* Section Content */}
@@ -466,19 +479,21 @@ export default function ProfilePage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => router.push(`/${lang}`)}
-              className="px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
             >
               {dict?.nav?.home || 'Home'}
             </button>
             <button
               onClick={handleSignOut}
-              className="px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
+              className="px-6 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
             >
               {dict?.nav?.signOut || 'Sign Out'}
             </button>
+          </div>
+            </div>
           </div>
         </div>
       </div>
