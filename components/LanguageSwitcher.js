@@ -117,9 +117,6 @@ export default function LanguageSwitcher({ mobile = false }) {
   // Desktop view
   return (
     <div className="relative">
-  // Desktop view
-  return (
-    <div className="relative">
       {/* Desktop Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
