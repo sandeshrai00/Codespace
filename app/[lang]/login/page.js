@@ -84,7 +84,22 @@ export default function LoginPage() {
         setTimeout(() => setIsLogin(true), 2000)
       }
     } catch (error) {
-      setError(error.message)
+      // Map Supabase errors to user-friendly messages
+      const errorMessage = error?.message || error?.toString() || ''
+      
+      if (errorMessage.toLowerCase().includes('email already') || errorMessage.toLowerCase().includes('user already registered')) {
+        setError(dict?.errors?.emailAlreadyInUse || 'This email is already registered. Please sign in or use a different email.')
+      } else if (errorMessage.toLowerCase().includes('invalid login credentials') || errorMessage.toLowerCase().includes('invalid password')) {
+        setError(dict?.errors?.invalidCredentials || 'Invalid email or password. Please check your credentials and try again.')
+      } else if (errorMessage.toLowerCase().includes('password') && (errorMessage.toLowerCase().includes('short') || errorMessage.toLowerCase().includes('weak'))) {
+        setError(dict?.errors?.passwordTooWeak || 'Password is too weak. Please use at least 6 characters with a mix of letters and numbers.')
+      } else if (errorMessage.toLowerCase().includes('rate limit')) {
+        setError(dict?.errors?.rateLimitExceeded || 'Too many attempts. Please wait a few minutes before trying again.')
+      } else if (errorMessage.toLowerCase().includes('session') && errorMessage.toLowerCase().includes('expired')) {
+        setError(dict?.errors?.sessionExpired || 'Your session has expired. Please log in again.')
+      } else {
+        setError(error.message)
+      }
     } finally {
       setLoading(false)
     }
