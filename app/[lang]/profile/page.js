@@ -9,6 +9,7 @@ import { getDictionary } from '@/lib/i18n'
 import { getUserDisplayName } from '@/lib/userUtils'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import Skeleton from '@/components/Skeleton'
 
 // Generate a consistent profile picture number (1-6) based on email hash
 function getProfilePicture(email) {
@@ -131,10 +132,30 @@ export default function ProfilePage() {
     return (
       <>
         <Header lang={lang} dict={dict} />
-        <div className="min-h-screen flex items-center justify-center bg-white pt-24">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900 mx-auto"></div>
-            <p className="mt-4 text-gray-600">{dict?.common?.loading || 'Loading...'}</p>
+        <div className="min-h-screen bg-white pt-24 pb-12">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              {/* Profile Header Skeleton */}
+              <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+                  <Skeleton variant="avatar" />
+                  <div className="flex-1 text-center md:text-left w-full">
+                    <Skeleton variant="title" className="mb-2" />
+                    <Skeleton variant="text" className="w-2/3 mb-4" />
+                    <div className="space-y-2">
+                      <Skeleton variant="text" className="w-full" />
+                      <Skeleton variant="text" className="w-3/4" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Quick Actions Skeleton */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Skeleton variant="card" className="h-32" />
+                <Skeleton variant="card" className="h-32" />
+              </div>
+            </div>
           </div>
         </div>
         <Footer lang={lang} dict={dict} />

@@ -11,8 +11,7 @@
   "footer": {
     "home": "Home",
     "tours": "Tours",
-    "contact": "Contact",
-    "copyright": "© 2025 GoHoliday. All rights reserved."
+    "contact": "Contact"
   },
   "home": {
     "heroTitle": "Nepal & Thailand",
@@ -101,6 +100,11 @@
     "title": "Login to Your Account",
     "email": "Email",
     "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
     "loginButton": "Login",
     "forgotPassword": "Forgot Password?",
     "noAccount": "Don't have an account?",
@@ -191,6 +195,8 @@
     "currentEmailLabel": "Current Email Address",
     "newEmailLabel": "New Email Address",
     "passwordLabel": "Current Password",
+    "currentPasswordLabel": "Current Password",
+    "currentPasswordPlaceholder": "Enter your current password",
     "passwordHelp": "Enter your current password to verify this change",
     "updateEmailButton": "Update Email Address",
     "emailUpdateSuccessShort": "Confirmation links have been sent to both your old and new email addresses.",

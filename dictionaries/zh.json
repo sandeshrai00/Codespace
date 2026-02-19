@@ -11,8 +11,7 @@
   "footer": {
     "home": "首页",
     "tours": "旅游",
-    "contact": "联系我们",
-    "copyright": "© 2025 GoHoliday 版权所有"
+    "contact": "联系我们"
   },
   "home": {
     "heroTitle": "尼泊尔和泰国",
@@ -101,6 +100,11 @@
     "title": "登录您的账户",
     "email": "电子邮件",
     "password": "密码",
+    "confirmPassword": "确认密码",
+    "confirmPasswordPlaceholder": "重新输入您的密码",
+    "passwordsDoNotMatch": "密码不匹配",
+    "showPassword": "显示密码",
+    "hidePassword": "隐藏密码",
     "loginButton": "登录",
     "forgotPassword": "忘记密码？",
     "noAccount": "还没有账户？",
@@ -191,6 +195,8 @@
     "currentEmailLabel": "当前电子邮件地址",
     "newEmailLabel": "新电子邮件地址",
     "passwordLabel": "当前密码",
+    "currentPasswordLabel": "当前密码",
+    "currentPasswordPlaceholder": "输入您的当前密码",
     "passwordHelp": "输入您的当前密码以验证此更改",
     "updateEmailButton": "更新电子邮件地址",
     "emailUpdateSuccessShort": "确认链接已发送到您的旧电子邮件和新电子邮件地址。",
