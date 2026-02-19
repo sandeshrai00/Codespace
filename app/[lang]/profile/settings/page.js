@@ -35,6 +35,12 @@ export default function SettingsPage() {
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false)
   const [passwordUpdateMessage, setPasswordUpdateMessage] = useState({ type: '', text: '' })
   
+  // Password visibility states
+  const [showEmailPassword, setShowEmailPassword] = useState(false)
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  
   // Refs for timeout IDs (prevents memory leaks)
   const emailTimeoutRef = useRef(null)
   const passwordTimeoutRef = useRef(null)
@@ -195,12 +201,23 @@ export default function SettingsPage() {
     } catch (error) {
       console.error('Error updating email:', error)
       
-      // Check if it's a rate limit error
+      // Map Supabase errors to user-friendly messages
       const errorMessage = error?.message || error?.toString() || ''
-      if (errorMessage.toLowerCase().includes('rate limit')) {
+      
+      if (errorMessage.toLowerCase().includes('email already') || errorMessage.toLowerCase().includes('already registered')) {
         setEmailUpdateMessage({
           type: 'error',
-          text: 'Email rate limit exceeded. Please wait a while before trying again or check your Supabase dashboard settings (Authentication > Settings > Rate Limits).'
+          text: dict?.errors?.emailAlreadyInUse || 'This email is already in use. Please use a different email address.'
+        })
+      } else if (errorMessage.toLowerCase().includes('rate limit')) {
+        setEmailUpdateMessage({
+          type: 'error',
+          text: dict?.errors?.rateLimitExceeded || 'Email rate limit exceeded. Please wait a while before trying again.'
+        })
+      } else if (errorMessage.toLowerCase().includes('session') && errorMessage.toLowerCase().includes('expired')) {
+        setEmailUpdateMessage({
+          type: 'error',
+          text: dict?.errors?.sessionExpired || 'Your session has expired. Please log in again.'
         })
       } else {
         setEmailUpdateMessage({
@@ -295,10 +312,31 @@ export default function SettingsPage() {
       }, AUTO_CLOSE_DELAY_SHORT)
     } catch (error) {
       console.error('Error updating password:', error)
-      setPasswordUpdateMessage({
-        type: 'error',
-        text: dict?.settings?.passwordUpdateError || 'Failed to update password. Please try again.'
-      })
+      
+      // Map Supabase errors to user-friendly messages
+      const errorMessage = error?.message || error?.toString() || ''
+      
+      if (errorMessage.toLowerCase().includes('password') && (errorMessage.toLowerCase().includes('short') || errorMessage.toLowerCase().includes('weak'))) {
+        setPasswordUpdateMessage({
+          type: 'error',
+          text: dict?.errors?.passwordTooWeak || 'Password is too weak. Please use at least 6 characters with a mix of letters and numbers.'
+        })
+      } else if (errorMessage.toLowerCase().includes('rate limit')) {
+        setPasswordUpdateMessage({
+          type: 'error',
+          text: dict?.errors?.rateLimitExceeded || 'Too many attempts. Please wait a few minutes before trying again.'
+        })
+      } else if (errorMessage.toLowerCase().includes('session') && errorMessage.toLowerCase().includes('expired')) {
+        setPasswordUpdateMessage({
+          type: 'error',
+          text: dict?.errors?.sessionExpired || 'Your session has expired. Please log in again.'
+        })
+      } else {
+        setPasswordUpdateMessage({
+          type: 'error',
+          text: dict?.settings?.passwordUpdateError || 'Failed to update password. Please try again.'
+        })
+      }
     } finally {
       setIsUpdatingPassword(false)
     }
@@ -458,16 +496,35 @@ export default function SettingsPage() {
                     <label htmlFor="emailPassword" className="block text-sm font-medium text-gray-700 mb-1">
                       {dict?.settings?.passwordLabel || dict?.profile?.currentPassword || 'Current Password'}
                     </label>
-                    <input
-                      type="password"
-                      id="emailPassword"
-                      value={emailPassword}
-                      onChange={(e) => setEmailPassword(e.target.value)}
-                      placeholder={dict?.profile?.passwordPlaceholder || 'Enter your current password'}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                      disabled={isUpdatingEmail}
-                      required
-                    />
+                    <div className="relative">
+                      <input
+                        type={showEmailPassword ? "text" : "password"}
+                        id="emailPassword"
+                        value={emailPassword}
+                        onChange={(e) => setEmailPassword(e.target.value)}
+                        placeholder={dict?.profile?.passwordPlaceholder || 'Enter your current password'}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent pr-10"
+                        disabled={isUpdatingEmail}
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowEmailPassword(!showEmailPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                        aria-label={showEmailPassword ? (dict?.login?.hidePassword || "Hide password") : (dict?.login?.showPassword || "Show password")}
+                      >
+                        {showEmailPassword ? (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                     <p className="mt-2 text-xs text-gray-500">
                       {dict?.settings?.passwordHelp || dict?.profile?.passwordHint || 'Required for security verification'}
                     </p>
@@ -552,16 +609,35 @@ export default function SettingsPage() {
                     <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-1">
                       {dict?.settings?.currentPasswordLabel || dict?.settings?.passwordLabel || 'Current Password'}
                     </label>
-                    <input
-                      type="password"
-                      id="currentPassword"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      placeholder={dict?.settings?.currentPasswordPlaceholder || dict?.profile?.passwordPlaceholder || 'Enter your current password'}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                      disabled={isUpdatingPassword}
-                      required
-                    />
+                    <div className="relative">
+                      <input
+                        type={showCurrentPassword ? "text" : "password"}
+                        id="currentPassword"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        placeholder={dict?.settings?.currentPasswordPlaceholder || dict?.profile?.passwordPlaceholder || 'Enter your current password'}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent pr-10"
+                        disabled={isUpdatingPassword}
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                        aria-label={showCurrentPassword ? (dict?.login?.hidePassword || "Hide password") : (dict?.login?.showPassword || "Show password")}
+                      >
+                        {showCurrentPassword ? (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                     <p className="mt-2 text-xs text-gray-500">
                       {dict?.settings?.passwordHelp || dict?.profile?.passwordHint || 'Required for security verification'}
                     </p>
@@ -572,17 +648,36 @@ export default function SettingsPage() {
                     <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
                       {dict?.settings?.newPasswordLabel || 'New Password'}
                     </label>
-                    <input
-                      type="password"
-                      id="newPassword"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder={dict?.settings?.newPasswordPlaceholder || 'Enter new password (min 6 characters)'}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                      disabled={isUpdatingPassword}
-                      minLength={6}
-                      required
-                    />
+                    <div className="relative">
+                      <input
+                        type={showNewPassword ? "text" : "password"}
+                        id="newPassword"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder={dict?.settings?.newPasswordPlaceholder || 'Enter new password (min 6 characters)'}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent pr-10"
+                        disabled={isUpdatingPassword}
+                        minLength={6}
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                        aria-label={showNewPassword ? (dict?.login?.hidePassword || "Hide password") : (dict?.login?.showPassword || "Show password")}
+                      >
+                        {showNewPassword ? (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   {/* Confirm Password Input */}
@@ -590,17 +685,36 @@ export default function SettingsPage() {
                     <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
                       {dict?.settings?.confirmPasswordLabel || 'Confirm New Password'}
                     </label>
-                    <input
-                      type="password"
-                      id="confirmPassword"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder={dict?.settings?.confirmPasswordPlaceholder || 'Re-enter new password'}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                      disabled={isUpdatingPassword}
-                      minLength={6}
-                      required
-                    />
+                    <div className="relative">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        id="confirmPassword"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder={dict?.settings?.confirmPasswordPlaceholder || 'Re-enter new password'}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent pr-10"
+                        disabled={isUpdatingPassword}
+                        minLength={6}
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                        aria-label={showConfirmPassword ? (dict?.login?.hidePassword || "Hide password") : (dict?.login?.showPassword || "Show password")}
+                      >
+                        {showConfirmPassword ? (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   {/* Message Display */}

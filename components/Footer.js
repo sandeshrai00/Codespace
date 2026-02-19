@@ -5,7 +5,7 @@ export default function Footer({ lang = 'en', dict }) {
   return (
     <footer className="bg-secondary-950 text-gray-300 rounded-t-[2rem] sm:rounded-t-[3rem]">
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
         {/* Logo */}
         <div className="flex flex-col items-center gap-3 mb-6">
           <Image 

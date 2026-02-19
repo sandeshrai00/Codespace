@@ -180,7 +180,12 @@
     "updateSuccess": "Your profile has been updated successfully!",
     "updateError": "Failed to update profile. Please try again.",
     "firstNameRequired": "Please enter your first name",
-    "lastNameRequired": "Please enter your last name"
+    "lastNameRequired": "Please enter your last name",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter your current password",
+    "passwordHelp": "Required for security verification",
+    "passwordRequired": "Please enter your current password for verification",
+    "incorrectPassword": "Incorrect password. Please try again."
   },
   "settings": {
     "title": "Account Settings",
@@ -222,6 +227,27 @@
     "passwordTooShort": "Password must be at least 6 characters long",
     "passwordsDoNotMatch": "Passwords do not match",
     "updatingName": "Updating name...",
-    "updatingPassword": "Updating password..."
+    "updatingPassword": "Updating password...",
+    "passwordRequired": "Please enter your current password for verification"
+  },
+  "errors": {
+    "emailAlreadyInUse": "This email is already registered. Please sign in or use a different email.",
+    "invalidCredentials": "Invalid email or password. Please check your credentials and try again.",
+    "passwordTooWeak": "Password is too weak. Please use at least 6 characters with a mix of letters and numbers.",
+    "rateLimitExceeded": "Too many attempts. Please wait a few minutes before trying again.",
+    "sessionExpired": "Your session has expired. Please log in again."
+  },
+  "authSuccess": {
+    "emailVerifiedTitle": "Email Verified!",
+    "emailVerifiedMessage": "Your email has been successfully verified. You can now access all features.",
+    "emailUpdatedTitle": "Email Updated!",
+    "emailUpdatedMessage": "Your email address has been successfully updated.",
+    "passwordResetTitle": "Password Reset!",
+    "passwordResetMessage": "Your password has been successfully reset. You can now log in with your new password.",
+    "successTitle": "Success!",
+    "successMessage": "Your action was completed successfully.",
+    "goToLogin": "Go to Login",
+    "goToProfile": "Go to Profile",
+    "goToHome": "Go to Home"
   }
 }
