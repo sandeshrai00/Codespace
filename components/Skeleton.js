@@ -6,6 +6,11 @@ export default function Skeleton({ variant = 'text', className = '' }) {
     title: 'h-8 w-3/4 mb-4',
     text: 'h-4 w-full mb-2',
     sidebar: 'h-64 w-full',
+    card: 'h-80 w-full',
+    avatar: 'h-24 w-24 rounded-full',
+    button: 'h-10 w-32',
+    profileHeader: 'h-32 w-full',
+    tourCard: 'h-96 w-full',
   };
 
   return (

@@ -7,6 +7,7 @@ import { getDictionary } from '@/lib/i18n'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProfileSidebar from '@/components/ProfileSidebar'
+import Skeleton from '@/components/Skeleton'
 
 // Auto-close delay constants (in milliseconds)
 const AUTO_CLOSE_DELAY_SHORT = 2000  // For password updates
@@ -320,10 +321,27 @@ export default function SettingsPage() {
     return (
       <>
         <Header lang={lang} dict={dict} />
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-accent-50 pt-24">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">{dict?.common?.loading || 'Loading...'}</p>
+        <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col lg:flex-row gap-6">
+              {/* Sidebar Skeleton */}
+              <div className="lg:w-64">
+                <Skeleton variant="sidebar" />
+              </div>
+              
+              {/* Main Content Skeleton */}
+              <div className="flex-1">
+                <div className="mb-6">
+                  <Skeleton variant="title" className="mb-2" />
+                  <Skeleton variant="text" className="w-2/3" />
+                </div>
+                
+                <div className="space-y-6">
+                  <Skeleton variant="card" className="h-64" />
+                  <Skeleton variant="card" className="h-64" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <Footer lang={lang} dict={dict} />
