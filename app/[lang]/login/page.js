@@ -302,8 +302,10 @@ export default function LoginPage() {
                     setIsLogin(!isLogin)
                     setError('')
                     setMessage('')
+                    setEmail('')
                     setPassword('')
                     setConfirmPassword('')
+                    setFullName('')
                     setShowPassword(false)
                     setShowConfirmPassword(false)
                   }}
