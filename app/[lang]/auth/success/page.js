@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { useSearchParams, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getDictionary } from '@/lib/i18n'
@@ -10,7 +10,6 @@ import Footer from '@/components/Footer'
 
 export default function AuthSuccessPage() {
   const [dict, setDict] = useState(null)
-  const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const type = searchParams.get('type') || 'email_verified'
