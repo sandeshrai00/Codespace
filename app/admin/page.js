@@ -31,7 +31,8 @@ export default function AdminLoginPage() {
       } else {
         setError(data.error || 'Login failed')
       }
-    } catch {
+    } catch (error) {
+      console.error('Admin login error:', error)
       setError('An error occurred. Please try again.')
     } finally {
       setLoading(false)
