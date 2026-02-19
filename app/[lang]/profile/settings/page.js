@@ -28,6 +28,7 @@ export default function SettingsPage() {
   const [emailUpdateMessage, setEmailUpdateMessage] = useState({ type: '', text: '' })
   
   // Password update states
+  const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false)
@@ -188,6 +189,7 @@ export default function SettingsPage() {
         setEmailPassword('')
         setIsEditingEmail(false)
         setEmailUpdateMessage({ type: '', text: '' })
+        router.refresh()
       }, AUTO_CLOSE_DELAY_LONG)
     } catch (error) {
       console.error('Error updating email:', error)
@@ -226,6 +228,14 @@ export default function SettingsPage() {
   const handlePasswordUpdate = async (e) => {
     e.preventDefault()
     
+    if (!currentPassword || !currentPassword.trim()) {
+      setPasswordUpdateMessage({
+        type: 'error',
+        text: dict?.settings?.passwordRequired || dict?.profile?.passwordRequired || 'Please enter your current password for verification'
+      })
+      return
+    }
+    
     if (!newPassword || newPassword.length < 6) {
       setPasswordUpdateMessage({
         type: 'error',
@@ -246,6 +256,22 @@ export default function SettingsPage() {
     setPasswordUpdateMessage({ type: '', text: '' })
 
     try {
+      // Verify the current password first
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword
+      })
+
+      if (signInError) {
+        setPasswordUpdateMessage({
+          type: 'error',
+          text: dict?.profile?.incorrectPassword || 'Incorrect password. Please try again.'
+        })
+        setIsUpdatingPassword(false)
+        return
+      }
+
+      // If password is correct, proceed with password update
       const { error } = await supabase.auth.updateUser({
         password: newPassword
       })
@@ -259,10 +285,12 @@ export default function SettingsPage() {
       
       // Reset form fields and exit edit mode after successful update
       passwordTimeoutRef.current = setTimeout(() => {
+        setCurrentPassword('')
         setNewPassword('')
         setConfirmPassword('')
         setIsEditingPassword(false)
         setPasswordUpdateMessage({ type: '', text: '' })
+        router.refresh()
       }, AUTO_CLOSE_DELAY_SHORT)
     } catch (error) {
       console.error('Error updating password:', error)
@@ -282,6 +310,7 @@ export default function SettingsPage() {
       passwordTimeoutRef.current = null
     }
     setIsEditingPassword(false)
+    setCurrentPassword('')
     setNewPassword('')
     setConfirmPassword('')
     setPasswordUpdateMessage({ type: '', text: '' })
@@ -500,6 +529,26 @@ export default function SettingsPage() {
               ) : (
                 // Edit mode - show password change form
                 <form onSubmit={handlePasswordUpdate} className="space-y-4">
+                  {/* Current Password Input */}
+                  <div>
+                    <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                      {dict?.settings?.currentPasswordLabel || dict?.settings?.passwordLabel || 'Current Password'}
+                    </label>
+                    <input
+                      type="password"
+                      id="currentPassword"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      placeholder={dict?.settings?.currentPasswordPlaceholder || dict?.profile?.passwordPlaceholder || 'Enter your current password'}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                      disabled={isUpdatingPassword}
+                      required
+                    />
+                    <p className="mt-2 text-xs text-gray-500">
+                      {dict?.settings?.passwordHelp || dict?.profile?.passwordHint || 'Required for security verification'}
+                    </p>
+                  </div>
+
                   {/* New Password Input */}
                   <div>
                     <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">

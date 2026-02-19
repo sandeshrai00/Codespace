@@ -101,6 +101,11 @@
     "title": "เข้าสู่ระบบบัญชีของคุณ",
     "email": "อีเมล",
     "password": "รหัสผ่าน",
+    "confirmPassword": "ยืนยันรหัสผ่าน",
+    "confirmPasswordPlaceholder": "ป้อนรหัสผ่านอีกครั้ง",
+    "passwordsDoNotMatch": "รหัสผ่านไม่ตรงกัน",
+    "showPassword": "แสดงรหัสผ่าน",
+    "hidePassword": "ซ่อนรหัสผ่าน",
     "loginButton": "เข้าสู่ระบบ",
     "forgotPassword": "ลืมรหัสผ่าน?",
     "noAccount": "ยังไม่มีบัญชี?",
@@ -191,6 +196,8 @@
     "currentEmailLabel": "ที่อยู่อีเมลปัจจุบัน",
     "newEmailLabel": "ที่อยู่อีเมลใหม่",
     "passwordLabel": "รหัสผ่านปัจจุบัน",
+    "currentPasswordLabel": "รหัสผ่านปัจจุบัน",
+    "currentPasswordPlaceholder": "ป้อนรหัสผ่านปัจจุบันของคุณ",
     "passwordHelp": "ป้อนรหัสผ่านปัจจุบันของคุณเพื่อยืนยันการเปลี่ยนแปลงนี้",
     "updateEmailButton": "อัปเดตที่อยู่อีเมล",
     "emailUpdateSuccessShort": "ลิงก์ยืนยันได้ถูกส่งไปยังทั้งอีเมลเก่าและอีเมลใหม่ของคุณแล้ว",
@@ -214,6 +221,10 @@
     "passwordUpdateSuccess": "อัปเดตรหัสผ่านของคุณสำเร็จแล้ว!",
     "passwordUpdateError": "อัปเดตรหัสผ่านไม่สำเร็จ โปรดลองอีกครั้ง",
     "passwordTooShort": "รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร",
+    "passwordsDoNotMatch": "รหัสผ่านไม่ตรงกัน",
+    "updatingName": "กำลังอัปเดตชื่อ...",
+    "updatingPassword": "กำลังอัปเดตรหัสผ่าน..."
+  }
     "passwordsDoNotMatch": "รหัสผ่านไม่ตรงกัน",
     "updatingName": "กำลังอัปเดตชื่อ...",
     "updatingPassword": "กำลังอัปเดตรหัสผ่าน..."
